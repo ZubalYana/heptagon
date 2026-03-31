@@ -1,9 +1,13 @@
-export default function WeekDay(){
+interface WeekDayProps{
+    day: string;
+    percentage: number;
+}
+export default function WeekDay({day, percentage}: WeekDayProps){
     return(
         
         <div 
           className="
-          lg:w-[220px] 
+          lg:w-[140px] 
           w-full
           flex flex-col items-center
           gap-y-2
@@ -29,18 +33,18 @@ export default function WeekDay(){
                 font-semibold
                "
             >
-                100%
+                {percentage}%
             </div>
           </div>
             <div
               className="
-                lg:h-[280px] 
+                lg:h-[180px] 
                 w-full h-auto
                 bg-[#1B1B1B] rounded-md"
             >
-                Monday
+                
             </div>
-
+            <h4 className="first-letter:uppercase">{day}</h4>
         </div>
     )
 }
