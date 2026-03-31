@@ -1,0 +1,12 @@
+#root{
+    width: 100%;
+    height: 100vh;
+    background-color: #151515;
+    color: #F5F5F5
+}
+h1, h2, h3, h4, h5, h6{
+    font-family: "Fredoka", sans-serif;
+}
+div, p, a, link{
+    font-family: 'Quicksand', sans-serif;
+}
