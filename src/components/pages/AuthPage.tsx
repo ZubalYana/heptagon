@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Input from "../customElements/Input"
 import PrimaryButton from '../customElements/PrimaryButton';
 export default function AuthPage(){
-    const [mode, setMode] = useState('login')
+    const [mode, setMode] = useState<'login' | 'signup'>('login')
 
     return(
         <div className='w-full h-full flex flex-col justify-center items-center'>
@@ -28,10 +28,30 @@ export default function AuthPage(){
                         cursor-pointer mt-2
                         hover:text-[#c4c4c4] hover:scale-97
                         transition-all duration-300'
+                        onClick={()=>{setMode('signup')}}
                       >Sign up</p>
                     </div>
                  </div> :
-                 <div>register stuff</div>
+                 <div className='w-full flex flex-col items-center'>
+                    <Input placeholder='Name'/>
+                    <div className='mt-3 w-full'>
+                      <Input placeholder='Email'/>
+                    </div>
+                    <div className='mt-3 w-full'>
+                    <Input placeholder='Password' isSecret={true}/>
+                    </div>
+                    <div className='w-full mt-6 flex flex-col items-center'>
+                      <PrimaryButton children={'Sign up'} className='w-[55%]'/>
+                      <p
+                        className='
+                        text-[#707070] font-semibold text-[14px] 
+                        cursor-pointer mt-2
+                        hover:text-[#c4c4c4] hover:scale-97
+                        transition-all duration-300'
+                        onClick={()=>{setMode('login')}}
+                      >Log in</p>
+                    </div>
+                 </div>
                  
                 }
             </div>
