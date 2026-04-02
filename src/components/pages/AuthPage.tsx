@@ -29,6 +29,7 @@ export default function AuthPage() {
     .then((data)=>{
       console.log(data);
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
     })
     .catch(err=>console.log(err))
   };
@@ -47,6 +48,7 @@ export default function AuthPage() {
     .then((data)=>{
       console.log(data)
       localStorage.setItem("token", data.token)
+      localStorage.setItem("user", JSON.stringify(data.user));
     })
     .catch(err=>console.error(err))
   };
