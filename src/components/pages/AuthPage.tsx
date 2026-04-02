@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import Input from "../customElements/Input";
 import PrimaryButton from "../customElements/PrimaryButton";
 import Alert from "../customElements/Alert";
-
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [name, setName] = useState<string>("");
@@ -130,6 +129,7 @@ export default function AuthPage() {
                 >
                   Back to Log in
                 </p>
+                
               </div>
             </motion.div>
           )}
