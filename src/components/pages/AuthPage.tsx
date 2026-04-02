@@ -20,6 +20,17 @@ export default function AuthPage() {
     if (!name || !email || !password) {
       setAlert({ shown: true, type: "error", text: "Fill in all the fields." });
     } 
+    fetch('http://localhost:5000/auth/register', {
+      method: "POST",
+      headers: {"Content-type": "application/json"},
+      body: JSON.stringify({name, email, password})
+    })
+    .then(res=>res.json())
+    .then((data)=>{
+      console.log(data);
+      console.log(data.token);
+    })
+    .catch(err=>console.log(err))
   };
 
   const login = () => {
