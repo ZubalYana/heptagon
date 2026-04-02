@@ -3,7 +3,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import Input from "../customElements/Input";
 import PrimaryButton from "../customElements/PrimaryButton";
 import Alert from "../customElements/Alert";
-export default function AuthPage() {
+import { useNavigate } from "react-router-dom";
+import type User from "../../interfaces/User";
+
+interface AuthPageProps {
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}
+export default function AuthPage({setUser}: AuthPageProps) {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -15,6 +21,7 @@ export default function AuthPage() {
   }>({ shown: false, type: "info", text: "" });
 
   const closeAlert = () => setAlert((prev) => ({ ...prev, shown: false }));
+  const navigate = useNavigate();
 
   const signup = () => {
     if (!name || !email || !password) {
@@ -30,6 +37,8 @@ export default function AuthPage() {
       console.log(data);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+      navigate('/')
     })
     .catch(err=>console.log(err))
   };
@@ -49,6 +58,8 @@ export default function AuthPage() {
       console.log(data)
       localStorage.setItem("token", data.token)
       localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+      navigate('/')
     })
     .catch(err=>console.error(err))
   };
