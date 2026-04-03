@@ -9,7 +9,7 @@ import type User from "../../interfaces/User";
 interface AuthPageProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
-export default function AuthPage({setUser}: AuthPageProps) {
+export default function AuthPage({ setUser }: AuthPageProps) {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -26,54 +26,55 @@ export default function AuthPage({setUser}: AuthPageProps) {
   const signup = () => {
     if (!name || !email || !password) {
       setAlert({ shown: true, type: "error", text: "Fill in all the fields." });
-    } 
-    fetch('http://localhost:5000/auth/register', {
+    }
+    fetch("http://localhost:5000/auth/register", {
       method: "POST",
-      headers: {"Content-type": "application/json"},
-      body: JSON.stringify({name, email, password})
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
     })
-    .then(res=>res.json())
-    .then((data)=>{
-      console.log(data);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      setUser(data.user);
-      navigate('/')
-    })
-    .catch(err=>console.log(err))
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setUser(data.user);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+        setAlert({ shown: true, type: "error", text: err.message });
+      });
   };
 
   const login = () => {
     if (!email || !password) {
       setAlert({ shown: true, type: "error", text: "Fill in all the fields." });
-    } 
+    }
 
-    fetch('http://localhost:5000/auth/login', {
-      method: 'POST',
-      headers: {'Content-type': 'application/json'},
-      body: JSON.stringify({email, password})
+    fetch("http://localhost:5000/auth/login", {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ email, password }),
     })
-    .then(res=>res.json())
-    .then((data)=>{
-      console.log(data)
-      localStorage.setItem("token", data.token)
-      localStorage.setItem("user", JSON.stringify(data.user));
-      setUser(data.user);
-      navigate('/')
-    })
-    .catch(err=>console.error(err))
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setUser(data.user);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+        setAlert({ shown: true, type: "error", text: err.message });
+      });
   };
 
   return (
     <div className="w-full h-full min-h-screen flex flex-col justify-center items-center bg-[#151515] text-white p-4">
-      
       <AnimatePresence>
         {alert.shown && (
-          <Alert 
-            type={alert.type} 
-            text={alert.text} 
-            onClose={closeAlert} 
-          />
+          <Alert type={alert.type} text={alert.text} onClose={closeAlert} />
         )}
       </AnimatePresence>
 
@@ -81,13 +82,13 @@ export default function AuthPage({setUser}: AuthPageProps) {
         Strike the 100% every day.
       </h1>
       <p className="text-[14px] font-light lg:text-[16px] text-gray-400 mt-2">
-        Visual Plan View - planning less, doing more, achieving higher.
+        Heptagon - set up your week from all 7 perspectives.
       </p>
-      
+
       <div className="w-full h-auto p-[15px] mt-[20px] lg:w-[400px] lg:mt-[30px] lg:p-[20px] bg-[#1B1B1B] border border-[#2a2a2a] rounded-xl shadow-lg">
         <AnimatePresence mode="wait">
           {mode === "login" ? (
-            <motion.div 
+            <motion.div
               key="login"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -109,10 +110,7 @@ export default function AuthPage({setUser}: AuthPageProps) {
                 />
               </div>
               <div className="w-full mt-8 flex flex-col items-center gap-3">
-                <PrimaryButton 
-                  className="w-full lg:w-[60%]" 
-                  onClick={login}
-                >
+                <PrimaryButton className="w-full lg:w-[60%]" onClick={login}>
                   Log in
                 </PrimaryButton>
                 <p
@@ -124,7 +122,7 @@ export default function AuthPage({setUser}: AuthPageProps) {
               </div>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="signup"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -153,10 +151,7 @@ export default function AuthPage({setUser}: AuthPageProps) {
                 />
               </div>
               <div className="w-full mt-8 flex flex-col items-center gap-3">
-                <PrimaryButton 
-                  className="w-full lg:w-[60%]" 
-                  onClick={signup}
-                >
+                <PrimaryButton className="w-full lg:w-[60%]" onClick={signup}>
                   Sign up
                 </PrimaryButton>
                 <p
@@ -165,7 +160,6 @@ export default function AuthPage({setUser}: AuthPageProps) {
                 >
                   Back to Log in
                 </p>
-                
               </div>
             </motion.div>
           )}
