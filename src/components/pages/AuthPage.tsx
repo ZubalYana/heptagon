@@ -5,6 +5,9 @@ import PrimaryButton from "../customElements/PrimaryButton";
 import Alert from "../customElements/Alert";
 import { useNavigate } from "react-router-dom";
 import type User from "../../interfaces/User";
+import PasswordStrengthIndicator, {
+  getPasswordLevel,
+} from "../PasswordStrengthIndicator";
 
 interface AuthPageProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -28,13 +31,20 @@ export default function AuthPage({ setUser }: AuthPageProps) {
       setAlert({ shown: true, type: "error", text: "Fill in all the fields." });
       return;
     }
+    if (getPasswordLevel(password) === 0) {
+      setAlert({ shown: true, type: "error", text: "Password is too weak." });
+      return;
+    }
     fetch("http://localhost:5000/auth/register", {
       method: "POST",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ name, email, password }),
     })
       .then((res) => {
-        if(!res.ok) return res.json().then((err)=> Promise.reject(new Error(err.message)));
+        if (!res.ok)
+          return res
+            .json()
+            .then((err) => Promise.reject(new Error(err.message)));
         return res.json();
       })
       .then((data) => {
@@ -62,7 +72,10 @@ export default function AuthPage({ setUser }: AuthPageProps) {
       body: JSON.stringify({ email, password }),
     })
       .then((res) => {
-        if(!res.ok) return res.json().then((err)=> Promise.reject(new Error(err.message)));
+        if (!res.ok)
+          return res
+            .json()
+            .then((err) => Promise.reject(new Error(err.message)));
         return res.json();
       })
       .then((data) => {
@@ -157,6 +170,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <PasswordStrengthIndicator value={password} />
               </div>
               <div className="w-full mt-8 flex flex-col items-center gap-3">
                 <PrimaryButton className="w-full lg:w-[60%]" onClick={signup}>
