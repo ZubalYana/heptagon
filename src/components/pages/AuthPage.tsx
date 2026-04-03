@@ -26,13 +26,17 @@ export default function AuthPage({ setUser }: AuthPageProps) {
   const signup = () => {
     if (!name || !email || !password) {
       setAlert({ shown: true, type: "error", text: "Fill in all the fields." });
+      return;
     }
     fetch("http://localhost:5000/auth/register", {
       method: "POST",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ name, email, password }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if(!res.ok) return res.json().then((err)=> Promise.reject(new Error(err.message)));
+        return res.json();
+      })
       .then((data) => {
         console.log(data);
         localStorage.setItem("token", data.token);
@@ -49,6 +53,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
   const login = () => {
     if (!email || !password) {
       setAlert({ shown: true, type: "error", text: "Fill in all the fields." });
+      return;
     }
 
     fetch("http://localhost:5000/auth/login", {
@@ -56,7 +61,10 @@ export default function AuthPage({ setUser }: AuthPageProps) {
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ email, password }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if(!res.ok) return res.json().then((err)=> Promise.reject(new Error(err.message)));
+        return res.json();
+      })
       .then((data) => {
         console.log(data);
         localStorage.setItem("token", data.token);
