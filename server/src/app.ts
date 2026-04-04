@@ -1,17 +1,18 @@
 import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+
 import mongoose from 'mongoose';
 import authRouter from './routes/auth';
+import weeksRouter from './routes/weeks'
 import cors from 'cors'
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-dotenv.config();
 
-const router = express.Router();
-app.use(router);
-app.use('/auth', authRouter)
+app.use('/auth', authRouter);
+app.use('/weeks', weeksRouter);
 
 mongoose.connect(process.env.MONGO_URL || '')
 .then(()=>{
