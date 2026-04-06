@@ -1,14 +1,35 @@
-import WeekDay from "./WeekDay"
+import { useState, useEffect } from "react";
+import type Week from "../interfaces/Week";
+import WeekDay from "./WeekDay";
+
+
 export default function Week(){
+    const [week, setWeek] = useState<Week | null>(null);
+
+    useEffect(()=>{
+      fetch('http://localhost:5000/weeks/current', {
+        method: 'GET',
+        headers: {'Content-type':'application/json'}
+      })
+      .then((res)=>{
+        return res.json();
+      })
+      .then((data)=>{
+        setWeek(data);
+        console.log(data);
+      })
+    }, [])
+
+    if(!week){
+      return <div>Loading your week...</div>
+    }
+    
+
     return(
       <div className="w-full flex justify-between items-center">
-        <WeekDay day="Monday" percentage={90}/>
-        <WeekDay day="Tuesday" percentage={70}/>
-        <WeekDay day="Wednesday" percentage={100}/>
-        <WeekDay day="Thursday" percentage={85}/>
-        <WeekDay day="Friday" percentage={100}/>
-        <WeekDay day="Saturday" percentage={100}/>
-        <WeekDay day="Sunday" percentage={80}/>
+        {week.days.map((day)=>(
+          <WeekDay day={day.dayOfWeek} percentage={0} key={day._id}/>
+        ))}
       </div>
     )
 }

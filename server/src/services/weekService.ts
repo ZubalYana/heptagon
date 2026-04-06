@@ -3,7 +3,7 @@ import Day from "../models/Day";
 import "../models/Task";
 import { getStartOfWeek } from "../utils/weekHelpers";
 
-const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export async function getOrCreateWeek(year: number, weekNumber: number){
     let week = await Week.findOne({year, weekNumber})
