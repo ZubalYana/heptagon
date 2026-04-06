@@ -2,6 +2,7 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import WeekPage from "./components/pages/WeekPage";
 import AuthPage from "./components/pages/AuthPage";
+import DayFullPage from "./components/pages/DayFullPage";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import type User from "./interfaces/User";
 
@@ -22,21 +23,28 @@ function App() {
 
   return (
     <BrowserRouter>
-    <div className="w-full h-full p-[20px] lg:p-[40px] flex justify-center items-center">
-      <Routes>
-        <Route
-          path="/auth"
-          element={!user? <AuthPage setUser={setUser} /> : <Navigate to='/'/>}
-        />
+      <div className="w-full h-full p-[20px] lg:p-[40px] flex justify-center items-center">
+        <Routes>
+          <Route
+            path="/auth"
+            element={
+              !user ? <AuthPage setUser={setUser} /> : <Navigate to="/" />
+            }
+          />
 
-        <Route
-          path="/"
-          element={user? <WeekPage/> : <Navigate to='/auth'/>}
-        />
+          <Route
+            path="/"
+            element={user ? <WeekPage /> : <Navigate to="/auth" />}
+          />
 
-        <Route path="*" element={<Navigate to="/"/>}/>
-      </Routes>
-    </div>
+          <Route
+            path="/day/:dayId"
+            element={user ? <DayFullPage /> : <Navigate to="/auth" />}
+          />
+
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 }

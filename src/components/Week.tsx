@@ -25,8 +25,7 @@ export default function Week({ week, animationDirection }: WeekProps) {
         <div className="w-full flex justify-between items-center">
           {week.days.map((day) => (
             <WeekDay
-              day={day.dayOfWeek}
-              date={day.date}
+              day={day}
               percentage={0}
               key={day._id}
             />

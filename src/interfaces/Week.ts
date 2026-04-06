@@ -1,10 +1,4 @@
-interface Day{
-    _id: string,
-    dayOfWeek: string,
-    date: Date,
-    events: [],
-    tasks: []
-}
+import type Day from "./Day"
 export default interface Week{
     _id: string,
     weekNumber: number,
