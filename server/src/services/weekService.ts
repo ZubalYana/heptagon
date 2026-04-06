@@ -5,8 +5,8 @@ import { getStartOfWeek } from "../utils/weekHelpers";
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-export async function getOrCreateWeek(year: number, weekNumber: number){
-    let week = await Week.findOne({year, weekNumber})
+export async function getOrCreateWeek(year: number, weekNumber: number, userId: string){
+    let week = await Week.findOne({year, weekNumber, userId})
     .populate({
         path: 'days',
         populate: {path: 'tasks'}
@@ -31,6 +31,7 @@ export async function getOrCreateWeek(year: number, weekNumber: number){
     )
 
     week = await Week.create({
+        userId,
         year,
         weekNumber,
         startDate,

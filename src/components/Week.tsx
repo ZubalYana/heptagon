@@ -7,9 +7,13 @@ export default function Week(){
     const [week, setWeek] = useState<Week | null>(null);
 
     useEffect(()=>{
+      const token = localStorage.getItem('token');
       fetch('http://localhost:5000/weeks/current', {
         method: 'GET',
-        headers: {'Content-type':'application/json'}
+        headers: {
+          'Content-type':'application/json',
+          'Authorization':`Bearer: ${token}`
+        }
       })
       .then((res)=>{
         return res.json();
