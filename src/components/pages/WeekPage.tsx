@@ -5,6 +5,7 @@ import WeeksSwitch from "../WeeksSwitch";
 
 export default function WeekPage() {
   const [week, setWeek] = useState<InterfaceWeek | null>(null);
+  const [animationDirection, setAnimationDirection] = useState(1);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
   const [currentWeekNumber, setCurrentWeekNumber] = useState<number | null>(
     null
@@ -35,6 +36,7 @@ export default function WeekPage() {
       y--;
     }
     fetchWeek(`${y}/${w}`);
+    setAnimationDirection(-1);
   }
 
   function handleNext() {
@@ -45,11 +47,12 @@ export default function WeekPage() {
       y++;
     }
     fetchWeek(`${y}/${w}`);
+    setAnimationDirection(1)
   }
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <Week week={week} />
+      <Week week={week} animationDirection={animationDirection} />
       {week && (
         <WeeksSwitch
           weekNumber={week.weekNumber}
