@@ -1,6 +1,8 @@
 import { useParams } from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import type Day from '../../interfaces/Day';
+import formatDate from '../../helpers/fotmatDate';
+
 export default function DayFullPage() {
   const { dayId } = useParams();
   const [day, setDay] = useState<Day | null>(null);
@@ -19,8 +21,11 @@ export default function DayFullPage() {
   }, [])
 
   if(!day) return <div>Loading your day...</div>
-  
+
   return (
-    <div>Full day view for day</div>
+    <div className='w-full h-full'>
+      <h1 className='lg:text-[32px] font-semibold'>{day.dayOfWeek}</h1>
+      <p className='lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]'>{formatDate(day.date, 'long', 'includingYear')}</p>
+    </div>
   );
 }

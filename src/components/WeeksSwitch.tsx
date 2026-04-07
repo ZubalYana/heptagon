@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import formatDate from "../helpers/fotmatDate";
 
 interface WeeksProps {
   weekNumber: number;
@@ -7,13 +8,6 @@ interface WeeksProps {
   endDate: Date | string;
   onPrev: () => void;
   onNext: () => void;
-}
-
-function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-  });
 }
 
 export default function WeeksSwitch({

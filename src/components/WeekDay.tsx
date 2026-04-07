@@ -1,17 +1,11 @@
 import CircularProgressbar from "./CircularProgressbar";
 import { Link } from "react-router-dom";
 import type Day from "../interfaces/Day";
+import formatDate from "../helpers/fotmatDate";
 
 interface WeekDayProps {
   day: Day;
   percentage: number;
-}
-
-function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-  });
 }
 
 export default function WeekDay({ day, percentage }: WeekDayProps) {
