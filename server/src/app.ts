@@ -5,6 +5,7 @@ dotenv.config();
 import mongoose from 'mongoose';
 import authRouter from './routes/auth';
 import weeksRouter from './routes/weeks'
+import daysRouter from './routes/days';
 import cors from 'cors'
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.use('/auth', authRouter);
 app.use('/weeks', weeksRouter);
+app.use('/days', daysRouter)
 
 mongoose.connect(process.env.MONGO_URL || '')
 .then(()=>{
