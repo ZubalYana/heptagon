@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import authRouter from './routes/auth';
 import weeksRouter from './routes/weeks'
 import daysRouter from './routes/days';
+import taskRouter from './routes/tasks'
 import cors from 'cors'
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors());
 app.use('/auth', authRouter);
 app.use('/weeks', weeksRouter);
 app.use('/days', daysRouter)
+app.use('/tasks', taskRouter)
 
 mongoose.connect(process.env.MONGO_URL || '')
 .then(()=>{
