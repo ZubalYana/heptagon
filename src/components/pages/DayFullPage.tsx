@@ -24,7 +24,7 @@ export default function DayFullPage() {
 
   return (
     <div className='w-full h-full'>
-      <h1 className='lg:text-[32px] font-semibold'>{day.dayOfWeek}</h1>
+      <p className='lg:text-[32px] font-bold'>{day.dayOfWeek}</p>
       <p className='lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]'>{formatDate(day.date, 'long', 'includingYear')}</p>
     </div>
   );
