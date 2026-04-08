@@ -5,6 +5,8 @@ import TaskCreation from "./popups/TaskCreation";
 import Alert from "./customElements/Alert";
 import { AnimatePresence } from "framer-motion";
 import TaskComponent from "./customElements/Task";
+import SecondaryButton from "./customElements/SecondaryButton";
+import { Plus } from "lucide-react";
 
 interface dayTasksControllerProps {
   tasks: [Task] | [];
@@ -15,7 +17,7 @@ interface dayTasksControllerProps {
 export default function DayTasksController({
   tasks,
   day,
-  dayId
+  dayId,
 }: dayTasksControllerProps) {
   const [taskCreationMode, setTaskCreationMode] = useState(false);
   const [alert, setAlert] = useState<{
@@ -29,25 +31,33 @@ export default function DayTasksController({
   }
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#121212] mt-4 p-4 rounded-lg">
-      {tasks.length == 0 && (
-        <div>
-          <p className="mb-4 text-[#ccc] text-[16px] w-full h-full flex flex-col justify-center items-center">
-            No tasks so far for this day.
-          </p>
-          <Button
-            children="Create the first!"
-            onClick={() => setTaskCreationMode(true)}
-          />
-        </div>
-      )}
+    <div className="w-full h-full mt-4">
+      <div className="flex gap-x-4 items-center">
+        <h2 className="text-[18px]">Your tasks:</h2>
+        <SecondaryButton onClick={() => setTaskCreationMode(true)}>
+          <Plus size={16} />
+          Create new task
+        </SecondaryButton>
+      </div>
 
-      {tasks.map((task)=>(
-        <TaskComponent
-        key={task._id}
-        text={task.text}
-        />
-      ))}
+      <div className="w-full h-[80%] flex flex-col bg-[#121212] mt-2 p-4 rounded-lg">
+        {tasks.length == 0 && (
+          <div>
+            <p className="mb-4 text-[#ccc] text-[16px] w-full h-full flex flex-col justify-center items-center">
+              No tasks so far for this day.
+            </p>
+            <Button
+              children="Create the first!"
+              onClick={() => setTaskCreationMode(true)}
+            />
+          </div>
+        )}
+        <div className="w-full">
+          {tasks.map((task) => (
+            <TaskComponent key={task._id} text={task.text} />
+          ))}
+        </div>
+      </div>
 
       {taskCreationMode && (
         <div
