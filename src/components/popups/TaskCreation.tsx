@@ -4,12 +4,15 @@ import Button from "../customElements/PrimaryButton";
 import Select from "../customElements/Select";
 import Alert from "../customElements/Alert";
 import { AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 interface TaskCreationProps {
   day: string;
+  onClose?: () => void;
+  onSuccess?: () => void;
 }
 
-export default function TaskCreation({ day }: TaskCreationProps) {
+export default function TaskCreation({ day, onClose, onSuccess }: TaskCreationProps) {
   const [text, setText] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
   const [alert, setAlert] = useState<{
@@ -46,11 +49,7 @@ export default function TaskCreation({ day }: TaskCreationProps) {
           });
           return;
         }
-        setAlert({
-          shown: true,
-          type: "success",
-          text: "Task created successfully!",
-        });
+        onSuccess?.();
       });
     } catch (err) {
       console.error("Error creating task:", err);
@@ -64,9 +63,13 @@ export default function TaskCreation({ day }: TaskCreationProps) {
 
   return (
     <div
-      className="lg:w-[40%] bg-[#1F1F1F] rounded-md p-4 flex flex-col items-center"
+      className="lg:w-[40%] bg-[#1F1F1F] rounded-md p-4 flex flex-col items-center relative"
       onClick={(e) => e.stopPropagation()}
     >
+      <X
+        className="w-[18px] h-[18px] absolute top-4 right-4 cursor-pointer"
+        onClick={() => onClose?.()}
+      />
       <h3 className="text-[20px] font-medium mb-4">Create a task for {day}</h3>
       <Input
         placeholder="Task text"
