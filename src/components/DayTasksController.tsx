@@ -8,11 +8,13 @@ import { AnimatePresence } from "framer-motion";
 interface dayTasksControllerProps {
   tasks: [Task] | [];
   day: string;
+  dayId: string;
 }
 
 export default function DayTasksController({
   tasks,
   day,
+  dayId
 }: dayTasksControllerProps) {
   const [taskCreationMode, setTaskCreationMode] = useState(false);
   const [alert, setAlert] = useState<{
@@ -46,6 +48,7 @@ export default function DayTasksController({
         >
           <TaskCreation
             day={day}
+            dayId={dayId}
             onClose={() => setTaskCreationMode(false)}
             onSuccess={() => {
               setTaskCreationMode(false);

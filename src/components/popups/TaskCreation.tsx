@@ -8,11 +8,12 @@ import { X } from "lucide-react";
 
 interface TaskCreationProps {
   day: string;
+  dayId: string;
   onClose?: () => void;
   onSuccess?: () => void;
 }
 
-export default function TaskCreation({ day, onClose, onSuccess }: TaskCreationProps) {
+export default function TaskCreation({ day, dayId, onClose, onSuccess }: TaskCreationProps) {
   const [text, setText] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
   const [alert, setAlert] = useState<{
@@ -38,7 +39,7 @@ export default function TaskCreation({ day, onClose, onSuccess }: TaskCreationPr
           Authorization: `Bearer: ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text, priority }),
+        body: JSON.stringify({ text, priority, dayId: dayId }),
       }).then((res) => {
         console.log(res);
         if (!res.ok) {

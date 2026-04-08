@@ -30,7 +30,7 @@ export default function DayFullPage() {
       <p className="lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]">
         {formatDate(day.date, "long", "includingYear")}
       </p>
-      <DayTasksController tasks={day.tasks} day={day.dayOfWeek} />
+      <DayTasksController tasks={day.tasks} day={day.dayOfWeek} dayId={day._id} />
       </div>
     </div>
   );
