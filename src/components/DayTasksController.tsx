@@ -4,6 +4,7 @@ import Button from "./customElements/PrimaryButton";
 import TaskCreation from "./popups/TaskCreation";
 import Alert from "./customElements/Alert";
 import { AnimatePresence } from "framer-motion";
+import TaskComponent from "./customElements/Task";
 
 interface dayTasksControllerProps {
   tasks: [Task] | [];
@@ -28,18 +29,25 @@ export default function DayTasksController({
   }
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-[#121212] mt-4 rounded-lg">
+    <div className="w-full h-full flex flex-col bg-[#121212] mt-4 p-4 rounded-lg">
       {tasks.length == 0 && (
-        <>
-          <p className="mb-4 text-[#ccc] text-[16px]">
+        <div>
+          <p className="mb-4 text-[#ccc] text-[16px] w-full h-full flex flex-col justify-center items-center">
             No tasks so far for this day.
           </p>
           <Button
             children="Create the first!"
             onClick={() => setTaskCreationMode(true)}
           />
-        </>
+        </div>
       )}
+
+      {tasks.map((task)=>(
+        <TaskComponent
+        key={task._id}
+        text={task.text}
+        />
+      ))}
 
       {taskCreationMode && (
         <div

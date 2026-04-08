@@ -7,6 +7,6 @@
 h1, h2, h3, h4, h5, h6{
     font-family: "Fredoka", sans-serif;
 }
-div, p, a, link, label, button{
+div, p, a, link, label, button, span{
     font-family: 'Quicksand', sans-serif;
 }
