@@ -1,10 +1,13 @@
+import { MoreVertical } from "lucide-react";
+
 type Priority = "high" | "medium" | "optional";
 
 interface TaskProps {
   text: string;
   priority?: Priority;
-  done?: boolean;           
-  onToggle?: () => void;   
+  done?: boolean;
+  onToggle?: () => void;
+  onOptionsClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const priorityConfig: Record<Priority, { label: string; classes: string }> = {
@@ -19,12 +22,17 @@ const dotColor: Record<Priority, string> = {
   optional: "bg-gray-500",
 };
 
-export default function Task({ text, priority, done = false, onToggle }: TaskProps) {
-
+export default function Task({
+  text,
+  priority,
+  done = false,
+  onToggle,
+  onOptionsClick,
+}: TaskProps) {
   return (
     <div
       onClick={onToggle}
-      className="w-full flex items-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-[#1a1a1a] transition-colors duration-200 select-none"
+      className="group w-full flex items-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-[#1a1a1a] transition-colors duration-200 select-none"
     >
       <div
         className={`
@@ -68,17 +76,27 @@ export default function Task({ text, priority, done = false, onToggle }: TaskPro
         )}
         <div className="relative">
           <span
-  // Added break-words to handle long, unbreakable strings safely
-  className={`text-sm leading-relaxed transition-colors duration-250 break-words ${
-    done
-      ? "text-[#555555] line-through decoration-[#555555]"
-      : "text-[#e5e5e5]"
-  }`}
->
-  {text}
-</span>
+            className={`text-sm leading-relaxed transition-colors duration-250 break-words ${
+              done
+                ? "text-[#555555] line-through decoration-[#555555]"
+                : "text-[#e5e5e5]"
+            }`}
+          >
+            {text}
+          </span>
         </div>
       </div>
+
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          if (onOptionsClick) onOptionsClick(e);
+        }}
+        className="flex-shrink-0 p-1 mt-[2px] rounded-md cursor-pointer text-[#555555] opacity-50 group-hover:opacity-100 hover:text-[#e5e5e5] hover:bg-[#2a2a2a] transition-all duration-200 focus:outline-none"
+        aria-label="Task options"
+      >
+        <MoreVertical size={16} />
+      </button>
     </div>
   );
 }
