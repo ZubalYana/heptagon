@@ -61,7 +61,7 @@ export default function DayTasksController({
         </SecondaryButton>
       </div>
 
-      <div className="w-full h-[80%] flex flex-col bg-[#121212] mt-2 p-4 rounded-lg">
+      <div className="w-full h-[90%] flex flex-col bg-[#121212] mt-2 p-4 rounded-lg">
         {localTasks.length == 0 && (
           <div>
             <p className="mb-4 text-[#ccc] text-[16px] w-full h-full flex flex-col justify-center items-center">
@@ -73,15 +73,46 @@ export default function DayTasksController({
             />
           </div>
         )}
-        <div className="w-full">
-          {localTasks.map((task) => (
-            <TaskComponent
-              key={task._id}
-              text={task.text}
-              done={task.completed}
-              onToggle={() => onToggle(task._id)}
-            />
-          ))}
+        <div className="w-full flex flex-col lg:flex-row">
+          <div className="lg:w-[33%] w-full">
+            <h3>Crucial:</h3>
+            {localTasks
+              .filter((task) => task.priority === "high")
+              .map((task) => (
+                <TaskComponent
+                  key={task._id}
+                  text={task.text}
+                  done={task.completed}
+                  onToggle={() => onToggle(task._id)}
+                />
+              ))}
+          </div>
+          <div className="lg:w-[33%] w-full">
+            <h3>Important:</h3>
+            {localTasks
+              .filter((task) => task.priority === "medium")
+              .map((task) => (
+                <TaskComponent
+                  key={task._id}
+                  text={task.text}
+                  done={task.completed}
+                  onToggle={() => onToggle(task._id)}
+                />
+              ))}
+          </div>
+          <div className="lg:w-[33%] w-full">
+            <h3>Optional:</h3>
+            {localTasks
+              .filter((task) => task.priority === "optional")
+              .map((task) => (
+                <TaskComponent
+                  key={task._id}
+                  text={task.text}
+                  done={task.completed}
+                  onToggle={() => onToggle(task._id)}
+                />
+              ))}
+          </div>
         </div>
       </div>
 
