@@ -1,12 +1,10 @@
-import { useState } from "react";
-
 type Priority = "high" | "medium" | "optional";
 
 interface TaskProps {
   text: string;
   priority?: Priority;
-  initialDone?: boolean;
-  onToggle?: (done: boolean) => void;
+  done?: boolean;           
+  onToggle?: () => void;   
 }
 
 const priorityConfig: Record<Priority, { label: string; classes: string }> = {
@@ -21,23 +19,11 @@ const dotColor: Record<Priority, string> = {
   optional: "bg-gray-500",
 };
 
-export default function Task({
-  text,
-  priority,
-  initialDone = false,
-  onToggle,
-}: TaskProps) {
-  const [done, setDone] = useState(initialDone);
-
-  function handleToggle() {
-    const next = !done;
-    setDone(next);
-    onToggle?.(next);
-  }
+export default function Task({ text, priority, done = false, onToggle }: TaskProps) {
 
   return (
     <div
-      onClick={handleToggle}
+      onClick={onToggle}
       className="flex items-start gap-3 px-2 py-2.5 rounded-lg cursor-pointer hover:bg-[#1a1a1a] transition-colors duration-200 select-none"
     >
       <div

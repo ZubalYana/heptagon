@@ -9,7 +9,7 @@ import SecondaryButton from "./customElements/SecondaryButton";
 import { Plus } from "lucide-react";
 
 interface dayTasksControllerProps {
-  tasks: [Task] | [];
+  tasks: Task[] | [];
   day: string;
   dayId: string;
 }
@@ -25,9 +25,30 @@ export default function DayTasksController({
     type: "success" | "info" | "error";
     text: string;
   }>({ shown: false, type: "info", text: "" });
+  const [localTasks, setLocalTasks] = useState(tasks);
 
   function closeAlert() {
     setAlert({ shown: false, text: "", type: "info" });
+  }
+
+  function onToggle(id: string) {
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:5000/tasks/complete", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setLocalTasks((prev) =>
+          prev.map((task) =>
+            task._id === id ? { ...task, completed: data.task.completed } : task
+          )
+        );
+      });
   }
 
   return (
@@ -53,8 +74,13 @@ export default function DayTasksController({
           </div>
         )}
         <div className="w-full">
-          {tasks.map((task) => (
-            <TaskComponent key={task._id} text={task.text} />
+          {localTasks.map((task) => (
+            <TaskComponent
+              key={task._id}
+              text={task.text}
+              done={task.completed}
+              onToggle={() => onToggle(task._id)}
+            />
           ))}
         </div>
       </div>
