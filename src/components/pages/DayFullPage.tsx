@@ -12,25 +12,29 @@ export default function DayFullPage() {
     const token = localStorage.getItem("token");
     fetch(`http://localhost:5000/days/${dayId}`, {
       method: "GET",
-      headers: { Authorization: `Bearer: ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
         setDay(data);
       });
-  }, []);
+  }, [dayId]);
 
   if (!day) return <div>Loading your day...</div>;
 
   return (
     <div className="w-full h-full">
       <div className="w-[60%] h-full flex flex-col">
-      <p className="lg:text-[32px] font-bold">{day.dayOfWeek}</p>
-      <p className="lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]">
-        {formatDate(day.date, "long", "includingYear")}
-      </p>
-      <DayTasksController tasks={day.tasks} day={day.dayOfWeek} dayId={day._id} />
+        <p className="lg:text-[32px] font-bold">{day.dayOfWeek}</p>
+        <p className="lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]">
+          {formatDate(day.date, "long", "includingYear")}
+        </p>
+        <DayTasksController
+          tasks={day.tasks}
+          day={day.dayOfWeek}
+          dayId={day._id}
+        />
       </div>
     </div>
   );

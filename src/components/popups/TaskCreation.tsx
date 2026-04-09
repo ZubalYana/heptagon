@@ -5,15 +5,21 @@ import Select from "../customElements/Select";
 import Alert from "../customElements/Alert";
 import { AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import type Task from "../../interfaces/Task";
 
 interface TaskCreationProps {
   day: string;
   dayId: string;
   onClose?: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (task: Task) => void;
 }
 
-export default function TaskCreation({ day, dayId, onClose, onSuccess }: TaskCreationProps) {
+export default function TaskCreation({
+  day,
+  dayId,
+  onClose,
+  onSuccess,
+}: TaskCreationProps) {
   const [text, setText] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
   const [alert, setAlert] = useState<{
@@ -36,22 +42,26 @@ export default function TaskCreation({ day, dayId, onClose, onSuccess }: TaskCre
       fetch("http://localhost:5000/tasks/", {
         method: "POST",
         headers: {
-          Authorization: `Bearer: ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ text, priority, dayId: dayId }),
-      }).then((res) => {
-        console.log(res);
-        if (!res.ok) {
-          setAlert({
-            shown: true,
-            type: "error",
-            text: "Server failed to create task.",
-          });
-          return;
-        }
-        onSuccess?.();
-      });
+      })
+        .then((res) => {
+          if (!res.ok) {
+            setAlert({
+              shown: true,
+              type: "error",
+              text: "Server failed to create task.",
+            });
+            return;
+          }
+          return res.json();
+        })
+        .then((newTask) => {
+          if (!newTask) return;
+          onSuccess?.(newTask); 
+        });
     } catch (err) {
       console.error("Error creating task:", err);
       setAlert({ shown: true, type: "error", text: "Error creating task" });

@@ -62,7 +62,7 @@ export default function DayTasksController({
       </div>
 
       <div className="w-full h-[80%] flex flex-col bg-[#121212] mt-2 p-4 rounded-lg">
-        {tasks.length == 0 && (
+        {localTasks.length == 0 && (
           <div>
             <p className="mb-4 text-[#ccc] text-[16px] w-full h-full flex flex-col justify-center items-center">
               No tasks so far for this day.
@@ -94,8 +94,9 @@ export default function DayTasksController({
             day={day}
             dayId={dayId}
             onClose={() => setTaskCreationMode(false)}
-            onSuccess={() => {
+            onSuccess={(newTask) => {
               setTaskCreationMode(false);
+              setLocalTasks((prev) => [...prev, newTask]);
               setAlert({
                 shown: true,
                 type: "success",
