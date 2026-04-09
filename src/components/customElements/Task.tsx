@@ -24,7 +24,7 @@ export default function Task({ text, priority, done = false, onToggle }: TaskPro
   return (
     <div
       onClick={onToggle}
-      className="flex items-start gap-3 px-2 py-2.5 rounded-lg cursor-pointer hover:bg-[#1a1a1a] transition-colors duration-200 select-none"
+      className="w-full flex items-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-[#1a1a1a] transition-colors duration-200 select-none"
     >
       <div
         className={`
@@ -68,14 +68,15 @@ export default function Task({ text, priority, done = false, onToggle }: TaskPro
         )}
         <div className="relative">
           <span
-            className={`text-sm leading-relaxed transition-colors duration-250 ${
-              done
-                ? "text-[#555555] line-through decoration-[#555555]"
-                : "text-[#e5e5e5]"
-            }`}
-          >
-            {text}
-          </span>
+  // Added break-words to handle long, unbreakable strings safely
+  className={`text-sm leading-relaxed transition-colors duration-250 break-words ${
+    done
+      ? "text-[#555555] line-through decoration-[#555555]"
+      : "text-[#e5e5e5]"
+  }`}
+>
+  {text}
+</span>
         </div>
       </div>
     </div>

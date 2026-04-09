@@ -73,9 +73,9 @@ export default function DayTasksController({
             />
           </div>
         )}
-        <div className="w-full flex flex-col lg:flex-row">
-          <div className="lg:w-[33%] w-full">
-            <h3>Crucial:</h3>
+        <div className="w-full flex flex-col lg:flex-row lg:gap-6 gap-4">
+          <div className="flex-1 w-full flex flex-col">
+            <h3 className="lg:text-[16px] font-medium text-red-500 mb-2">Crucial:</h3>
             {localTasks
               .filter((task) => task.priority === "high")
               .map((task) => (
@@ -87,8 +87,8 @@ export default function DayTasksController({
                 />
               ))}
           </div>
-          <div className="lg:w-[33%] w-full">
-            <h3>Important:</h3>
+          <div className="flex-1 w-full flex flex-col">
+            <h3 className="lg:text-[16px] font-medium text-orange-500 mb-2">Important:</h3>
             {localTasks
               .filter((task) => task.priority === "medium")
               .map((task) => (
@@ -100,8 +100,8 @@ export default function DayTasksController({
                 />
               ))}
           </div>
-          <div className="lg:w-[33%] w-full">
-            <h3>Optional:</h3>
+          <div className="flex-1 w-full flex flex-col">
+            <h3 className="lg:text-[16px] font-medium text-blue-500 mb-2">Optional:</h3>
             {localTasks
               .filter((task) => task.priority === "optional")
               .map((task) => (
