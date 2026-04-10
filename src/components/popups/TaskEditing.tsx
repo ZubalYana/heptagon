@@ -49,7 +49,7 @@ export default function TaskEditing({
         .then((res)=>res.json())
         .then((data)=>{
             console.log(data);
-            onSuccess?.(data)
+            onSuccess?.(data.task)
         })
     }catch(err){
         console.error('Error editing your task:', err)
@@ -69,7 +69,7 @@ export default function TaskEditing({
         className="w-[18px] h-[18px] absolute top-4 right-4 cursor-pointer"
         onClick={() => onClose?.()}
       />
-      <h3 className="text-[20px] font-medium mb-4">Edit a task</h3>
+      <h3 className="text-[20px] font-medium mb-4">Edit task</h3>
       <Input
         placeholder="Task text"
         onChange={(e) => setNewTaskText(e.target.value)}
