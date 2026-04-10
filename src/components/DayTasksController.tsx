@@ -2,6 +2,7 @@ import { useState } from "react";
 import type Task from "../interfaces/Task";
 import Button from "./customElements/PrimaryButton";
 import TaskCreation from "./popups/TaskCreation";
+import TaskEditing from "./popups/TaskEditing";
 import Alert from "./customElements/Alert";
 import { AnimatePresence } from "framer-motion";
 import TaskComponent from "./customElements/Task";
@@ -20,6 +21,7 @@ export default function DayTasksController({
   dayId,
 }: dayTasksControllerProps) {
   const [taskCreationMode, setTaskCreationMode] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [alert, setAlert] = useState<{
     shown: boolean;
     type: "success" | "info" | "error";
@@ -75,7 +77,9 @@ export default function DayTasksController({
         )}
         <div className="w-full flex flex-col lg:flex-row lg:gap-6 gap-4">
           <div className="flex-1 w-full flex flex-col">
-            <h3 className="lg:text-[16px] font-medium text-red-500 mb-2">Crucial:</h3>
+            <h3 className="lg:text-[16px] font-medium text-red-500 mb-2">
+              Crucial:
+            </h3>
             {localTasks
               .filter((task) => task.priority === "high")
               .map((task) => (
@@ -84,11 +88,14 @@ export default function DayTasksController({
                   text={task.text}
                   done={task.completed}
                   onToggle={() => onToggle(task._id)}
+                  onEdit={() => setEditingTask(task)}
                 />
               ))}
           </div>
           <div className="flex-1 w-full flex flex-col">
-            <h3 className="lg:text-[16px] font-medium text-orange-500 mb-2">Important:</h3>
+            <h3 className="lg:text-[16px] font-medium text-orange-500 mb-2">
+              Important:
+            </h3>
             {localTasks
               .filter((task) => task.priority === "medium")
               .map((task) => (
@@ -97,11 +104,14 @@ export default function DayTasksController({
                   text={task.text}
                   done={task.completed}
                   onToggle={() => onToggle(task._id)}
+                  onEdit={() => setEditingTask(task)} 
                 />
               ))}
           </div>
           <div className="flex-1 w-full flex flex-col">
-            <h3 className="lg:text-[16px] font-medium text-blue-500 mb-2">Optional:</h3>
+            <h3 className="lg:text-[16px] font-medium text-blue-500 mb-2">
+              Optional:
+            </h3>
             {localTasks
               .filter((task) => task.priority === "optional")
               .map((task) => (
@@ -110,6 +120,7 @@ export default function DayTasksController({
                   text={task.text}
                   done={task.completed}
                   onToggle={() => onToggle(task._id)}
+                  onEdit={() => setEditingTask(task)} 
                 />
               ))}
           </div>
@@ -133,6 +144,26 @@ export default function DayTasksController({
                 type: "success",
                 text: "Task created successfully!",
               });
+            }}
+          />
+        </div>
+      )}
+      {editingTask && (
+        <div
+          className="w-full h-full absolute top-0 left-0 flex justify-center items-center backdrop-blur-lg"
+          onClick={() => setEditingTask(null)}
+        >
+          <TaskEditing
+            taskId={editingTask._id}
+            taskText={editingTask.text}
+            taskPriority={editingTask.priority}
+            onClose={() => setEditingTask(null)}
+            onSuccess={(updatedTask) => {
+              setLocalTasks((prev) =>
+                prev.map((t) => (t._id === updatedTask._id ? updatedTask : t))
+              );
+              setEditingTask(null);
+              setAlert({ shown: true, type: "success", text: "Task updated!" });
             }}
           />
         </div>

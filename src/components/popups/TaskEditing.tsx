@@ -41,7 +41,7 @@ export default function TaskEditing({
                 "Content-type": "application/json"
             },
             body: JSON.stringify({
-                taskId: taskId,
+                id: taskId,
                 text: newTaskText,
                 priority: newTaskPriority
             })
