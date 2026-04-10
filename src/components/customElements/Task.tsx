@@ -1,4 +1,4 @@
-import { MoreVertical } from "lucide-react";
+import TaskMenu from "../TaskMenu";
 
 type Priority = "high" | "medium" | "optional";
 
@@ -27,7 +27,6 @@ export default function Task({
   priority,
   done = false,
   onToggle,
-  onOptionsClick,
 }: TaskProps) {
   return (
     <div
@@ -87,16 +86,7 @@ export default function Task({
         </div>
       </div>
 
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          if (onOptionsClick) onOptionsClick(e);
-        }}
-        className="flex-shrink-0 p-1 mt-[2px] rounded-md cursor-pointer text-[#555555] opacity-50 group-hover:opacity-100 hover:text-[#e5e5e5] hover:bg-[#2a2a2a] transition-all duration-200 focus:outline-none"
-        aria-label="Task options"
-      >
-        <MoreVertical size={16} />
-      </button>
+      <TaskMenu/>
     </div>
   );
 }
