@@ -83,6 +83,43 @@ export default function DayTasksController({
     }
   }
 
+  function onAddSubtask(id: string, text: string) {
+    const token = localStorage.getItem("token");
+    
+    fetch("http://localhost:5000/tasks/add-subtask", {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ id, text }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to create subtask");
+        return res.json();
+      })
+      .then((data) => {
+        setLocalTasks((prev) =>
+          prev.map((task) =>
+            task._id === id ? data.task : task
+          )
+        );
+        setAlert({
+          shown: true,
+          type: "success",
+          text: "Subtask added!",
+        });
+      })
+      .catch((err) => {
+        console.error("Error adding subtask:", err);
+        setAlert({
+          shown: true,
+          type: "error",
+          text: "Error adding subtask",
+        });
+      });
+  }
+
   return (
     <div className="w-full h-full mt-4">
       <div className="flex gap-x-4 items-center">
@@ -117,9 +154,11 @@ export default function DayTasksController({
                   key={task._id}
                   text={task.text}
                   done={task.completed}
+                  subtasks={task.subtasks}
                   onToggle={() => onToggle(task._id)}
                   onEdit={() => setEditingTask(task)}
                   onDelete={() => onDelete(task._id)}
+                  onSubmitSubtask={(subtaskText) => onAddSubtask(task._id, subtaskText)}
                 />
               ))}
           </div>
@@ -134,9 +173,11 @@ export default function DayTasksController({
                   key={task._id}
                   text={task.text}
                   done={task.completed}
+                  subtasks={task.subtasks}
                   onToggle={() => onToggle(task._id)}
                   onEdit={() => setEditingTask(task)}
                   onDelete={() => onDelete(task._id)}
+                  onSubmitSubtask={(subtaskText) => onAddSubtask(task._id, subtaskText)}
                 />
               ))}
           </div>
@@ -151,9 +192,11 @@ export default function DayTasksController({
                   key={task._id}
                   text={task.text}
                   done={task.completed}
+                  subtasks={task.subtasks}
                   onToggle={() => onToggle(task._id)}
                   onEdit={() => setEditingTask(task)}
                   onDelete={() => onDelete(task._id)}
+                  onSubmitSubtask={(subtaskText) => onAddSubtask(task._id, subtaskText)}
                 />
               ))}
           </div>

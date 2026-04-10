@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
     const day = await Day.findByIdAndUpdate(
       dayId,
       { $push: { tasks: task._id } },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!day) return res.status(404).json({ message: "Day not found" });
@@ -32,7 +32,7 @@ router.put("/complete", async (req, res) => {
     const updated = await Task.findByIdAndUpdate(
       id,
       { completed: !task.completed },
-      { new: true }
+      { returnDocument: 'after' }
     );
     return res.status(200).json({ task: updated });
   } catch (err) {
@@ -53,7 +53,7 @@ router.patch("/edit", async (req, res) => {
     const updated = await Task.findByIdAndUpdate(
       id,
       { $set: { text, priority } },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!updated) return res.status(404).json({ message: "Task not found" });
