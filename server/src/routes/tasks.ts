@@ -78,4 +78,18 @@ router.delete("/delete", async (req, res) => {
   }
 });
 
+router.patch('/add-subtask', async (req, res) =>{
+  try{
+    const { id, text } = req.body;
+    const parentalTask = await Task.findById(id);
+    if(!parentalTask) return res.status(404).json({message: 'Task not found'});
+    parentalTask.subtasks.push({text});
+    await parentalTask.save();
+
+    return res.status(200).json({task: parentalTask});
+  }catch(err){
+    return res.status(500).json({message: 'Error creting subtask:', error: err.message})
+  }
+})
+
 export default router;
