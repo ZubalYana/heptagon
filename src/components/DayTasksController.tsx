@@ -53,6 +53,36 @@ export default function DayTasksController({
       });
   }
 
+  function onDelete(id: string) {
+    try {
+      const token = localStorage.getItem("token");
+      fetch("http://localhost:5000/tasks/delete", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      })
+        .then((res) => res.json())
+        .then(() => {
+          setLocalTasks((prev) => prev.filter((t) => t._id !== id));
+          setAlert({
+            shown: true,
+            type: "success",
+            text: "Task deleted successfully",
+          });
+        });
+    } catch (err) {
+      console.error("Error deleting task:", err);
+      setAlert({
+        shown: true,
+        type: "error",
+        text: "Error deleting task",
+      });
+    }
+  }
+
   return (
     <div className="w-full h-full mt-4">
       <div className="flex gap-x-4 items-center">
@@ -89,6 +119,7 @@ export default function DayTasksController({
                   done={task.completed}
                   onToggle={() => onToggle(task._id)}
                   onEdit={() => setEditingTask(task)}
+                  onDelete={() => onDelete(task._id)}
                 />
               ))}
           </div>
@@ -104,7 +135,8 @@ export default function DayTasksController({
                   text={task.text}
                   done={task.completed}
                   onToggle={() => onToggle(task._id)}
-                  onEdit={() => setEditingTask(task)} 
+                  onEdit={() => setEditingTask(task)}
+                  onDelete={() => onDelete(task._id)}
                 />
               ))}
           </div>
@@ -120,7 +152,8 @@ export default function DayTasksController({
                   text={task.text}
                   done={task.completed}
                   onToggle={() => onToggle(task._id)}
-                  onEdit={() => setEditingTask(task)} 
+                  onEdit={() => setEditingTask(task)}
+                  onDelete={() => onDelete(task._id)}
                 />
               ))}
           </div>

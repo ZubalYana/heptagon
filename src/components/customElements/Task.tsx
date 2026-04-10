@@ -9,6 +9,7 @@ interface TaskProps {
   onToggle?: () => void;
   onOptionsClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const priorityConfig: Record<Priority, { label: string; classes: string }> = {
@@ -28,7 +29,8 @@ export default function Task({
   priority,
   done = false,
   onToggle,
-  onEdit
+  onEdit,
+  onDelete
 }: TaskProps) {
   return (
     <div
@@ -88,7 +90,7 @@ export default function Task({
         </div>
       </div>
 
-      <TaskMenu onEdit={onEdit}/>
+      <TaskMenu onEdit={onEdit} onDelete={onDelete}/>
     </div>
   );
 }
