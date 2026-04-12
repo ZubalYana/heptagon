@@ -23,13 +23,26 @@ export default function Week({ week, animationDirection }: WeekProps) {
         className="w-full"
       >
         <div className="w-full flex justify-between items-center">
-          {week.days.map((day) => (
-            <WeekDay
-              day={day}
-              percentage={0}
-              key={day._id}
-            />
-          ))}
+          {week.days.map((day) => {
+            const allTasks = day.tasks;
+            const totalItems = allTasks.reduce(
+              (acc, task) => acc + 1 + (task.subtasks?.length ?? 0),
+              0
+            );
+            const completedItems = allTasks.reduce(
+              (acc, task) =>
+                acc +
+                (task.completed ? 1 : 0) +
+                (task.subtasks?.filter((s) => s.completed).length ?? 0),
+              0
+            );
+            const percentage =
+              totalItems === 0
+                ? 0
+                : Math.round((completedItems / totalItems) * 100);
+
+            return <WeekDay day={day} percentage={percentage} key={day._id} />;
+          })}
         </div>
       </motion.div>
     </AnimatePresence>
