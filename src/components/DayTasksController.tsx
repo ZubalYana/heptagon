@@ -47,7 +47,7 @@ export default function DayTasksController({
       .then((data) => {
         setLocalTasks((prev) =>
           prev.map((task) =>
-            task._id === id ? { ...task, completed: data.task.completed } : task
+            task._id === id ? { ...task, completed: data.task.completed, subtasks: data.task.subtasks } : task
           )
         );
       });
