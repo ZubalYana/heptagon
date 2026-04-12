@@ -18,6 +18,7 @@ interface TaskProps {
   onEdit?: () => void;
   onDelete?: () => void;
   onSubmitSubtask?: (subtaskText: string) => void;
+  onToggleSubtask?: (subtaskId: string) => void; 
 }
 
 const priorityConfig: Record<Priority, { label: string; classes: string }> = {
@@ -33,7 +34,7 @@ const dotColor: Record<Priority, string> = {
 
 export default function Task({
   text, priority, done = false, subtasks = [],
-  onToggle, onEdit, onDelete, onSubmitSubtask,
+  onToggle, onEdit, onDelete, onSubmitSubtask, onToggleSubtask 
 }: TaskProps) {
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [newSubtaskText, setNewSubtaskText] = useState("");
@@ -91,9 +92,26 @@ export default function Task({
       {subtasks.length > 0 && (
         <div className="ml-9 pr-2 flex flex-col gap-0.5 mb-1">
           {subtasks.map((subtask) => (
-            <div key={subtask._id} className="flex items-center gap-2 py-1 px-2 rounded-md">
-              <div className="w-px h-3 bg-[#2a2a2a] rounded-full flex-shrink-0" />
-              <span className={`text-[12px] leading-relaxed ${subtask.completed ? "line-through text-[#555]" : "text-[#888]"}`}>
+            <div 
+              key={subtask._id} 
+              className="flex items-center gap-2 py-1 px-2 rounded-md group cursor-pointer w-fit hover:bg-[#1a1a1a] transition-colors duration-200"
+              onClick={(e) => {
+                e.stopPropagation(); 
+                onToggleSubtask?.(subtask._id);
+              }}
+            >
+              <div
+                className={`flex-shrink-0 w-[16px] h-[16px] rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                  subtask.completed ? "border-[#00FF26] bg-[#00FF26]" : "border-[#3a3a3a] group-hover:border-[#555]"
+                }`}
+              >
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
+                  className={`transition-all duration-200 ${subtask.completed ? "opacity-100 scale-100" : "opacity-0 scale-50"}`}
+                >
+                  <path d="M2 6l3 3 5-5" stroke="#151515" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <span className={`text-[12px] leading-relaxed select-none transition-colors duration-200 ${subtask.completed ? "line-through text-[#555]" : "text-[#888]"}`}>
                 {subtask.text}
               </span>
             </div>

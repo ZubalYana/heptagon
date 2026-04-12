@@ -92,4 +92,21 @@ router.patch('/add-subtask', async (req, res) =>{
   }
 })
 
+router.patch('/complete-subtask', async (req, res)=>{
+  try{
+    const {taskId, subtaskId} = req.body;
+    const parentalTask = await Task.findById(taskId);
+    if(!parentalTask) return res.status(404).json({message: 'Task not found'});
+
+    const subtask = parentalTask.subtasks.id(subtaskId);
+    if(!subtask) return res.status(404).json({message: 'Subtask not found'});
+    subtask.completed = !subtask.completed;
+    await parentalTask.save();
+
+    return res.status(200).json({task: parentalTask});
+  }catch(err){
+    return res.status(500).json({message: 'Error marking subtask as completed:', error:err.message});
+  }
+})
+
 export default router;
