@@ -47,7 +47,13 @@ export default function DayTasksController({
       .then((data) => {
         setLocalTasks((prev) =>
           prev.map((task) =>
-            task._id === id ? { ...task, completed: data.task.completed, subtasks: data.task.subtasks } : task
+            task._id === id
+              ? {
+                  ...task,
+                  completed: data.task.completed,
+                  subtasks: data.task.subtasks,
+                }
+              : task
           )
         );
       });
@@ -66,9 +72,7 @@ export default function DayTasksController({
       .then((res) => res.json())
       .then((data) => {
         setLocalTasks((prev) =>
-          prev.map((task) => (
-            task._id === taskId ? data.task : task
-          ))
+          prev.map((task) => (task._id === taskId ? data.task : task))
         );
       });
   }
@@ -138,6 +142,8 @@ export default function DayTasksController({
       });
   }
 
+  if (localTasks.length == 0) {
+  }
   return (
     <div className="w-full h-full mt-4">
       <div className="flex gap-x-4 items-center">
@@ -149,9 +155,9 @@ export default function DayTasksController({
       </div>
 
       <div className="w-full h-[90%] flex flex-col bg-[#121212] mt-2 p-4 rounded-lg">
-        {localTasks.length == 0 && (
-          <div>
-            <p className="mb-4 text-[#ccc] text-[16px] w-full h-full flex flex-col justify-center items-center">
+        {localTasks.length == 0 ? (
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            <p className="mb-4 text-[#ccc] text-[16px]">
               No tasks so far for this day.
             </p>
             <Button
@@ -159,81 +165,82 @@ export default function DayTasksController({
               onClick={() => setTaskCreationMode(true)}
             />
           </div>
+        ) : (
+          <div className="w-full flex flex-col lg:flex-row lg:gap-6 gap-4">
+            <div className="flex-1 w-full flex flex-col">
+              <h3 className="lg:text-[16px] font-medium text-red-500 mb-2">
+                Crucial:
+              </h3>
+              {localTasks
+                .filter((task) => task.priority === "high")
+                .map((task) => (
+                  <TaskComponent
+                    key={task._id}
+                    text={task.text}
+                    done={task.completed}
+                    subtasks={task.subtasks}
+                    onToggle={() => onToggle(task._id)}
+                    onEdit={() => setEditingTask(task)}
+                    onDelete={() => onDelete(task._id)}
+                    onSubmitSubtask={(subtaskText) =>
+                      onAddSubtask(task._id, subtaskText)
+                    }
+                    onToggleSubtask={(subtaskId) =>
+                      onToggleSubtask(task._id, subtaskId)
+                    }
+                  />
+                ))}
+            </div>
+            <div className="flex-1 w-full flex flex-col">
+              <h3 className="lg:text-[16px] font-medium text-orange-500 mb-2">
+                Important:
+              </h3>
+              {localTasks
+                .filter((task) => task.priority === "medium")
+                .map((task) => (
+                  <TaskComponent
+                    key={task._id}
+                    text={task.text}
+                    done={task.completed}
+                    subtasks={task.subtasks}
+                    onToggle={() => onToggle(task._id)}
+                    onEdit={() => setEditingTask(task)}
+                    onDelete={() => onDelete(task._id)}
+                    onSubmitSubtask={(subtaskText) =>
+                      onAddSubtask(task._id, subtaskText)
+                    }
+                    onToggleSubtask={(subtaskId) =>
+                      onToggleSubtask(task._id, subtaskId)
+                    }
+                  />
+                ))}
+            </div>
+            <div className="flex-1 w-full flex flex-col">
+              <h3 className="lg:text-[16px] font-medium text-blue-500 mb-2">
+                Optional:
+              </h3>
+              {localTasks
+                .filter((task) => task.priority === "optional")
+                .map((task) => (
+                  <TaskComponent
+                    key={task._id}
+                    text={task.text}
+                    done={task.completed}
+                    subtasks={task.subtasks}
+                    onToggle={() => onToggle(task._id)}
+                    onEdit={() => setEditingTask(task)}
+                    onDelete={() => onDelete(task._id)}
+                    onSubmitSubtask={(subtaskText) =>
+                      onAddSubtask(task._id, subtaskText)
+                    }
+                    onToggleSubtask={(subtaskId) =>
+                      onToggleSubtask(task._id, subtaskId)
+                    }
+                  />
+                ))}
+            </div>
+          </div>
         )}
-        <div className="w-full flex flex-col lg:flex-row lg:gap-6 gap-4">
-          <div className="flex-1 w-full flex flex-col">
-            <h3 className="lg:text-[16px] font-medium text-red-500 mb-2">
-              Crucial:
-            </h3>
-            {localTasks
-              .filter((task) => task.priority === "high")
-              .map((task) => (
-                <TaskComponent
-                  key={task._id}
-                  text={task.text}
-                  done={task.completed}
-                  subtasks={task.subtasks}
-                  onToggle={() => onToggle(task._id)}
-                  onEdit={() => setEditingTask(task)}
-                  onDelete={() => onDelete(task._id)}
-                  onSubmitSubtask={(subtaskText) =>
-                    onAddSubtask(task._id, subtaskText)
-                  }
-                  onToggleSubtask={(subtaskId) =>
-                    onToggleSubtask(task._id, subtaskId)
-                  }
-                />
-              ))}
-          </div>
-          <div className="flex-1 w-full flex flex-col">
-            <h3 className="lg:text-[16px] font-medium text-orange-500 mb-2">
-              Important:
-            </h3>
-            {localTasks
-              .filter((task) => task.priority === "medium")
-              .map((task) => (
-                <TaskComponent
-                  key={task._id}
-                  text={task.text}
-                  done={task.completed}
-                  subtasks={task.subtasks}
-                  onToggle={() => onToggle(task._id)}
-                  onEdit={() => setEditingTask(task)}
-                  onDelete={() => onDelete(task._id)}
-                  onSubmitSubtask={(subtaskText) =>
-                    onAddSubtask(task._id, subtaskText)
-                  }
-                  onToggleSubtask={(subtaskId) =>
-                    onToggleSubtask(task._id, subtaskId)
-                  }
-                />
-              ))}
-          </div>
-          <div className="flex-1 w-full flex flex-col">
-            <h3 className="lg:text-[16px] font-medium text-blue-500 mb-2">
-              Optional:
-            </h3>
-            {localTasks
-              .filter((task) => task.priority === "optional")
-              .map((task) => (
-                <TaskComponent
-                  key={task._id}
-                  text={task.text}
-                  done={task.completed}
-                  subtasks={task.subtasks}
-                  onToggle={() => onToggle(task._id)}
-                  onEdit={() => setEditingTask(task)}
-                  onDelete={() => onDelete(task._id)}
-                  onSubmitSubtask={(subtaskText) =>
-                    onAddSubtask(task._id, subtaskText)
-                  }
-                  onToggleSubtask={(subtaskId) =>
-                    onToggleSubtask(task._id, subtaskId)
-                  }
-                />
-              ))}
-          </div>
-        </div>
       </div>
 
       {taskCreationMode && (
