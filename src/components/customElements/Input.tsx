@@ -45,7 +45,7 @@ export default function Input({
           type={inputType}
           placeholder={placeholder}
           className={`
-            w-full pl-4 pr-11 py-2.5 rounded-lg
+            w-full px-4 py-2.5 rounded-lg
             bg-[#1a1a1a] text-white 
             border border-[#2a2a2a]
             placeholder:text-[#555555] placeholder:font-light
