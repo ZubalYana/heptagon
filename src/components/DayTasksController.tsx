@@ -273,6 +273,7 @@ export default function DayTasksController({
             taskId={editingTask._id}
             taskText={editingTask.text}
             taskPriority={editingTask.priority}
+            taskSubtasks={editingTask.subtasks}
             onClose={() => setEditingTask(null)}
             onSuccess={(updatedTask) => {
               setLocalTasks((prev) =>

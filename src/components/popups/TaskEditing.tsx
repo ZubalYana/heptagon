@@ -4,13 +4,14 @@ import Button from "../customElements/PrimaryButton";
 import Select from "../customElements/Select";
 import Alert from "../customElements/Alert";
 import { AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Pencil, Trash2 } from "lucide-react";
 import type Task from "../../interfaces/Task";
 
 interface TaskEditingProps {
-  taskId: string,
-  taskText: string,
-  taskPriority: string,
+  taskId: string;
+  taskText: string;
+  taskPriority: string;
+  taskSubtasks?: Array<{ _id: string; text: string; completed: boolean }>;
   onClose?: () => void;
   onSuccess?: (task: Task) => void;
 }
@@ -19,6 +20,7 @@ export default function TaskEditing({
   taskId,
   taskText,
   taskPriority,
+  taskSubtasks,
   onClose,
   onSuccess,
 }: TaskEditingProps) {
@@ -31,28 +33,28 @@ export default function TaskEditing({
     text: string;
   }>({ shown: false, type: "info", text: "" });
 
-  function editTask(){
-    try{
-        const token = localStorage.getItem('token');
-        fetch('http://localhost:5000/tasks/edit', {
-            method: 'PATCH',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify({
-                id: taskId,
-                text: newTaskText,
-                priority: newTaskPriority
-            })
-        })
-        .then((res)=>res.json())
-        .then((data)=>{
-            console.log(data);
-            onSuccess?.(data.task)
-        })
-    }catch(err){
-        console.error('Error editing your task:', err)
+  function editTask() {
+    try {
+      const token = localStorage.getItem("token");
+      fetch("http://localhost:5000/tasks/edit", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          id: taskId,
+          text: newTaskText,
+          priority: newTaskPriority,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          onSuccess?.(data.task);
+        });
+    } catch (err) {
+      console.error("Error editing your task:", err);
     }
   }
 
@@ -86,12 +88,26 @@ export default function TaskEditing({
         onChange={(value) => setNewTaskPriority(value)}
         className="mt-2"
       />
+      {taskSubtasks && (
+        <p className="w-full mt-4 font-semibold text-[14px]">Subtasks:</p>
+      )}
+      {taskSubtasks?.map((subtask) => (
+        <div
+          className="w-full p-2 lg:px-4 bg-[#1a1a1a] rounded-lg mt-2 flex justify-between items-center"
+          key={subtask._id}
+        >
+          <p>{subtask.text}</p>
+          <div className="flex gap-x-2">
+            <Pencil className="w-[18px] h-[16px] cursor-pointer hover:scale-[1.2] hover:text-blue-500 transition-all duration-300" />
+            <Trash2 className="w-[18px] h-[16px] cursor-pointer hover:scale-[1.2] hover:text-red-500 transition-all duration-300" />
+          </div>
+        </div>
+      ))}
       <Button
         onClick={() => editTask()}
         children="Confirm changes"
-        className="mt-4"
+        className="mt-6"
       />
-
       <AnimatePresence>
         {alert.shown && (
           <Alert type={alert.type} text={alert.text} onClose={closeAlert} />
