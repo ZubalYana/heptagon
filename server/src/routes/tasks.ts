@@ -126,4 +126,34 @@ router.patch("/complete-subtask", async (req, res) => {
   }
 });
 
+router.patch("/edit-subtask", async (req,res)=>{
+  try{
+    const { taskId, subtaskId, newText } = req.body;
+    const parentalTask = await Task.findById(taskId);
+
+    if(!parentalTask) return res.status(404).json({message: 'Task not found'});
+    parentalTask.subtasks.id(subtaskId).text = newText;
+
+    await parentalTask.save();
+    return res.status(200).json({task: parentalTask});
+  }catch(err){
+    return res.status(500).json({message: 'Error editing subtask:', error: err.message});
+  }
+})
+
+router.delete('/delete-subtask', async (req,res)=>{
+  try{
+    const {taskId, subtaskId} = req.body;
+    const parentalTask = await Task.findById(taskId);
+    if(!parentalTask) return res.status(404).json({message: 'Task not found'});
+
+    parentalTask.subtasks.pull({id: subtaskId});
+
+    await parentalTask.save();
+    return res.status(200).json({message: 'Subtask deleted successfully'});
+  }catch(err){
+    return res.status(500).json({message: 'Error deleting subtask:', err: err.message});
+  }
+})
+
 export default router;
