@@ -26,6 +26,7 @@ export default function TaskEditing({
 }: TaskEditingProps) {
   const [newTaskText, setNewTaskText] = useState<string>(taskText);
   const [newTaskPriority, setNewTaskPriority] = useState<string>(taskPriority);
+const [subtasks, setSubtasks] = useState(taskSubtasks ?? []);
 
   const [alert, setAlert] = useState<{
     shown: boolean;
@@ -58,6 +59,28 @@ export default function TaskEditing({
     }
   }
 
+  function deleteSubtask(taskId: string, subtaskId: string) {
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:5000/tasks/delete-subtask", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ taskId, subtaskId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setAlert({
+          shown: true,
+          type: "success",
+          text: "Subtask deleted successfully",
+        });
+        setSubtasks(prev => prev.filter(s => s._id !== subtaskId));
+      });
+  }
+
   function closeAlert() {
     setAlert({ shown: false, text: "", type: "info" });
   }
@@ -88,18 +111,29 @@ export default function TaskEditing({
         onChange={(value) => setNewTaskPriority(value)}
         className="mt-2"
       />
-      {taskSubtasks && (
+      {taskSubtasks?.length != 0 ? (
         <p className="w-full mt-4 font-semibold text-[14px]">Subtasks:</p>
+      ) : (
+        ""
       )}
-      {taskSubtasks?.map((subtask) => (
+      {subtasks?.map((subtask) => (
         <div
           className="w-full p-2 lg:px-4 bg-[#1a1a1a] rounded-lg mt-2 flex justify-between items-center"
           key={subtask._id}
         >
           <p>{subtask.text}</p>
           <div className="flex gap-x-2">
-            <Pencil className="w-[18px] h-[16px] cursor-pointer hover:scale-[1.2] hover:text-blue-500 transition-all duration-300" />
-            <Trash2 className="w-[18px] h-[16px] cursor-pointer hover:scale-[1.2] hover:text-red-500 transition-all duration-300" />
+            <Pencil
+              className="w-[18px] h-[16px] cursor-pointer 
+            hover:scale-[1.2] hover:text-blue-500 
+            transition-all duration-300"
+            />
+            <Trash2
+              className="w-[18px] h-[16px] cursor-pointer 
+            hover:scale-[1.2] hover:text-red-500 
+            transition-all duration-300"
+              onClick={() => deleteSubtask(taskId, subtask._id)}
+            />
           </div>
         </div>
       ))}

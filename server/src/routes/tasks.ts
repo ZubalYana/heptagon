@@ -147,7 +147,7 @@ router.delete('/delete-subtask', async (req,res)=>{
     const parentalTask = await Task.findById(taskId);
     if(!parentalTask) return res.status(404).json({message: 'Task not found'});
 
-    parentalTask.subtasks.pull({id: subtaskId});
+    parentalTask.subtasks.pull({_id: subtaskId});
 
     await parentalTask.save();
     return res.status(200).json({message: 'Subtask deleted successfully'});
