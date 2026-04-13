@@ -31,7 +31,7 @@ export default function TaskCreation({
   function createTask() {
     try {
       const token = localStorage.getItem("token");
-      if (!text && !priority) {
+      if (!text || !priority) {
         setAlert({
           shown: true,
           type: "info",

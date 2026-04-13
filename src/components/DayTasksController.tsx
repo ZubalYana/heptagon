@@ -156,7 +156,7 @@ export default function DayTasksController({
 
       <div className="w-full min-h-[90%] flex flex-col bg-[#121212] mt-2 p-4 rounded-lg">
         {localTasks.length == 0 ? (
-          <div className="w-full h-full flex flex-col items-center justify-center">
+          <div className="flex-1 flex flex-col items-center justify-center">
             <p className="mb-4 text-[#ccc] text-[16px]">
               No tasks so far for this day.
             </p>
