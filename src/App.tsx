@@ -23,7 +23,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="w-full h-screen p-[20px] lg:p-[40px] flex justify-center items-center overflow-y-auto">
+      <div className="w-full h-screen p-[20px] lg:p-[40px] flex justify-center items-center overflow-y-auto overflow-x-hidden">
         <Routes>
           <Route
             path="/auth"
