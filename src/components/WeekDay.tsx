@@ -6,9 +6,11 @@ import formatDate from "../helpers/fotmatDate";
 interface WeekDayProps {
   day: Day;
   percentage: number;
+  allTasks: number;
+  completedTasks: number;
 }
 
-export default function WeekDay({ day, percentage }: WeekDayProps) {
+export default function WeekDay({ day, percentage, allTasks, completedTasks }: WeekDayProps) {
   return (
     <Link to={`/day/${day._id}`}>
       <div
@@ -21,10 +23,14 @@ export default function WeekDay({ day, percentage }: WeekDayProps) {
         <CircularProgressbar percentage={percentage} />
         <div
           className="
-                lg:h-[120px] mt-4
+                lg:h-[100px] mt-4
                 w-full h-auto
-                bg-[#1B1B1B] rounded-md"
-        ></div>
+                bg-[#1B1B1B] rounded-md
+                p-4 flex flex-col items-center justify-center"
+        >
+          <p className="text-[12px]">Completed: {completedTasks}/{allTasks}</p>
+          <p className="text-[12px] mt-1">Still to do: {allTasks - completedTasks}</p>
+        </div>
         <h4 className="first-letter:uppercase mt-2">{day.dayOfWeek}</h4>
         <p className="text-[12px] font-light text-[#ccc] -mt-[4px]">
           {formatDate(day.date)}

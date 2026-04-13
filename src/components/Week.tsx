@@ -41,7 +41,15 @@ export default function Week({ week, animationDirection }: WeekProps) {
                 ? 0
                 : Math.round((completedItems / totalItems) * 100);
 
-            return <WeekDay day={day} percentage={percentage} key={day._id} />;
+            return (
+              <WeekDay
+                day={day}
+                percentage={percentage}
+                key={day._id}
+                allTasks={totalItems}
+                completedTasks={completedItems}
+              />
+            );
           })}
         </div>
       </motion.div>
