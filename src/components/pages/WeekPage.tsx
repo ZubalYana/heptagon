@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import type InterfaceWeek from "../../interfaces/Week";
 import Week from "../Week";
 import WeeksSwitch from "../WeeksSwitch";
+import { Settings } from "lucide-react";
 
 export default function WeekPage() {
   const [week, setWeek] = useState<InterfaceWeek | null>(null);
@@ -47,11 +48,25 @@ export default function WeekPage() {
       y++;
     }
     fetchWeek(`${y}/${w}`);
-    setAnimationDirection(1)
+    setAnimationDirection(1);
   }
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center">
+    <div className="w-full h-full flex flex-col items-center">
+      <div className="w-full flex items-center justify-between lg:mb-12">
+        <div className="flex gap-x-2 items-center">
+          <img 
+          src="/heptagonLogo.svg" 
+          alt="Heptagon Logo" 
+          className="w-[35px] h-[35px]"
+          />
+          <h2 className="text-[20px] font-medium">Heptagon</h2>
+        </div>
+        <div className="flex gap-x-4">
+          <Settings className="cursor-pointer"/>
+        </div>
+      </div>
+
       <Week week={week} animationDirection={animationDirection} />
       {week && (
         <WeeksSwitch
