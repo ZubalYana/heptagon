@@ -51,7 +51,7 @@ export default function WeekPage() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center">
+    <div className="w-full h-screen flex flex-col justify-center items-center">
       <Week week={week} animationDirection={animationDirection} />
       {week && (
         <WeeksSwitch

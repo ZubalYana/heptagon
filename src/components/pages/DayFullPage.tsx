@@ -24,7 +24,7 @@ export default function DayFullPage() {
   if (!day) return <div>Loading your day...</div>;
 
   return (
-    <div className="w-full min-h-full">
+    <div className="w-full h-full">
       {/* w-[100%] expanded for testing though personal use. To be shortened once the layout is fixed & adapted */}
       <div className="w-[100%] h-full flex flex-col">
         <p className="lg:text-[32px] font-bold">{day.dayOfWeek}</p>

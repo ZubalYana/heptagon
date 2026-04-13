@@ -54,7 +54,7 @@ export default function Task({
     <div className="w-full flex flex-col">
       <div
         onClick={onToggle}
-        className="group w-full flex items-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-[#1a1a1a] transition-colors duration-200 select-none"
+        className="group w-full flex items-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-[#1a1a1a] tselectransition-colors duration-200 -none"
       >
         <div
           className={`flex-shrink-0 mt-[2px] w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center transition-all duration-250 ${
@@ -111,7 +111,7 @@ export default function Task({
                   <path d="M2 6l3 3 5-5" stroke="#151515" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span className={`text-[12px] leading-relaxed select-none transition-colors duration-200 ${subtask.completed ? "line-through text-[#555]" : "text-[#888]"}`}>
+              <span className={`text-[12px] leading-relaxed transition-colors duration-200 ${subtask.completed ? "line-through text-[#555]" : "text-[#888]"}`}>
                 {subtask.text}
               </span>
             </div>
