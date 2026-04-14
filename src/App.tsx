@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import WeekPage from "./components/pages/WeekPage";
 import AuthPage from "./components/pages/AuthPage";
 import DayFullPage from "./components/pages/DayFullPage";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import type User from "./interfaces/User";
 import { setNavigator } from "./helpers/apiClient";
 
@@ -26,7 +26,6 @@ function App() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <BrowserRouter>
       <div className="w-full h-screen p-[20px] lg:p-[40px] flex justify-center items-center overflow-y-auto overflow-x-hidden">
         <Routes>
           <Route
@@ -49,7 +48,6 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
-    </BrowserRouter>
   );
 }
 

@@ -1,29 +1,45 @@
-import express from "express"
-import path from 'node:path';
-import process from 'node:process';
-import {authenticate} from '@google-cloud/local-auth';
-import {google} from 'googleapis';
-const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
-const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
-const router = express.Router()
+import express from "express";
+import { google } from "googleapis";
+import { getAuthClient, getAuthUrl, exchangeCodeForToken } from '../middleware/googleAuth'
 
-router.get('/events', async (req, res) => {
+const router = express.Router();
+
+router.get("/auth", async (req, res) => {
+  const url = await getAuthUrl();
+  res.redirect(url);
+});
+
+router.get("/auth/callback", async (req, res) => {
+  const code = req.query.code as string;
+  if (!code) return res.status(400).json({ message: "No code provided" });
+
+  await exchangeCodeForToken(code);
+  res.json({ message: "Authorised — you can now call /events" });
+});
+
+router.get("/events", async (req, res) => {
   try {
-    const auth = await authenticate({
-      scopes: SCOPES,
-      keyfilePath: CREDENTIALS_PATH,
-    });
-    const calendar = google.calendar({ version: 'v3', auth });
+    const auth = await getAuthClient();
+
+    if (!auth) {
+      return res.status(401).json({
+        message: "Not authorised. Visit /api/calendar/auth first.",
+      });
+    }
+
+    const calendar = google.calendar({ version: "v3", auth });
     const result = await calendar.events.list({
-      calendarId: 'primary',
+      calendarId: "primary",
       timeMin: new Date().toISOString(),
       maxResults: 10,
       singleEvents: true,
-      orderBy: 'startTime',
+      orderBy: "startTime",
     });
+
     return res.status(200).json({ events: result.data.items });
   } catch (err) {
-    return res.status(500).json({ message: 'Failed to fetch events', err });
+    console.error("Calendar error:", err);
+    return res.status(500).json({ message: "Failed to fetch events" });
   }
 });
 
