@@ -18,7 +18,7 @@ interface TaskProps {
   onEdit?: () => void;
   onDelete?: () => void;
   onSubmitSubtask?: (subtaskText: string) => void;
-  onToggleSubtask?: (subtaskId: string) => void; 
+  onToggleSubtask?: (subtaskId: string) => void;
 }
 
 const priorityConfig: Record<Priority, { label: string; classes: string }> = {
@@ -33,8 +33,15 @@ const dotColor: Record<Priority, string> = {
 };
 
 export default function Task({
-  text, priority, done = false, subtasks = [],
-  onToggle, onEdit, onDelete, onSubmitSubtask, onToggleSubtask 
+  text,
+  priority,
+  done = false,
+  subtasks = [],
+  onToggle,
+  onEdit,
+  onDelete,
+  onSubmitSubtask,
+  onToggleSubtask,
 }: TaskProps) {
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [newSubtaskText, setNewSubtaskText] = useState("");
@@ -50,6 +57,37 @@ export default function Task({
     setIsAddingSubtask(false);
   };
 
+  const URLChecker = (text: string) => {
+    const hasURL = text.includes("http://") || text.includes("https://");
+    if (hasURL) {
+      let URL;
+      const slicer = text.indexOf("https://");
+      const textBeforeURL = text.slice(0, slicer);
+      let textAfterURL;
+      const textFromURL = text.slice(slicer);
+      const firstSpaceAfterURL = textFromURL.includes(" ")
+        ? textFromURL.indexOf(" ")
+        : null;
+      if (firstSpaceAfterURL != null) {
+        URL = textFromURL.slice(0, firstSpaceAfterURL);
+        textAfterURL = textFromURL.slice(firstSpaceAfterURL);
+      } else {
+        URL = textFromURL;
+      }
+
+      console.log(URL);
+      return(
+        <>
+          {textBeforeURL}
+          <a href={URL} target="_blank" className="text-blue-500 hover:text-blue-300 transition-all duration-300">{URL.slice(0, 15)}...</a>
+          {textAfterURL? textAfterURL: ''}
+        </>
+      )
+    } else {
+      return text;
+    }
+  };
+
   return (
     <div className="w-full flex flex-col">
       <div
@@ -61,23 +99,47 @@ export default function Task({
             done ? "border-[#00FF26] bg-[#00FF26]" : "border-[#3a3a3a]"
           }`}
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-            className={`transition-all duration-200 ${done ? "opacity-100 scale-100" : "opacity-0 scale-50"}`}
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            className={`transition-all duration-200 ${
+              done ? "opacity-100 scale-100" : "opacity-0 scale-50"
+            }`}
           >
-            <path d="M2 6l3 3 5-5" stroke="#151515" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M2 6l3 3 5-5"
+              stroke="#151515"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col gap-1">
           {priority && (
-            <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded-full w-fit tracking-wide transition-opacity duration-250 ${priorityConfig[priority].classes} ${done ? "opacity-35" : ""}`}>
-              <span className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${dotColor[priority]}`} />
+            <span
+              className={`inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded-full w-fit tracking-wide transition-opacity duration-250 ${
+                priorityConfig[priority].classes
+              } ${done ? "opacity-35" : ""}`}
+            >
+              <span
+                className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${dotColor[priority]}`}
+              />
               {priorityConfig[priority].label}
             </span>
           )}
           <div className="relative">
-            <span className={`text-sm leading-relaxed transition-colors duration-250 break-words ${done ? "text-[#555555] line-through decoration-[#555555]" : "text-[#e5e5e5]"}`}>
-              {text}
+            <span
+              className={`text-sm leading-relaxed transition-colors duration-250 break-words ${
+                done
+                  ? "text-[#555555] line-through decoration-[#555555]"
+                  : "text-[#e5e5e5]"
+              }`}
+            >
+              {URLChecker(text)}
             </span>
           </div>
         </div>
@@ -92,27 +154,47 @@ export default function Task({
       {subtasks.length > 0 && (
         <div className="ml-9 pr-2 flex flex-col gap-0.5 mb-1">
           {subtasks.map((subtask) => (
-            <div 
-              key={subtask._id} 
+            <div
+              key={subtask._id}
               className="flex items-center gap-2 py-1 px-2 rounded-md group cursor-pointer w-fit hover:bg-[#1a1a1a] transition-colors duration-200"
               onClick={(e) => {
-                e.stopPropagation(); 
+                e.stopPropagation();
                 onToggleSubtask?.(subtask._id);
               }}
             >
               <div
                 className={`flex-shrink-0 w-[16px] h-[16px] rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                  subtask.completed ? "border-[#00FF26] bg-[#00FF26]" : "border-[#3a3a3a] group-hover:border-[#555]"
+                  subtask.completed
+                    ? "border-[#00FF26] bg-[#00FF26]"
+                    : "border-[#3a3a3a] group-hover:border-[#555]"
                 }`}
               >
-                <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
-                  className={`transition-all duration-200 ${subtask.completed ? "opacity-100 scale-100" : "opacity-0 scale-50"}`}
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  className={`transition-all duration-200 ${
+                    subtask.completed
+                      ? "opacity-100 scale-100"
+                      : "opacity-0 scale-50"
+                  }`}
                 >
-                  <path d="M2 6l3 3 5-5" stroke="#151515" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path
+                    d="M2 6l3 3 5-5"
+                    stroke="#151515"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </div>
-              <span className={`text-[12px] leading-relaxed transition-colors duration-200 ${subtask.completed ? "line-through text-[#555]" : "text-[#888]"}`}>
-                {subtask.text}
+              <span
+                className={`text-[12px] leading-relaxed transition-colors duration-200 ${
+                  subtask.completed ? "line-through text-[#555]" : "text-[#888]"
+                }`}
+              >
+                {URLChecker(subtask.text)}
               </span>
             </div>
           ))}
