@@ -3,12 +3,16 @@ import { useState, useEffect } from "react";
 import WeekPage from "./components/pages/WeekPage";
 import AuthPage from "./components/pages/AuthPage";
 import DayFullPage from "./components/pages/DayFullPage";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import type User from "./interfaces/User";
+import { setNavigator } from "./helpers/apiClient";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
+  setNavigator(navigate);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
