@@ -56,36 +56,30 @@ export default function Task({
     setNewSubtaskText("");
     setIsAddingSubtask(false);
   };
-
+  
   const URLChecker = (text: string) => {
-    const hasURL = text.includes("http://") || text.includes("https://");
-    if (hasURL) {
-      let URL;
-      const slicer = text.indexOf("https://");
-      const textBeforeURL = text.slice(0, slicer);
-      let textAfterURL;
-      const textFromURL = text.slice(slicer);
-      const firstSpaceAfterURL = textFromURL.includes(" ")
-        ? textFromURL.indexOf(" ")
-        : null;
-      if (firstSpaceAfterURL != null) {
-        URL = textFromURL.slice(0, firstSpaceAfterURL);
-        textAfterURL = textFromURL.slice(firstSpaceAfterURL);
-      } else {
-        URL = textFromURL;
-      }
-
-      console.log(URL);
-      return(
-        <>
-          {textBeforeURL}
-          <a href={URL} target="_blank" className="text-blue-500 hover:text-blue-300 transition-all duration-300">{URL.slice(0, 15)}...</a>
-          {textAfterURL? textAfterURL: ''}
-        </>
-      )
-    } else {
-      return text;
-    }
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    if (parts.length === 1) return text;
+    return (
+      <>
+        {parts.map((part, i) =>
+          urlRegex.test(part) ? (
+            <a
+              key={i}
+              href={part}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-300 transition-all duration-300"
+            >
+              {part.slice(0, 15)}...
+            </a>
+          ) : (
+            part
+          )
+        )}
+      </>
+    );
   };
 
   return (
