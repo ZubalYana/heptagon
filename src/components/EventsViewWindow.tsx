@@ -3,12 +3,12 @@ import EventBlock from "./customElements/EventBlock";
 import type { CalendarEvent } from "../interfaces/CalendarEvent";
 
 interface EventsViewWindowProps {
-  day: string; 
+  day: Date | string; 
 }
 
 export default function EventsViewWindow({ day }: EventsViewWindowProps) {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-
+  const dayStr = new Date(day).toLocaleDateString("en-CA");
   useEffect(() => {
     const token = localStorage.getItem("token");
     fetch("http://localhost:5000/calendar/events", {
@@ -24,8 +24,9 @@ export default function EventsViewWindow({ day }: EventsViewWindowProps) {
           const eventDate = event.start.dateTime
             ? event.start.dateTime.slice(0, 10)
             : event.start.date;
-          return eventDate === day;
+          return eventDate === dayStr;
         });
+        
         setEvents(dayEvents);
       });
   }, [day]);

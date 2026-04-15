@@ -1,20 +1,20 @@
 import type {EventDateTime} from "../../interfaces/CalendarEvent";
 
 const CALENDAR_COLORS: Record<string, { bg: string; text: string }> = {
-  "1":  { bg: "#a4bdfc", text: "#1a1a2e" }, // lavender
-  "2":  { bg: "#7ae7bf", text: "#1a2e26" }, // sage
-  "3":  { bg: "#dbadff", text: "#2a1a3e" }, // grape
-  "4":  { bg: "#ff887c", text: "#3e1a1a" }, // flamingo
-  "5":  { bg: "#fbd75b", text: "#3e2e00" }, // banana
-  "6":  { bg: "#ffb878", text: "#3e2200" }, // tangerine
-  "7":  { bg: "#46d6db", text: "#1a2e2e" }, // peacock
-  "8":  { bg: "#e1e1e1", text: "#1a1a1a" }, // graphite
-  "9":  { bg: "#5484ed", text: "#ffffff" }, // blueberry
-  "10": { bg: "#51b749", text: "#ffffff" }, // basil
-  "11": { bg: "#dc2127", text: "#ffffff" }, // tomato
+  "1":  { bg: "#1a1f3a", text: "#7b9cff" }, 
+  "2":  { bg: "#0f2a1e", text: "#00FF26" }, 
+  "3":  { bg: "#1e1230", text: "#c084fc" }, 
+  "4":  { bg: "#2e1215", text: "#f87171" }, 
+  "5":  { bg: "#2a2000", text: "#facc15" },
+  "6":  { bg: "#2e1800", text: "#fb923c" }, 
+  "7":  { bg: "#0f2a2a", text: "#22d3ee" }, 
+  "8":  { bg: "#1e1e1e", text: "#888888" },
+  "9":  { bg: "#0f1e3a", text: "#60a5fa" }, 
+  "10": { bg: "#0f2a10", text: "#4ade80" }, 
+  "11": { bg: "#2e0f10", text: "#ef4444" }, 
 };
 
-const DEFAULT_COLOR = { bg: "#3d3d3d", text: "#ffffff" };
+const DEFAULT_COLOR = { bg: "#0f2a1e", text: "#00FF26" };
 
 function formatTime(dateTime: string): string {
   return new Date(dateTime).toLocaleTimeString([], {

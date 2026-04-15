@@ -39,7 +39,7 @@ export default function DayFullPage() {
           />
         </div>
         <div className="w-full lg:w-[25%]">
-          <EventsViewWindow/>
+          <EventsViewWindow day={day.date}/>
         </div>
       </div>
     </div>
