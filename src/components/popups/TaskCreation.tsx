@@ -6,6 +6,7 @@ import Alert from "../customElements/Alert";
 import { AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import type Task from "../../interfaces/Task";
+import apiClient from "../../helpers/apiClient";
 
 interface TaskCreationProps {
   day: string;
@@ -29,44 +30,19 @@ export default function TaskCreation({
   }>({ shown: false, type: "info", text: "" });
 
   function createTask() {
-    try {
-      const token = localStorage.getItem("token");
-      if (!text || !priority) {
-        setAlert({
-          shown: true,
-          type: "info",
-          text: "Text and priority are required.",
-        });
-        return;
-      }
-      fetch("http://localhost:5000/tasks/", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text, priority, dayId: dayId }),
-      })
-        .then((res) => {
-          if (!res.ok) {
-            setAlert({
-              shown: true,
-              type: "error",
-              text: "Server failed to create task.",
-            });
-            return;
-          }
-          return res.json();
-        })
-        .then((newTask) => {
-          if (!newTask) return;
-          onSuccess?.(newTask); 
-        });
-    } catch (err) {
-      console.error("Error creating task:", err);
-      setAlert({ shown: true, type: "error", text: "Error creating task" });
-    }
+  if (!text || !priority) {
+    setAlert({ shown: true, type: "info", text: "Text and priority are required." });
+    return;
   }
+  apiClient.post("/tasks/", { text, priority, dayId })
+    .then(({ data }) => {
+      onSuccess?.(data);
+    })
+    .catch((err) => {
+      console.error("Error creating task:", err);
+      setAlert({ shown: true, type: "error", text: err.response?.data?.message || "Error creating task" });
+    });
+}
 
   function closeAlert() {
     setAlert({ shown: false, text: "", type: "info" });

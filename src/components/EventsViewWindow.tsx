@@ -1,37 +1,28 @@
 import { useState, useEffect } from "react";
 import EventBlock from "./customElements/EventBlock";
 import type { CalendarEvent } from "../interfaces/CalendarEvent";
-
+import apiClient from "../helpers/apiClient";
 interface EventsViewWindowProps {
-  day: Date | string; 
+  day: Date | string;
 }
 
 export default function EventsViewWindow({ day }: EventsViewWindowProps) {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const dayStr = new Date(day).toLocaleDateString("en-CA");
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:5000/calendar/events", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const dayEvents = data.events.filter((event: CalendarEvent) => {
-          const eventDate = event.start.dateTime
-            ? event.start.dateTime.slice(0, 10)
-            : event.start.date;
-          return eventDate === dayStr;
-        });
-        
-        setEvents(dayEvents);
+    apiClient.get("/calendar/events").then(({ data }) => {
+      const dayEvents = data.events.filter((event: CalendarEvent) => {
+        const eventDate = event.start.dateTime
+          ? event.start.dateTime.slice(0, 10)
+          : event.start.date;
+        return eventDate === dayStr;
       });
+
+      setEvents(dayEvents);
+    });
   }, [day]);
 
-  if(events.length == 0) return <></>
+  if (events.length == 0) return <></>;
 
   return (
     <div className="w-[25%] flex-shrink-0">

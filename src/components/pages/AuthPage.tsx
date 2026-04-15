@@ -8,6 +8,7 @@ import type User from "../../interfaces/User";
 import PasswordStrengthIndicator, {
   getPasswordLevel,
 } from "../PasswordStrengthIndicator";
+import apiClient from "../../helpers/apiClient";
 
 interface AuthPageProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -35,28 +36,20 @@ export default function AuthPage({ setUser }: AuthPageProps) {
       setAlert({ shown: true, type: "error", text: "Password is too weak." });
       return;
     }
-    fetch("http://localhost:5000/auth/register", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    })
-      .then((res) => {
-        if (!res.ok)
-          return res
-            .json()
-            .then((err) => Promise.reject(new Error(err.message)));
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
+    apiClient
+      .post("/auth/register", { name, email, password })
+      .then(({ data }) => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         setUser(data.user);
         navigate("/");
       })
       .catch((err) => {
-        console.log(err);
-        setAlert({ shown: true, type: "error", text: err.message });
+        setAlert({
+          shown: true,
+          type: "error",
+          text: err.response?.data?.message || err.message,
+        });
       });
   };
 
@@ -65,29 +58,20 @@ export default function AuthPage({ setUser }: AuthPageProps) {
       setAlert({ shown: true, type: "error", text: "Fill in all the fields." });
       return;
     }
-
-    fetch("http://localhost:5000/auth/login", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => {
-        if (!res.ok)
-          return res
-            .json()
-            .then((err) => Promise.reject(new Error(err.message)));
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
+    apiClient
+      .post("/auth/login", { email, password })
+      .then(({ data }) => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         setUser(data.user);
         navigate("/");
       })
       .catch((err) => {
-        console.log(err);
-        setAlert({ shown: true, type: "error", text: err.message });
+        setAlert({
+          shown: true,
+          type: "error",
+          text: err.response?.data?.message || err.message,
+        });
       });
   };
 

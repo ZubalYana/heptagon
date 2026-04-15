@@ -4,22 +4,15 @@ import type Day from "../../interfaces/Day";
 import formatDate from "../../helpers/fotmatDate";
 import DayTasksController from "../DayTasksController";
 import EventsViewWindow from "../EventsViewWindow";
-
+import apiClient from "../../helpers/apiClient";
 export default function DayFullPage() {
   const { dayId } = useParams();
   const [day, setDay] = useState<Day | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch(`http://localhost:5000/days/${dayId}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setDay(data);
-      });
+    apiClient.get(`/days/${dayId}`).then(({ data }) => {
+      setDay(data);
+    });
   }, [dayId]);
 
   if (!day) return <div>Loading your day...</div>;
@@ -38,7 +31,7 @@ export default function DayFullPage() {
             dayId={day._id}
           />
         </div>
-          <EventsViewWindow day={day.date}/>
+        <EventsViewWindow day={day.date} />
       </div>
     </div>
   );

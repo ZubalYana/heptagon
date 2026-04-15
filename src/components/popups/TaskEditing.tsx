@@ -6,6 +6,7 @@ import Alert from "../customElements/Alert";
 import { AnimatePresence } from "framer-motion";
 import { X, Pencil, Trash2, Check, X as XIcon } from "lucide-react";
 import type Task from "../../interfaces/Task";
+import apiClient from "../../helpers/apiClient";
 
 interface TaskEditingProps {
   taskId: string;
@@ -37,8 +38,6 @@ export default function TaskEditing({
     text: string;
   }>({ shown: false, type: "info", text: "" });
 
-  const token = localStorage.getItem("token");
-
   function showAlert(type: "success" | "error", text: string) {
     setAlert({ shown: true, type, text });
   }
@@ -48,13 +47,13 @@ export default function TaskEditing({
   }
 
   function editTask() {
-    fetch("http://localhost:5000/tasks/edit", {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${token}`, "Content-type": "application/json" },
-      body: JSON.stringify({ id: taskId, text: newTaskText, priority: newTaskPriority }),
-    })
-      .then((res) => res.json())
-      .then((data) => onSuccess?.(data.task))
+    apiClient
+      .patch("/tasks/edit", {
+        id: taskId,
+        text: newTaskText,
+        priority: newTaskPriority,
+      })
+      .then(({ data }) => onSuccess?.(data.task))
       .catch(() => showAlert("error", "Failed to edit task"));
   }
 
@@ -69,12 +68,12 @@ export default function TaskEditing({
   }
 
   function confirmEditSubtask(subtaskId: string) {
-    fetch("http://localhost:5000/tasks/edit-subtask", {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${token}`, "Content-type": "application/json" },
-      body: JSON.stringify({ taskId, subtaskId, newText: editingSubtaskText }),
-    })
-      .then((res) => res.json())
+    apiClient
+      .patch("/tasks/edit-subtask", {
+        taskId,
+        subtaskId,
+        newText: editingSubtaskText,
+      })
       .then(() => {
         setSubtasks((prev) =>
           prev.map((s) =>
@@ -88,12 +87,8 @@ export default function TaskEditing({
   }
 
   function deleteSubtask(subtaskId: string) {
-    fetch("http://localhost:5000/tasks/delete-subtask", {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}`, "Content-type": "application/json" },
-      body: JSON.stringify({ taskId, subtaskId }),
-    })
-      .then((res) => res.json())
+    apiClient
+      .delete("/tasks/delete-subtask", { data: { taskId, subtaskId } })
       .then(() => {
         setSubtasks((prev) => prev.filter((s) => s._id !== subtaskId));
         showAlert("success", "Subtask deleted");

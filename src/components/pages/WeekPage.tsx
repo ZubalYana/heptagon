@@ -3,6 +3,7 @@ import type InterfaceWeek from "../../interfaces/Week";
 import Week from "../Week";
 import WeeksSwitch from "../WeeksSwitch";
 import { Settings } from "lucide-react";
+import apiClient from "../../helpers/apiClient";
 
 const SWIPE_THRESHOLD = 50;
 
@@ -20,17 +21,13 @@ export default function WeekPage() {
   }, []);
 
   function fetchWeek(path: string) {
-    const token = localStorage.getItem("token");
-    fetch(`http://localhost:5000/weeks/${path}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setWeek(data);
-        setCurrentYear(data.year);
-        setCurrentWeekNumber(data.weekNumber);
-      });
-  }
+  apiClient.get(`/weeks/${path}`)
+    .then(({ data }) => {
+      setWeek(data);
+      setCurrentYear(data.year);
+      setCurrentWeekNumber(data.weekNumber);
+    });
+}
 
   function handlePrev() {
     let y = currentYear!;

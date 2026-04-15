@@ -8,6 +8,7 @@ import { AnimatePresence } from "framer-motion";
 import TaskComponent from "./customElements/Task";
 import SecondaryButton from "./customElements/SecondaryButton";
 import { Plus } from "lucide-react";
+import apiClient from "../helpers/apiClient";
 
 interface dayTasksControllerProps {
   tasks: Task[] | [];
@@ -34,43 +35,25 @@ export default function DayTasksController({
   }
 
   function onToggle(id: string) {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:5000/tasks/complete", {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setLocalTasks((prev) =>
-          prev.map((task) =>
-            task._id === id
-              ? {
-                  ...task,
-                  completed: data.task.completed,
-                  subtasks: data.task.subtasks,
-                }
-              : task
-          )
-        );
-      });
+    apiClient.put("/tasks/complete", { id }).then(({ data }) => {
+      setLocalTasks((prev) =>
+        prev.map((task) =>
+          task._id === id
+            ? {
+                ...task,
+                completed: data.task.completed,
+                subtasks: data.task.subtasks,
+              }
+            : task
+        )
+      );
+    });
   }
 
   function onToggleSubtask(taskId: string, subtaskId: string) {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:5000/tasks/complete-subtask", {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ taskId, subtaskId }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    apiClient
+      .patch("/tasks/complete-subtask", { taskId, subtaskId })
+      .then(({ data }) => {
         setLocalTasks((prev) =>
           prev.map((task) => (task._id === taskId ? data.task : task))
         );
@@ -78,67 +61,34 @@ export default function DayTasksController({
   }
 
   function onDelete(id: string) {
-    try {
-      const token = localStorage.getItem("token");
-      fetch("http://localhost:5000/tasks/delete", {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      })
-        .then((res) => res.json())
-        .then(() => {
-          setLocalTasks((prev) => prev.filter((t) => t._id !== id));
-          setAlert({
-            shown: true,
-            type: "success",
-            text: "Task deleted successfully",
-          });
-        });
-    } catch (err) {
-      console.error("Error deleting task:", err);
-      setAlert({
-        shown: true,
-        type: "error",
-        text: "Error deleting task",
-      });
-    }
-  }
-
-  function onAddSubtask(id: string, text: string) {
-    const token = localStorage.getItem("token");
-
-    fetch("http://localhost:5000/tasks/add-subtask", {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ id, text }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to create subtask");
-        return res.json();
-      })
-      .then((data) => {
-        setLocalTasks((prev) =>
-          prev.map((task) => (task._id === id ? data.task : task))
-        );
+    apiClient
+      .delete("/tasks/delete", { data: { id } })
+      .then(() => {
+        setLocalTasks((prev) => prev.filter((t) => t._id !== id));
         setAlert({
           shown: true,
           type: "success",
-          text: "Subtask added!",
+          text: "Task deleted successfully",
         });
       })
       .catch((err) => {
+        console.error("Error deleting task:", err);
+        setAlert({ shown: true, type: "error", text: "Error deleting task" });
+      });
+  }
+
+  function onAddSubtask(id: string, text: string) {
+    apiClient
+      .patch("/tasks/add-subtask", { id, text })
+      .then(({ data }) => {
+        setLocalTasks((prev) =>
+          prev.map((task) => (task._id === id ? data.task : task))
+        );
+        setAlert({ shown: true, type: "success", text: "Subtask added!" });
+      })
+      .catch((err) => {
         console.error("Error adding subtask:", err);
-        setAlert({
-          shown: true,
-          type: "error",
-          text: "Error adding subtask",
-        });
+        setAlert({ shown: true, type: "error", text: "Error adding subtask" });
       });
   }
 
