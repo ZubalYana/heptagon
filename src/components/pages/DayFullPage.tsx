@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import type Day from "../../interfaces/Day";
 import formatDate from "../../helpers/fotmatDate";
 import DayTasksController from "../DayTasksController";
+import EventsViewWindow from "../EventsViewWindow";
 
 export default function DayFullPage() {
   const { dayId } = useParams();
@@ -25,17 +26,21 @@ export default function DayFullPage() {
 
   return (
     <div className="w-full h-full">
-      {/* w-[100%] expanded for testing though personal use. To be shortened once the layout is fixed & adapted */}
-      <div className="w-[100%] h-full flex flex-col">
-        <p className="lg:text-[32px] font-bold">{day.dayOfWeek}</p>
-        <p className="lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]">
-          {formatDate(day.date, "long", "includingYear")}
-        </p>
-        <DayTasksController
-          tasks={day.tasks}
-          day={day.dayOfWeek}
-          dayId={day._id}
-        />
+      <p className="lg:text-[32px] font-bold">{day.dayOfWeek}</p>
+      <p className="lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]">
+        {formatDate(day.date, "long", "includingYear")}
+      </p>
+      <div className="w-full flex gap-x-6 mt-4">
+        <div className="w-full lg:w-[75%]">
+          <DayTasksController
+            tasks={day.tasks}
+            day={day.dayOfWeek}
+            dayId={day._id}
+          />
+        </div>
+        <div className="w-full lg:w-[25%]">
+          <EventsViewWindow/>
+        </div>
       </div>
     </div>
   );

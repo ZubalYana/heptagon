@@ -145,7 +145,7 @@ export default function DayTasksController({
   if (localTasks.length == 0) {
   }
   return (
-    <div className="w-full h-full mt-4">
+    <div className="w-full h-full">
       <div className="flex gap-x-4 items-center">
         <h2 className="text-[18px]">Your tasks:</h2>
         <SecondaryButton onClick={() => setTaskCreationMode(true)}>
