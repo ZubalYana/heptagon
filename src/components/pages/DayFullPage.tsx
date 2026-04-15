@@ -31,16 +31,14 @@ export default function DayFullPage() {
         {formatDate(day.date, "long", "includingYear")}
       </p>
       <div className="w-full flex gap-x-6 mt-4">
-        <div className="w-full lg:w-[75%]">
+        <div className="flex-1">
           <DayTasksController
             tasks={day.tasks}
             day={day.dayOfWeek}
             dayId={day._id}
           />
         </div>
-        <div className="w-full lg:w-[25%]">
           <EventsViewWindow day={day.date}/>
-        </div>
       </div>
     </div>
   );
