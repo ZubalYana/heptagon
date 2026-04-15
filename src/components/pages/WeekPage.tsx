@@ -11,7 +11,9 @@ export default function WeekPage() {
   const [week, setWeek] = useState<InterfaceWeek | null>(null);
   const [animationDirection, setAnimationDirection] = useState(1);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
-  const [currentWeekNumber, setCurrentWeekNumber] = useState<number | null>(null);
+  const [currentWeekNumber, setCurrentWeekNumber] = useState<number | null>(
+    null
+  );
 
   const dragStartX = useRef<number | null>(null);
   const isDragging = useRef(false);
@@ -21,18 +23,20 @@ export default function WeekPage() {
   }, []);
 
   function fetchWeek(path: string) {
-  apiClient.get(`/weeks/${path}`)
-    .then(({ data }) => {
+    apiClient.get(`/weeks/${path}`).then(({ data }) => {
       setWeek(data);
       setCurrentYear(data.year);
       setCurrentWeekNumber(data.weekNumber);
     });
-}
+  }
 
   function handlePrev() {
     let y = currentYear!;
     let w = currentWeekNumber! - 1;
-    if (w < 1) { w = 52; y--; }
+    if (w < 1) {
+      w = 52;
+      y--;
+    }
     fetchWeek(`${y}/${w}`);
     setAnimationDirection(-1);
   }
@@ -40,7 +44,10 @@ export default function WeekPage() {
   function handleNext() {
     let y = currentYear!;
     let w = currentWeekNumber! + 1;
-    if (w > 52) { w = 1; y++; }
+    if (w > 52) {
+      w = 1;
+      y++;
+    }
     fetchWeek(`${y}/${w}`);
     setAnimationDirection(1);
   }
@@ -67,13 +74,20 @@ export default function WeekPage() {
       className="w-full h-full flex flex-col items-center"
       onMouseDown={(e) => onDragStart(e.clientX)}
       onMouseUp={(e) => onDragEnd(e.clientX)}
-      onMouseLeave={() => { isDragging.current = false; dragStartX.current = null; }}
+      onMouseLeave={() => {
+        isDragging.current = false;
+        dragStartX.current = null;
+      }}
       onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
       onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX)}
     >
       <div className="w-full flex items-center justify-between lg:mb-12">
         <div className="flex gap-x-2 items-center">
-          <img src="/heptagonLogo.svg" alt="Heptagon Logo" className="w-[35px] h-[35px]" />
+          <img
+            src="/heptagonLogo.svg"
+            alt="Heptagon Logo"
+            className="w-[35px] h-[35px]"
+          />
           <h2 className="text-[20px] font-medium">Heptagon</h2>
         </div>
         <div className="flex gap-x-4">
@@ -83,14 +97,27 @@ export default function WeekPage() {
 
       <Week week={week} animationDirection={animationDirection} />
       {week && (
-        <WeeksSwitch
-          weekNumber={week.weekNumber}
-          year={week.year}
-          startDate={week.startDate}
-          endDate={week.endDate}
-          onPrev={handlePrev}
-          onNext={handleNext}
-        />
+        <div className="w-full flex flex-col items-center">
+          <WeeksSwitch
+            weekNumber={week.weekNumber}
+            year={week.year}
+            startDate={week.startDate}
+            endDate={week.endDate}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
+          {currentWeekNumber !== week.weekNumber && (
+            <p
+              className="text-[#888] text-[12px] cursor-pointer uppercase mt-2 hover:text-white transition-colors duration-200"
+              onClick={() => {
+                fetchWeek("current");
+                setAnimationDirection(0);
+              }}
+            >
+              Back to this week
+            </p>
+          )}
+        </div>
       )}
     </div>
   );

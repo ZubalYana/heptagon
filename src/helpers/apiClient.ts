@@ -25,7 +25,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      navigator?.("/login", { replace: true });
+      navigator?.("/auth", { replace: true });
     }
     return Promise.reject(error);
   }
