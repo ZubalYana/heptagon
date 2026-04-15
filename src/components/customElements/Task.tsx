@@ -62,7 +62,7 @@ export default function Task({
     const parts = text.split(urlRegex);
     if (parts.length === 1) return text;
     return (
-      <>
+      <div onClick={(e)=>e.stopPropagation}>
         {parts.map((part, i) =>
           urlRegex.test(part) ? (
             <a
@@ -71,6 +71,7 @@ export default function Task({
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:text-blue-300 transition-all duration-300"
+              onClick={(e)=>e.stopPropagation}
             >
               {part.slice(0, 15)}...
             </a>
@@ -78,7 +79,7 @@ export default function Task({
             part
           )
         )}
-      </>
+      </div>
     );
   };
 
@@ -86,10 +87,10 @@ export default function Task({
     <div className="w-full flex flex-col">
       <div
         onClick={onToggle}
-        className="group w-full flex items-start gap-3 px-2 py-2 rounded-lg cursor-pointer hover:bg-[#1a1a1a] tselectransition-colors duration-200 -none"
+        className="group w-full flex items-start gap-3 px-2 py-2 rounded-lg hover:bg-[#1a1a1a] tselectransition-colors duration-200 -none"
       >
         <div
-          className={`flex-shrink-0 mt-[2px] w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center transition-all duration-250 ${
+          className={`flex-shrink-0 cursor-pointer mt-[2px] w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center transition-all duration-250 ${
             done ? "border-[#00FF26] bg-[#00FF26]" : "border-[#3a3a3a]"
           }`}
         >
@@ -132,6 +133,7 @@ export default function Task({
                   ? "text-[#555555] line-through decoration-[#555555]"
                   : "text-[#e5e5e5]"
               }`}
+              onClick={(e) => e.stopPropagation()}
             >
               {URLChecker(text)}
             </span>
@@ -150,7 +152,7 @@ export default function Task({
           {subtasks.map((subtask) => (
             <div
               key={subtask._id}
-              className="flex items-center gap-2 py-1 px-2 rounded-md group cursor-pointer w-fit hover:bg-[#1a1a1a] transition-colors duration-200"
+              className="flex items-center gap-2 py-1 px-2 rounded-md group w-fit hover:bg-[#1a1a1a] transition-colors duration-200"
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleSubtask?.(subtask._id);
@@ -187,6 +189,7 @@ export default function Task({
                 className={`text-[12px] leading-relaxed transition-colors duration-200 ${
                   subtask.completed ? "line-through text-[#555]" : "text-[#888]"
                 }`}
+                onClick={(e) => e.stopPropagation()}
               >
                 {URLChecker(subtask.text)}
               </span>
