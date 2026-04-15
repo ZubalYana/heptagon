@@ -5,9 +5,13 @@ import formatDate from "../../helpers/fotmatDate";
 import DayTasksController from "../DayTasksController";
 import EventsViewWindow from "../EventsViewWindow";
 import apiClient from "../../helpers/apiClient";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 export default function DayFullPage() {
   const { dayId } = useParams();
   const [day, setDay] = useState<Day | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     apiClient.get(`/days/${dayId}`).then(({ data }) => {
@@ -19,6 +23,13 @@ export default function DayFullPage() {
 
   return (
     <div className="w-full h-full">
+      <p 
+      className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
+      onClick={()=>navigate('/week/current')}
+      >
+        <ArrowLeft className="w-[15px] h-[15px]" />
+        Back
+      </p>
       <p className="lg:text-[32px] font-bold">{day.dayOfWeek}</p>
       <p className="lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]">
         {formatDate(day.date, "long", "includingYear")}
