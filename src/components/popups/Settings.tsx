@@ -2,24 +2,29 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { SettingsNav } from "../customElements/SettingsNav";
 import type { SettingSection } from "../customElements/SettingsNav";
-
-interface settingsProps {
+interface SettingsProps {
   onClose?: () => void;
 }
 
-export default function Settings({ onClose }: settingsProps) {
+export default function Settings({ onClose }: SettingsProps) {
   const [activeSection, setActiveSection] = useState<SettingSection>("General");
+
   return (
     <div
-      className="lg:w-[40%] bg-[#1F1F1F] rounded-md p-4 flex flex-col items-center relative"
+      className="w-[90%] md:w-[60%] lg:w-[40%] min-h-[400px] bg-[#1F1F1F] rounded-xl p-5 flex flex-col relative shadow-2xl"
       onClick={(e) => e.stopPropagation()}
     >
       <X
-        className="w-[18px] h-[18px] absolute top-4 right-4 cursor-pointer"
+        className="w-[18px] h-[18px] absolute top-5 right-5 text-gray-400 hover:text-white transition-colors cursor-pointer"
         onClick={() => onClose?.()}
       />
-      <h3 className="text-[20px] font-medium mb-4">Settings</h3>
+      <h3 className="text-[20px] font-medium mb-6 text-white">Settings</h3>
+      
       <SettingsNav activeSection={activeSection} onChange={setActiveSection} />
+      
+      <div className="flex-1 rounded-lg bg-[#151515]/50 p-4 border border-white/5">
+        <p className="text-gray-400 text-sm">Now viewing: {activeSection}</p>
+      </div>
     </div>
   );
 }
