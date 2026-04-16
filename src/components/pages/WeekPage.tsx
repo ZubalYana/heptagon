@@ -4,6 +4,7 @@ import Week from "../Week";
 import WeeksSwitch from "../WeeksSwitch";
 import { Settings } from "lucide-react";
 import apiClient from "../../helpers/apiClient";
+import { getWeekNumber } from "../../helpers/getWeekNumber";
 
 const SWIPE_THRESHOLD = 50;
 
@@ -106,7 +107,7 @@ export default function WeekPage() {
             onPrev={handlePrev}
             onNext={handleNext}
           />
-          {currentWeekNumber !== week.weekNumber && (
+          {currentWeekNumber !== (getWeekNumber(new Date()).weekNumber - 1) && (
             <p
               className="text-[#888] text-[12px] cursor-pointer uppercase mt-2 hover:text-white transition-colors duration-200"
               onClick={() => {
