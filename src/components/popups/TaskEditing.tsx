@@ -15,6 +15,7 @@ interface TaskEditingProps {
   taskSubtasks?: Array<{ _id: string; text: string; completed: boolean }>;
   onClose?: () => void;
   onSuccess?: (task: Task) => void;
+  onSubtaskChange?: (taskId: string, subtasks: Array<{ _id: string; text: string; completed: boolean }>) => void;
 }
 
 export default function TaskEditing({
@@ -24,10 +25,15 @@ export default function TaskEditing({
   taskSubtasks,
   onClose,
   onSuccess,
+  onSubtaskChange,
 }: TaskEditingProps) {
   const [newTaskText, setNewTaskText] = useState(taskText);
   const [newTaskPriority, setNewTaskPriority] = useState(taskPriority);
   const [subtasks, setSubtasks] = useState(taskSubtasks ?? []);
+
+  const hasChanges =
+    newTaskText.trim() !== taskText.trim() ||
+    newTaskPriority !== taskPriority;
 
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
   const [editingSubtaskText, setEditingSubtaskText] = useState("");
@@ -75,11 +81,11 @@ export default function TaskEditing({
         newText: editingSubtaskText,
       })
       .then(() => {
-        setSubtasks((prev) =>
-          prev.map((s) =>
-            s._id === subtaskId ? { ...s, text: editingSubtaskText } : s
-          )
+        const updated = subtasks.map((s) =>
+          s._id === subtaskId ? { ...s, text: editingSubtaskText } : s
         );
+        setSubtasks(updated);
+        onSubtaskChange?.(taskId, updated);
         cancelEditingSubtask();
         showAlert("success", "Subtask updated");
       })
@@ -90,7 +96,9 @@ export default function TaskEditing({
     apiClient
       .delete("/tasks/delete-subtask", { data: { taskId, subtaskId } })
       .then(() => {
-        setSubtasks((prev) => prev.filter((s) => s._id !== subtaskId));
+        const updated = subtasks.filter((s) => s._id !== subtaskId);
+        setSubtasks(updated);
+        onSubtaskChange?.(taskId, updated);
         showAlert("success", "Subtask deleted");
       })
       .catch(() => showAlert("error", "Failed to delete subtask"));
@@ -170,7 +178,9 @@ export default function TaskEditing({
         </div>
       ))}
 
-      <Button onClick={editTask} children="Confirm changes" className="mt-6" />
+      <Button onClick={editTask} disabled={!hasChanges} className="mt-6">
+        Confirm changes
+      </Button>
 
       <AnimatePresence>
         {alert.shown && (

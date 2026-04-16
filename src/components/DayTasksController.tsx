@@ -216,7 +216,7 @@ export default function DayTasksController({
       )}
       {editingTask && (
         <div
-          className="w-full h-full absolute top-0 left-0 flex justify-center items-center backdrop-blur-lg"
+          className="w-full h-full absolute top-0 left-0 flex justify-center items-center backdrop-blur-lg z-9999"
           onClick={() => setEditingTask(null)}
         >
           <TaskEditing
@@ -225,6 +225,13 @@ export default function DayTasksController({
             taskPriority={editingTask.priority}
             taskSubtasks={editingTask.subtasks}
             onClose={() => setEditingTask(null)}
+            onSubtaskChange={(taskId, updatedSubtasks) => {
+              setLocalTasks((prev) =>
+                prev.map((t) =>
+                  t._id === taskId ? { ...t, subtasks: updatedSubtasks } : t
+                )
+              );
+            }}
             onSuccess={(updatedTask) => {
               setLocalTasks((prev) =>
                 prev.map((t) => (t._id === updatedTask._id ? updatedTask : t))
