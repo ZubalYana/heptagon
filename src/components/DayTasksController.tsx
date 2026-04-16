@@ -195,7 +195,7 @@ export default function DayTasksController({
 
       {taskCreationMode && (
         <div
-          className="w-full h-full absolute top-0 left-0 flex justify-center items-center backdrop-blur-lg"
+          className="w-full h-full absolute top-0 left-0 flex justify-center items-center backdrop-blur-lg z-9999"
           onClick={() => setTaskCreationMode(false)}
         >
           <TaskCreation

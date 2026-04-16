@@ -40,7 +40,7 @@ export default function EventBlock({
 
   return (
     <div
-      className="w-full rounded-md p-3"
+      className="w-full rounded-md p-3 relative z-10"
       style={{ backgroundColor: color.bg, color: color.text }}
     >
       <h5 className="font-semibold text-[14px]">{summary}</h5>
