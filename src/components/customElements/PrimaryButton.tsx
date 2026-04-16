@@ -10,45 +10,46 @@ export default function Button({
   children,
   className = '',
   loading = false,
-  disabled,
+  disabled = false,
   ...props
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+
+  let stateClasses = '';
+
+  if (disabled) {
+    stateClasses = 'bg-[#151515] border-[#00FF26]/20 text-[#00FF26]/30 cursor-not-allowed';
+  } else if (loading) {
+    stateClasses = 'bg-[#1B1B1B] border-[#00FF26]/50 text-[#00FF26]/70 cursor-wait';
+  } else {
+    stateClasses = `
+      bg-[#1B1B1B] border-[#00FF26] text-[#00FF26] cursor-pointer
+      hover:bg-[#00FF26] hover:text-[#151515] hover:shadow-[0_0_16px_rgba(0,255,38,0.4)]
+      focus:outline-none focus:bg-[#00FF26] focus:text-[#151515] focus:shadow-[0_0_16px_rgba(0,255,38,0.4)]
+      active:scale-95
+    `;
+  }
 
   return (
     <button
       disabled={isDisabled}
       className={`
         px-6 py-2.5 rounded-lg font-semibold text-[14px] uppercase
-        bg-[#1B1B1B] text-[#00FF26] cursor-pointer
-        border border-[#00FF26]
-        transition-all duration-300 ease-in-out
-        hover:bg-[#00FF26] hover:text-[#151515] hover:shadow-[0_0_16px_rgba(0,255,38,0.3)] hover:scale-98
-        focus:outline-none focus:bg-[#00FF26] focus:text-[#151515] focus:shadow-[0_0_16px_rgba(0,255,38,0.3)]
-        active:scale-90
-        disabled:cursor-not-allowed
-        disabled:hover:scale-100 disabled:hover:shadow-none
-        disabled:focus:shadow-none
-        disabled:active:scale-100
+        border transition-all duration-300 ease-in-out
         flex justify-center items-center gap-2
         relative overflow-hidden
-        ${loading
-          ? 'border-[#00FF26]/40 text-[#00FF26]/40 hover:bg-[#1B1B1B] hover:text-[#00FF26]/40 focus:bg-[#1B1B1B] focus:text-[#00FF26]/40'
-          : disabled
-          ? 'border-[#00FF26]/25 text-[#00FF26]/25 bg-[#151515] hover:bg-[#151515] hover:text-[#00FF26]/25 focus:bg-[#151515] focus:text-[#00FF26]/25'
-          : ''
-        }
+        ${stateClasses}
         ${className}
       `}
       {...props}
     >
       {loading && (
         <Loader2
-          size={15}
-          className="animate-spin shrink-0 text-[#00FF26]/50"
+          size={16}
+          className="animate-spin shrink-0 text-current" 
         />
       )}
-      <span className={loading ? 'opacity-50' : ''}>
+      <span>
         {children}
       </span>
     </button>

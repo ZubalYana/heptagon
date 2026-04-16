@@ -78,6 +78,7 @@ export default function TaskCreation({
         onClick={() => createTask()}
         children="Create task"
         className="mt-4"
+        disabled={(!text || !priority)? true: false}
       />
 
       <AnimatePresence>

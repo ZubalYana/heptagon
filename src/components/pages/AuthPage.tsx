@@ -115,7 +115,11 @@ export default function AuthPage({ setUser }: AuthPageProps) {
                 />
               </div>
               <div className="w-full mt-8 flex flex-col items-center gap-3">
-                <PrimaryButton className="w-full lg:w-[60%]" onClick={login}>
+                <PrimaryButton
+                  className="w-full lg:w-[60%]"
+                  onClick={login}
+                  disabled={!email || !password ? true : false}
+                >
                   Log in
                 </PrimaryButton>
                 <p
@@ -157,7 +161,11 @@ export default function AuthPage({ setUser }: AuthPageProps) {
                 <PasswordStrengthIndicator value={password} />
               </div>
               <div className="w-full mt-8 flex flex-col items-center gap-3">
-                <PrimaryButton className="w-full lg:w-[60%]" onClick={signup}>
+                <PrimaryButton
+                  className="w-full lg:w-[60%]"
+                  onClick={signup}
+                  disabled={!name || !email || !password ? true : false}
+                >
                   Sign up
                 </PrimaryButton>
                 <p
