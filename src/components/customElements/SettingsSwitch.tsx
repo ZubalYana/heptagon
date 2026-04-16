@@ -14,7 +14,7 @@ export default function SettingSwitch({
   return (
     <div className="w-full flex items-center justify-between gap-x-4 py-3 border-b border-[#2a2a2a] last:border-b-0">
       <div className="flex flex-col">
-        <span className="text-[13px] font-semibold uppercase tracking-wide text-white">
+        <span className="text-[13px] font-semibold tracking-wide text-white">
           {label}
         </span>
         {description && (
