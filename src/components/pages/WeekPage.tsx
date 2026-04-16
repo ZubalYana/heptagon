@@ -5,6 +5,7 @@ import WeeksSwitch from "../WeeksSwitch";
 import { Settings } from "lucide-react";
 import apiClient from "../../helpers/apiClient";
 import { getWeekNumber } from "../../helpers/getWeekNumber";
+import SettingsPopup from "../popups/Settings";
 
 const SWIPE_THRESHOLD = 50;
 
@@ -15,6 +16,7 @@ export default function WeekPage() {
   const [currentWeekNumber, setCurrentWeekNumber] = useState<number | null>(
     null
   );
+  const [settingsOpened, setSettingsOpened] = useState<boolean>(false);
 
   const dragStartX = useRef<number | null>(null);
   const isDragging = useRef(false);
@@ -54,11 +56,13 @@ export default function WeekPage() {
   }
 
   function onDragStart(x: number) {
+    if (settingsOpened) return;
     dragStartX.current = x;
     isDragging.current = true;
   }
 
   function onDragEnd(x: number) {
+    if (settingsOpened) return;
     if (!isDragging.current || dragStartX.current === null) return;
     const delta = x - dragStartX.current;
 
@@ -92,7 +96,7 @@ export default function WeekPage() {
           <h2 className="text-[20px] font-medium">Heptagon</h2>
         </div>
         <div className="flex gap-x-4">
-          <Settings className="cursor-pointer" />
+          <Settings className="cursor-pointer" onClick={()=>setSettingsOpened(true)} />
         </div>
       </div>
 
@@ -119,6 +123,14 @@ export default function WeekPage() {
                 Back to this week
               </p>
             )}
+        </div>
+      )}
+      {settingsOpened && (
+        <div
+          className="w-full h-full absolute top-0 left-0 flex justify-center items-center backdrop-blur-lg z-9999"
+          onClick={() => setSettingsOpened(false)}
+        >
+          <SettingsPopup onClose={() => setSettingsOpened(false)} />
         </div>
       )}
     </div>
