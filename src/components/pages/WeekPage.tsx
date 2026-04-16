@@ -107,17 +107,18 @@ export default function WeekPage() {
             onPrev={handlePrev}
             onNext={handleNext}
           />
-          {currentWeekNumber !== (getWeekNumber(new Date()).weekNumber - 1) && (
-            <p
-              className="text-[#888] text-[12px] cursor-pointer uppercase mt-2 hover:text-white transition-colors duration-200"
-              onClick={() => {
-                fetchWeek("current");
-                setAnimationDirection(0);
-              }}
-            >
-              Back to this week
-            </p>
-          )}
+          {currentWeekNumber !== getWeekNumber(new Date()).weekNumber - 1 &&
+            currentYear == getWeekNumber(new Date()).year && (
+              <p
+                className="text-[#888] text-[12px] cursor-pointer uppercase mt-2 hover:text-white transition-colors duration-200"
+                onClick={() => {
+                  fetchWeek("current");
+                  setAnimationDirection(0);
+                }}
+              >
+                Back to this week
+              </p>
+            )}
         </div>
       )}
     </div>
