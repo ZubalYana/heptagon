@@ -83,10 +83,10 @@ export default function AuthPage({ setUser }: AuthPageProps) {
         )}
       </AnimatePresence>
 
-      <h1 className="text-[18px] font-medium lg:text-[32px]">
+      <h1 className="text-[24px] font-medium lg:text-[32px]">
         Strike the 100% every day.
       </h1>
-      <p className="text-[14px] font-light lg:text-[16px] text-gray-400 mt-2">
+      <p className="text-[14px] font-light lg:text-[16px] text-gray-400 mt-2 text-center">
         Heptagon - set up your week from all 7 perspectives.
       </p>
 
