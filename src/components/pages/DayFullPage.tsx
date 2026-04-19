@@ -22,7 +22,7 @@ export default function DayFullPage() {
   if (!day) return <div>Loading your day...</div>;
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full md:h-full h-fit">
       <p 
       className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
       onClick={()=>navigate('/week/current')}
@@ -30,11 +30,11 @@ export default function DayFullPage() {
         <ArrowLeft className="w-[15px] h-[15px]" />
         Back
       </p>
-      <p className="lg:text-[32px] font-bold">{day.dayOfWeek}</p>
-      <p className="lg:text-[16px] text-[#ccc] font-light lg:-mt-[3px]">
+      <p className="lg:text-[32px] text-[24px] font-bold">{day.dayOfWeek}</p>
+      <p className="lg:text-[16px] text-[14px] text-[#ccc] font-light lg:-mt-[3px]">
         {formatDate(day.date, "long", "includingYear")}
       </p>
-      <div className="w-full flex gap-x-6 mt-4">
+      <div className="w-full flex flex-col md:flex-row gap-x-6 mt-4">
         <div className="flex-1">
           <DayTasksController
             tasks={day.tasks}
