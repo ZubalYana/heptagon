@@ -26,7 +26,7 @@ function App() {
   if (loading) return <div>Loading...</div>;
 
   return (
-      <div className="w-full h-screen p-[20px] lg:p-[40px] flex justify-center items-center overflow-y-auto overflow-x-hidden">
+      <div className="w-full md:h-screen p-[20px] lg:p-[40px] flex justify-center items-center overflow-y-auto overflow-x-hidden">
         <Routes>
           <Route
             path="/auth"

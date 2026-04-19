@@ -16,9 +16,10 @@ export default function WeekDay({ day, percentage, allTasks, completedTasks }: W
     <Link to={`/day/${day._id}`}>
       <div
         className="
-          lg:w-[140px] 
-          w-full cursor-pointer
+          lg:w-[140px]
+          w-[160px] cursor-pointer
           flex flex-col items-center
+          mb-6 md:mb-0
           "
       >
         <CircularProgressbar percentage={percentage} />
@@ -34,7 +35,7 @@ export default function WeekDay({ day, percentage, allTasks, completedTasks }: W
           <p className="text-[12px]">Completed: {completedTasks}/{allTasks}</p>
           <p className="text-[12px] mt-1">Still to do: {allTasks - completedTasks}</p>
         </div>
-        <h4 className="first-letter:uppercase mt-3">{day.dayOfWeek}</h4>
+        <h4 className="first-letter:uppercase mt-1.5 md:mt-3">{day.dayOfWeek}</h4>
         <p className="text-[12px] font-light text-[#ccc] -mt-[4px]">
           {formatDate(day.date)}
         </p>

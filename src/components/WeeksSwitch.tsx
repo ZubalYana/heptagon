@@ -19,16 +19,16 @@ export default function WeeksSwitch({
   onNext
 }: WeeksProps) {
   return (
-    <div className="lg:mt-10 flex gap-x-4 items-center select-none">
+    <div className="lg:mt-10 mt-6 flex gap-x-4 items-center select-none">
       <ChevronLeft
         className="cursor-pointer"
         onClick={onPrev}
       />
       <div className="flex flex-col items-center">
-        <h4 className="lg:text-[20px] font-medium">
+        <h4 className="text-[20px] font-medium">
           Week {weekNumber} of {year}
         </h4>
-        <p className="lg:text-[14px] font-normal">
+        <p className="text-[14px] font-normal">
           {formatDate(startDate)} - {formatDate(endDate)}
         </p>
       </div>

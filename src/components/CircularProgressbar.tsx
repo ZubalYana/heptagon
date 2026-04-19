@@ -15,7 +15,7 @@ export default function CircularProgressbar({ percentage }: CircularProgressbarP
   const offset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="relative lg:w-[90px] lg:h-[90px] w-[70px] h-[70px] flex items-center justify-center">
+    <div className="relative w-[90px] h-[90px] flex items-center justify-center">
       <svg width={svgSize} height={svgSize} className="rotate-[-90deg] absolute">
         <circle
           cx={svgSize / 2}

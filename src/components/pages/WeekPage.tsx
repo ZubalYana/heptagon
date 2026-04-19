@@ -76,7 +76,7 @@ export default function WeekPage() {
 
   return (
     <div
-      className="w-full h-full flex flex-col items-center"
+      className="w-full md:h-full h-fit flex flex-col items-center"
       onMouseDown={(e) => onDragStart(e.clientX)}
       onMouseUp={(e) => onDragEnd(e.clientX)}
       onMouseLeave={() => {
@@ -86,7 +86,7 @@ export default function WeekPage() {
       onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
       onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX)}
     >
-      <div className="w-full flex items-center justify-between lg:mb-12">
+      <div className="w-full flex items-center justify-between mb-6 lg:mb-12">
         <div className="flex gap-x-2 items-center">
           <img
             src="/heptagonLogo.svg"

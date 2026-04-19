@@ -22,7 +22,10 @@ export default function Week({ week, animationDirection }: WeekProps) {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="w-full"
       >
-        <div className="w-full flex justify-between items-center">
+        <div 
+          className="w-full flex flex-wrap gap-x-2 justify-between items-center 
+          md:flex-row md:gap-x-0"
+        >
           {week.days.map((day) => {
             const allTasks = day.tasks;
             const totalItems = allTasks.reduce(
