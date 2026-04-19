@@ -106,7 +106,7 @@ export default function TaskEditing({
 
   return (
     <div
-      className="lg:w-[40%] bg-[#1F1F1F] rounded-md p-4 flex flex-col items-center relative"
+      className="w-[90%] lg:w-[40%] bg-[#1F1F1F] rounded-md p-4 flex flex-col items-center relative"
       onClick={(e) => e.stopPropagation()}
     >
       <X
