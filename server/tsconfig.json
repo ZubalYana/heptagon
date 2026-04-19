@@ -6,14 +6,7 @@
     "allowSyntheticDefaultImports": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "typeRoots": ["./src/types", "./node_modules/@types"],
-    "name": "heptagon-server",
-    "version": "1.0.0",
-    "scripts": {
-      "start": "node dist/app.js",
-      "dev": "ts-node src/app.ts",
-      "build": "tsc"
-    }
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
   "include": ["src/**/*"]
 }
