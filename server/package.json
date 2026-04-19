@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node dist/app.js",
     "dev": "ts-node src/app.ts",
-    "build": "tsc" 
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -16,13 +16,17 @@
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6",
     "@types/mongoose": "^5.11.96",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "googleapis": "^105.0.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.3.3"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19"
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/jsonwebtoken": "^9.0.10"
   }
 }
