@@ -20,6 +20,10 @@ app.use("/days", daysRouter);
 app.use("/tasks", taskRouter);
 app.use("/calendar", calendarRouter);
 
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Welcome!" });
+});
+
 mongoose.connect(process.env.MONGO_URL || "").then(() => {
   console.log("MongoDB connected.");
 });
