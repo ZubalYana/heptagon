@@ -6,10 +6,15 @@ import { Settings } from "lucide-react";
 import apiClient from "../../helpers/apiClient";
 import { getWeekNumber } from "../../helpers/getWeekNumber";
 import SettingsPopup from "../popups/Settings";
+import type User from "../../interfaces/User";
 
 const SWIPE_THRESHOLD = 50;
 
-export default function WeekPage() {
+interface WeekPageProps{
+  setUser: (user: User | null) => void;
+}
+
+export default function WeekPage({setUser}: WeekPageProps) {
   const [week, setWeek] = useState<InterfaceWeek | null>(null);
   const [animationDirection, setAnimationDirection] = useState(1);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
@@ -130,7 +135,7 @@ export default function WeekPage() {
           className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
           onClick={() => setSettingsOpened(false)}
         >
-          <SettingsPopup onClose={() => setSettingsOpened(false)} />
+          <SettingsPopup onClose={() => setSettingsOpened(false)} setUser={setUser} />
         </div>
       )}
     </div>

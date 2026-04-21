@@ -37,7 +37,7 @@ function App() {
 
           <Route
             path="/"
-            element={user ? <WeekPage /> : <Navigate to="/auth" />}
+            element={user ? <WeekPage setUser={setUser} /> : <Navigate to="/auth" />}
           />
 
           <Route

@@ -4,23 +4,32 @@ import { SettingsNav } from "../customElements/SettingsNav";
 import type { SettingSection } from "../customElements/SettingsNav";
 import SettingSwitch from "../customElements/SettingsSwitch";
 import type User from "../../interfaces/User";
+import { LogOut } from "lucide-react";
 
 interface SettingsProps {
   onClose?: () => void;
+  setUser: (user: User | null) => void;
 }
 
-export default function Settings({ onClose }: SettingsProps) {
+export default function Settings({ onClose, setUser }: SettingsProps) {
   const [activeSection, setActiveSection] = useState<SettingSection>("General");
   const [optionalIncluded, setOptionalIncluded] = useState<boolean>(false);
 
-  const [user, setUser] = useState<User | null>(null);
+    const [user, setLocalUser] = useState<User | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
-      setUser(JSON.parse(stored));
+      setLocalUser(JSON.parse(stored));
     }
   }, []);
+
+  const logOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setLocalUser(null);
+    setUser(null); 
+  };
 
   return (
     <div
@@ -53,7 +62,22 @@ export default function Settings({ onClose }: SettingsProps) {
             <p className="text-[14px] text-white mb-2">
               Email: <span className="font-semibold">{user?.email}</span>
             </p>
-            
+            <button
+              className={[
+                "flex justify-center items-center gap-2 mt-4",
+                "px-4 py-2 rounded-lg",
+                "font-medium text-[14px]",
+                "bg-transparent border transition-all duration-200 ease-in-out",
+                "border-red-500/30 text-red-500 cursor-pointer",
+                "hover:bg-red-500/10 hover:border-red-500 hover:shadow-[0_0_12px_rgba(239,68,68,0.15)] hover:-translate-y-px",
+                "focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:bg-red-500/10",
+                "active:scale-[0.98] active:translate-y-0",
+              ].join(" ")}
+              onClick={() => logOut()}
+            >
+              <LogOut size={18} />
+              Log Out
+            </button>
           </div>
         )}
       </div>
