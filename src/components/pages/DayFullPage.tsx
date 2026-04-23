@@ -22,7 +22,7 @@ export default function DayFullPage() {
   if (!day) return <div>Loading your day...</div>;
 
   return (
-    <div className="w-full md:h-full h-fit">
+    <div className="w-full md:h-full">
       <p 
       className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
       onClick={()=>navigate('/week/current')}
