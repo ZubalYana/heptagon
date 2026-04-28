@@ -11,6 +11,14 @@ export default function Week({ week, animationDirection }: WeekProps) {
     return <div>Loading your week...</div>;
   }
 
+  let crucial = 0;
+  let important = 0;
+  let optional = 0;
+
+  let completedCrucial = 0;
+  let completedImportant = 0;
+  let completedOptional = 0;
+
   return (
     <AnimatePresence mode="wait" custom={animationDirection}>
       <motion.div
@@ -22,7 +30,7 @@ export default function Week({ week, animationDirection }: WeekProps) {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="w-full"
       >
-        <div 
+        <div
           className="w-full flex flex-wrap gap-x-2 justify-between items-center 
           md:flex-row md:gap-x-0"
         >
@@ -39,6 +47,23 @@ export default function Week({ week, animationDirection }: WeekProps) {
                 (task.subtasks?.filter((s) => s.completed).length ?? 0),
               0
             );
+
+            allTasks.forEach((task) => {
+              if (task.priority === "high") {
+                crucial++;
+                task.completed == true ? completedCrucial++ : completedCrucial;
+              } else if (task.priority === "medium") {
+                important++;
+                task.completed == true
+                  ? completedImportant++
+                  : completedImportant;
+              } else {
+                optional++;
+                task.completed == true
+                  ? completedOptional++
+                  : completedOptional;
+              }
+            });
             const percentage =
               totalItems === 0
                 ? 0
@@ -51,6 +76,12 @@ export default function Week({ week, animationDirection }: WeekProps) {
                 key={day._id}
                 allTasks={totalItems}
                 completedTasks={completedItems}
+                crucial={crucial}
+                crucialCompleted={completedCrucial}
+                important={important}
+                importantCompleted={completedImportant}
+                optional={optional}
+                optionalCompleted={completedOptional}
               />
             );
           })}
