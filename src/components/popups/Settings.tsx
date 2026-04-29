@@ -4,7 +4,9 @@ import { SettingsNav } from "../customElements/SettingsNav";
 import type { SettingSection } from "../customElements/SettingsNav";
 import SettingSwitch from "../customElements/SettingsSwitch";
 import type User from "../../interfaces/User";
-import { LogOut } from "lucide-react";
+import { LogOut, Send } from "lucide-react";
+import TextArea from "../customElements/TextArea";
+import GhostButton from "../customElements/SecondaryButton";
 
 interface SettingsProps {
   onClose?: () => void;
@@ -78,6 +80,17 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
               <LogOut size={18} />
               Log Out
             </button>
+          </div>
+        )}
+        {activeSection == "Help" && (
+          <div>
+            <h3>Problems? Questions? Suggestions? Let us know!</h3>
+            <TextArea
+             placeholder="Leave your message here" 
+            />
+            <GhostButton>
+              <Send/> Send
+            </GhostButton>
           </div>
         )}
       </div>
