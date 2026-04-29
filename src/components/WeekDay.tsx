@@ -42,10 +42,13 @@ export default function WeekDay({
     <Link to={`/day/${day._id}${location.search}`}>
       <div
         className="
-          lg:w-[140px]
           w-[160px] cursor-pointer
           flex flex-col items-center
           mb-10 md:mb-0
+          xs:w-[180px]
+          2xs:w-[140px]
+          sm:w-[170px]
+          lg:w-[140px]
           "
       >
         <CircularProgressbar percentage={percentage} />
@@ -119,7 +122,7 @@ export default function WeekDay({
             Overall: {completedTasks}/{allTasks}
           </p>
         </div>
-        <h4 className="first-letter:uppercase mt-1.5 md:mt-3">
+        <h4 className="first-letter:uppercase mt-2 md:mt-3">
           {day.dayOfWeek}
         </h4>
         <p className="text-[12px] font-light text-[#ccc] -mt-[4px]">
