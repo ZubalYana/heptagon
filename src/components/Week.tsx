@@ -11,14 +11,6 @@ export default function Week({ week, animationDirection }: WeekProps) {
     return <div>Loading your week...</div>;
   }
 
-  let crucial = 0;
-  let important = 0;
-  let optional = 0;
-
-  let completedCrucial = 0;
-  let completedImportant = 0;
-  let completedOptional = 0;
-
   return (
     <AnimatePresence mode="wait" custom={animationDirection}>
       <motion.div
@@ -36,6 +28,13 @@ export default function Week({ week, animationDirection }: WeekProps) {
         >
           {week.days.map((day) => {
             const allTasks = day.tasks;
+            let crucial = 0;
+            let important = 0;
+            let optional = 0;
+
+            let completedCrucial = 0;
+            let completedImportant = 0;
+            let completedOptional = 0;
             const totalItems = allTasks.reduce(
               (acc, task) => acc + 1 + (task.subtasks?.length ?? 0),
               0
