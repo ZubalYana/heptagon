@@ -83,12 +83,12 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
           </div>
         )}
         {activeSection == "Help" && (
-          <div>
-            <h3>Problems? Questions? Suggestions? Let us know!</h3>
+          <div className="flex flex-col items-center">
+            <h3 className="mb-4">Problems? Questions? Suggestions? Let us know!</h3>
             <TextArea
              placeholder="Leave your message here" 
             />
-            <GhostButton>
+            <GhostButton className="mt-2">
               <Send/> Send
             </GhostButton>
           </div>
