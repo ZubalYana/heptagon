@@ -10,3 +10,24 @@ h1, h2, h3, h4, h5, h6{
 div, p, a, link, label, button, span{
     font-family: 'Quicksand', sans-serif;
 }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #00FF26 #1B1B1B;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #1B1B1B;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #00FF26;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 255, 38, 0.6);
+}
