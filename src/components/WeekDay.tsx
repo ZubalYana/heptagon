@@ -45,7 +45,7 @@ export default function WeekDay({
           lg:w-[140px]
           w-[160px] cursor-pointer
           flex flex-col items-center
-          mb-6 md:mb-0
+          mb-10 md:mb-0
           "
       >
         <CircularProgressbar percentage={percentage} />
