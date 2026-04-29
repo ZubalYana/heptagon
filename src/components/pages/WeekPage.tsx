@@ -114,6 +114,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
         </div>
       </div>
 
+      <div className="w-full flex-1 flex flex-col justify-center items-center">
       <Week week={week} animationDirection={animationDirection} />
       {week && (
         <div className="w-full flex flex-col items-center">
@@ -139,6 +140,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
             )}
         </div>
       )}
+      </div>
       {settingsOpened && (
         <div
           className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
