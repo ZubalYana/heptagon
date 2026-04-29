@@ -7,14 +7,14 @@ import apiClient from "../../helpers/apiClient";
 import { getWeekNumber } from "../../helpers/getWeekNumber";
 import SettingsPopup from "../popups/Settings";
 import type User from "../../interfaces/User";
-
+import { useSearchParams } from "react-router-dom";
 const SWIPE_THRESHOLD = 50;
 
-interface WeekPageProps{
+interface WeekPageProps {
   setUser: (user: User | null) => void;
 }
 
-export default function WeekPage({setUser}: WeekPageProps) {
+export default function WeekPage({ setUser }: WeekPageProps) {
   const [week, setWeek] = useState<InterfaceWeek | null>(null);
   const [animationDirection, setAnimationDirection] = useState(1);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
@@ -22,12 +22,14 @@ export default function WeekPage({setUser}: WeekPageProps) {
     null
   );
   const [settingsOpened, setSettingsOpened] = useState<boolean>(false);
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const dragStartX = useRef<number | null>(null);
   const isDragging = useRef(false);
 
   useEffect(() => {
-    fetchWeek("current");
+    const year = searchParams.get("year");
+    const week = searchParams.get("week");
+    fetchWeek(year && week ? `${year}/${week}` : "current");
   }, []);
 
   function fetchWeek(path: string) {
@@ -35,6 +37,10 @@ export default function WeekPage({setUser}: WeekPageProps) {
       setWeek(data);
       setCurrentYear(data.year);
       setCurrentWeekNumber(data.weekNumber);
+      setSearchParams(
+        { year: String(data.year), week: String(data.weekNumber) },
+        { replace: true }
+      );
     });
   }
 
@@ -101,7 +107,10 @@ export default function WeekPage({setUser}: WeekPageProps) {
           <h2 className="text-[20px] font-medium">Heptagon</h2>
         </div>
         <div className="flex gap-x-4">
-          <Settings className="cursor-pointer" onClick={()=>setSettingsOpened(true)} />
+          <Settings
+            className="cursor-pointer"
+            onClick={() => setSettingsOpened(true)}
+          />
         </div>
       </div>
 
@@ -135,7 +144,10 @@ export default function WeekPage({setUser}: WeekPageProps) {
           className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
           onClick={() => setSettingsOpened(false)}
         >
-          <SettingsPopup onClose={() => setSettingsOpened(false)} setUser={setUser} />
+          <SettingsPopup
+            onClose={() => setSettingsOpened(false)}
+            setUser={setUser}
+          />
         </div>
       )}
     </div>

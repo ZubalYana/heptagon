@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type Day from "../../interfaces/Day";
 import formatDate from "../../helpers/fotmatDate";
@@ -12,6 +12,7 @@ export default function DayFullPage() {
   const { dayId } = useParams();
   const [day, setDay] = useState<Day | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     apiClient.get(`/days/${dayId}`).then(({ data }) => {
@@ -23,9 +24,9 @@ export default function DayFullPage() {
 
   return (
     <div className="w-full md:h-full">
-      <p 
-      className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
-      onClick={()=>navigate('/week/current')}
+      <p
+        className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
+        onClick={() => navigate(`/${location.search}`)}
       >
         <ArrowLeft className="w-[15px] h-[15px]" />
         Back

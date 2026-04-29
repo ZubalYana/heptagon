@@ -1,5 +1,5 @@
 import CircularProgressbar from "./CircularProgressbar";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import type Day from "../interfaces/Day";
 import formatDate from "../helpers/fotmatDate";
 import { Check } from "lucide-react";
@@ -37,8 +37,9 @@ export default function WeekDay({
   const importantDone = important === importantCompleted;
   const optionalDone = optional === optionalCompleted;
 
+  const location = useLocation();
   return (
-    <Link to={`/day/${day._id}`}>
+    <Link to={`/day/${day._id}${location.search}`}>
       <div
         className="
           lg:w-[140px]
@@ -76,7 +77,9 @@ export default function WeekDay({
 
           <p className="text-[12px] flex items-center gap-x-1">
             <span
-              className={`${importantDone ? "text-gray-500" : "text-orange-400"}`}
+              className={`${
+                importantDone ? "text-gray-500" : "text-orange-400"
+              }`}
             >
               Important:
             </span>
@@ -108,7 +111,11 @@ export default function WeekDay({
             )}
           </p>
 
-          <p className={`text-[12px] ${completedTasks === allTasks? 'text-gray-500' : ''}`}>
+          <p
+            className={`text-[12px] ${
+              completedTasks === allTasks ? "text-gray-500" : ""
+            }`}
+          >
             Overall: {completedTasks}/{allTasks}
           </p>
         </div>

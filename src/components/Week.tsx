@@ -51,15 +51,15 @@ export default function Week({ week, animationDirection }: WeekProps) {
             allTasks.forEach((task) => {
               if (task.priority === "high") {
                 crucial++;
-                task.completed == true ? completedCrucial++ : completedCrucial;
+                task.completed === true ? completedCrucial++ : completedCrucial;
               } else if (task.priority === "medium") {
                 important++;
-                task.completed == true
+                task.completed === true
                   ? completedImportant++
                   : completedImportant;
               } else {
                 optional++;
-                task.completed == true
+                task.completed === true
                   ? completedOptional++
                   : completedOptional;
               }
