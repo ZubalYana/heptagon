@@ -95,7 +95,7 @@ export default function DayTasksController({
   if (localTasks.length == 0) {
   }
   return (
-    <div className="w-full h-full">
+    <div className="w-full flex-1 flex flex-col">
       <div className="flex gap-x-4 items-center">
         <h2 className="text-[18px]">Your tasks:</h2>
         <SecondaryButton onClick={() => setTaskCreationMode(true)}>
@@ -104,7 +104,7 @@ export default function DayTasksController({
         </SecondaryButton>
       </div>
 
-      <div className="w-full flex flex-col bg-[#121212] mt-2 p-4 rounded-lg">
+      <div className="w-full flex flex-col flex-1 bg-[#121212] mt-2 p-4 rounded-lg">
         {localTasks.length == 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center">
             <p className="mb-4 text-[#ccc] text-[16px]">
