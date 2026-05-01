@@ -58,7 +58,7 @@ export default function WeekDay({
                 w-full h-auto
                 bg-[#1B1B1B] rounded-md
                 p-4 flex flex-col items-center justify-center gap-y-[2px]
-                ${isToday ? "shadow-[0_0_16px_8px_rgba(0,255,38,0.3)]" : ""}
+                ${isToday ? "shadow-[0_0_12px_3px_rgba(0,255,38,0.3)]" : ""}
                 `}
         >
           <p className="text-[12px] flex items-center gap-x-1">
