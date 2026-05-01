@@ -6,7 +6,7 @@ import SettingSwitch from "../customElements/SettingsSwitch";
 import type User from "../../interfaces/User";
 import { LogOut, Send } from "lucide-react";
 import TextArea from "../customElements/TextArea";
-import GhostButton from "../customElements/SecondaryButton";
+import Button from "../customElements/PrimaryButton";
 
 interface SettingsProps {
   onClose?: () => void;
@@ -88,9 +88,11 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
             <TextArea
              placeholder="Leave your message here" 
             />
-            <GhostButton className="mt-2">
-              <Send/> Send
-            </GhostButton>
+            <Button className="mt-6">
+              <div className="flex items-center gap-x-2">
+              <Send size={18}/> Send
+              </div>
+            </Button>
           </div>
         )}
       </div>
