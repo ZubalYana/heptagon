@@ -3,6 +3,7 @@ import type { NavigateFunction } from "react-router-dom";
 
 let navigator: NavigateFunction;
 let navigatorReady = false;
+let isRedirecting = false;
 
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;
@@ -26,7 +27,8 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && navigatorReady) {
+    if (error.response?.status === 401 && navigatorReady && !isRedirecting) {
+      isRedirecting = true;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       navigator?.("/auth", { replace: true });
