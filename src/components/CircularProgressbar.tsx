@@ -13,7 +13,7 @@ export default function CircularProgressbar({ percentage }: CircularProgressbarP
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentage / 100) * circumference;
 
-  const filterId = `glow-${Math.random().toString(36).slice(2)}`; // unique per instance
+  const filterId = `glow-${Math.random().toString(36).slice(2)}`; 
 
   return (
     <div className="relative w-[90px] h-[90px] flex items-center justify-center">
