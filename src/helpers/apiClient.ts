@@ -4,6 +4,7 @@ import type { NavigateFunction } from "react-router-dom";
 let navigator: NavigateFunction;
 let navigatorReady = false;
 let isRedirecting = false;
+const PUBLIC_401_ROUTES = ['/calendar/events', '/calendar/status'];
 
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;
@@ -27,12 +28,16 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && navigatorReady && !isRedirecting) {
-      isRedirecting = true;
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      navigator?.("/auth", { replace: true });
-    }
+    if (
+  error.response?.status === 401 &&
+  !isRedirecting &&
+  !PUBLIC_401_ROUTES.some(route => error.config?.url?.includes(route))
+) {
+  isRedirecting = true;
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  navigator("/auth", { replace: true });
+}
     return Promise.reject(error);
   }
 );
