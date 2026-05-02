@@ -1,57 +1,55 @@
 import { google } from "googleapis";
-import fs from "node:fs/promises";
-import path from "node:path";
 import process from "node:process";
+import User from "../models/User";
 
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
-const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
-const TOKEN_PATH = path.join(process.cwd(), "token.json");
 
-async function loadCredentials() {
-  const content = await fs.readFile(CREDENTIALS_PATH, "utf-8");
-  const { installed, web } = JSON.parse(content);
-  return installed ?? web;
-}
+export async function getAuthClient(userId: string) {
+  const user = await User.findById(userId);
+  if (!user?.googleTokens?.access_token) return null;
 
-export async function getAuthClient() {
-  const { client_id, client_secret, redirect_uris } = await loadCredentials();
   const oAuth2Client = new google.auth.OAuth2(
-    client_id,
-    client_secret,
-    redirect_uris[0]
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
   );
+  oAuth2Client.setCredentials(user.googleTokens);
 
-  try {
-    const token = await fs.readFile(TOKEN_PATH, "utf-8");
-    oAuth2Client.setCredentials(JSON.parse(token));
-    return oAuth2Client;
-  } catch {
-    return null;
-  }
+  oAuth2Client.on("tokens", async (newTokens) => {
+    await User.findByIdAndUpdate(userId, {
+      "googleTokens.access_token": newTokens.access_token,
+      ...(newTokens.refresh_token && {
+        "googleTokens.refresh_token": newTokens.refresh_token,
+      }),
+    });
+  });
+
+  return oAuth2Client;
 }
 
-export async function getAuthUrl() {
-  const { client_id, client_secret, redirect_uris } = await loadCredentials();
+export async function getAuthUrl(userId: string) {
   const oAuth2Client = new google.auth.OAuth2(
-    client_id,
-    client_secret,
-    redirect_uris[0]
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
   );
   return oAuth2Client.generateAuthUrl({
     access_type: "offline",
+    prompt: "consent",
     scope: SCOPES,
+    state: userId,
   });
 }
 
-export async function exchangeCodeForToken(code: string) {
-  const { client_id, client_secret, redirect_uris } = await loadCredentials();
+export async function exchangeCodeForToken(code: string, userId: string) {
   const oAuth2Client = new google.auth.OAuth2(
-    client_id,
-    client_secret,
-    redirect_uris[0]
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
   );
   const { tokens } = await oAuth2Client.getToken(code);
-  await fs.writeFile(TOKEN_PATH, JSON.stringify(tokens));
-  oAuth2Client.setCredentials(tokens);
+
+  await User.findByIdAndUpdate(userId, { googleTokens: tokens });
+
   return oAuth2Client;
 }
