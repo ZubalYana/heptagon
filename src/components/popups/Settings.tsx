@@ -7,6 +7,7 @@ import type User from "../../interfaces/User";
 import { LogOut, Send } from "lucide-react";
 import TextArea from "../customElements/TextArea";
 import Button from "../customElements/PrimaryButton";
+import AppConnection from "../customElements/AppConnection";
 
 interface SettingsProps {
   onClose?: () => void;
@@ -16,8 +17,9 @@ interface SettingsProps {
 export default function Settings({ onClose, setUser }: SettingsProps) {
   const [activeSection, setActiveSection] = useState<SettingSection>("General");
   const [optionalIncluded, setOptionalIncluded] = useState<boolean>(false);
+  const [calendarConnected, setCalendarConnected] = useState<boolean>(false);
 
-    const [user, setLocalUser] = useState<User | null>(null);
+  const [user, setLocalUser] = useState<User | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
@@ -53,6 +55,12 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
               label="Include optional settings in percentage calculation"
               value={optionalIncluded}
               onChange={() => setOptionalIncluded(!optionalIncluded)}
+            />
+            <AppConnection
+              icon="./google-calendar-svgrepo-com.svg"
+              name="Google Calendar"
+              connected={calendarConnected}
+              onChange={() => setCalendarConnected(!calendarConnected)}
             />
           </div>
         )}
