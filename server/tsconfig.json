@@ -9,5 +9,6 @@
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
   "include": ["src/**/*"],
-  "useUnknownInCatchVariables": false
+  "useUnknownInCatchVariables": false,
+  "exclude": ["node_modules", "dist"]
 }
