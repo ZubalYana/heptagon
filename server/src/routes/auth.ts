@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET as string; 
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 router.post("/register", async (req, res) => {
   try {
@@ -19,7 +19,9 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
-    const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: "24h" });
+    const token = jwt.sign({ id: newUser._id }, JWT_SECRET, {
+      expiresIn: "24h",
+    });
     res.status(200).json({
       message: "User registered successfully",
       token,
@@ -41,7 +43,10 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(
+      password,
+      user.password as string
+    );
     if (!passwordMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
