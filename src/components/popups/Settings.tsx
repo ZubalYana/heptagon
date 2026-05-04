@@ -28,6 +28,15 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
     }
   }, []);
 
+  useEffect(() => {
+  const token = localStorage.getItem('token');
+  fetch(`${baseURL}/calendar/status`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(r => r.json())
+    .then(data => setCalendarConnected(data.connected));
+  }, []);
+
   const logOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
