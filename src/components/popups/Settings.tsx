@@ -46,6 +46,7 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
     })
     const {url} = await response.json();
     window.location.href = url;
+    setCalendarConnected
   }
 
   return (

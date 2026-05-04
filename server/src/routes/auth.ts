@@ -39,8 +39,8 @@ router.post("/register", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Error registering user:", err);
-    res.status(500).json({ message: err.message });
+    const error = err as Error;
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -75,7 +75,8 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    const error = err as Error;
+    res.status(500).json({ message: error.message });
   }
 });
 

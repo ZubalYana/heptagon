@@ -8,5 +8,6 @@
     "rootDir": "./src",
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "useUnknownInCatchVariables": false
 }

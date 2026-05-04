@@ -5,11 +5,13 @@ import { authMiddleware } from "../middleware/auth";
 const router = express.Router();
 
 router.get("/auth-url", authMiddleware, async (req, res) => {
+  if (!req.user) return res.status(401).json({ message: "Unauthorized" });
   const url = await getAuthUrl(req.user.id); 
   res.json({url});
 });
 
 router.get("/auth/callback", async (req, res) => {
+  if (!req.user) return res.status(401).json({ message: "Unauthorized" });
   const code = req.query.code as string;
   const userId = req.query.state as string; 
   
@@ -20,6 +22,7 @@ router.get("/auth/callback", async (req, res) => {
 });
 
 router.get("/events", authMiddleware, async (req, res) => {
+  if (!req.user) return res.status(401).json({ message: "Unauthorized" });
   try {
     const auth = await getAuthClient(req.user.id);
     if (!auth) return res.status(403).json({ message: "Calendar not connected" });
