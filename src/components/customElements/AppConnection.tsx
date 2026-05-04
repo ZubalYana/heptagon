@@ -2,7 +2,7 @@ interface AppConnectionProps {
   icon: string;
   name: string;
   connected: boolean;
-  onChange: (value: boolean) => void;
+  onChange: () => void;
 }
 
 export default function AppConnection({
@@ -22,7 +22,7 @@ export default function AppConnection({
       <button
         role="switch"
         aria-checked={connected}
-        onClick={() => onChange(!connected)}
+        onClick={() => onChange()}
         className={`
           relative shrink-0 w-[42px] h-[24px] rounded-full border transition-all duration-300 ease-in-out cursor-pointer
           focus:outline-none

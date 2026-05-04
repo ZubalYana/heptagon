@@ -4,9 +4,9 @@ import { getAuthClient, getAuthUrl, exchangeCodeForToken } from '../middleware/g
 import { authMiddleware } from "../middleware/auth";
 const router = express.Router();
 
-router.get("/auth", authMiddleware, async (req, res) => {
+router.get("/auth-url", authMiddleware, async (req, res) => {
   const url = await getAuthUrl(req.user.id); 
-  res.redirect(url);
+  res.json({url});
 });
 
 router.get("/auth/callback", async (req, res) => {

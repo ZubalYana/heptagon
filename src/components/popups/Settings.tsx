@@ -35,6 +35,19 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
     setUser(null); 
   };
 
+  const baseURL = import.meta.env.DEV 
+  ? "http://localhost:5000" 
+  : import.meta.env.VITE_API_URL
+
+  const connectCalendar = async () => {
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${baseURL}/calendar/auth-url`, {
+      headers: {Authorization: `Bearer ${token}`}
+    })
+    const {url} = await response.json();
+    window.location.href = url;
+  }
+
   return (
     <div
       className="w-[90%] md:w-[60%] lg:w-[40%] bg-[#1F1F1F] rounded-xl p-5 flex flex-col relative shadow-2xl"
@@ -60,7 +73,7 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
               icon="./google-calendar-svgrepo-com.svg"
               name="Google Calendar"
               connected={calendarConnected}
-              onChange={() => setCalendarConnected(!calendarConnected)}
+              onChange={() => connectCalendar()}
             />
           </div>
         )}
