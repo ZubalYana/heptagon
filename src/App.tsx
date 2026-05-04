@@ -6,6 +6,8 @@ import DayFullPage from "./components/pages/DayFullPage";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import type User from "./interfaces/User";
 import { setNavigator } from "./helpers/apiClient";
+import Privacy from "./components/pages/Privacy";
+import Terms from "./components/pages/Terms";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -47,6 +49,8 @@ function App() {
           path="/day/:dayId"
           element={user ? <DayFullPage /> : <Navigate to="/auth" />}
         />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
