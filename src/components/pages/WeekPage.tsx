@@ -115,31 +115,31 @@ export default function WeekPage({ setUser }: WeekPageProps) {
       </div>
 
       <div className="w-full flex-1 flex flex-col justify-center items-center">
-      <Week week={week} animationDirection={animationDirection} />
-      {week && (
-        <div className="w-full flex flex-col items-center">
-          <WeeksSwitch
-            weekNumber={week.weekNumber}
-            year={week.year}
-            startDate={week.startDate}
-            endDate={week.endDate}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
-          {currentWeekNumber !== getWeekNumber(new Date()).weekNumber - 1 &&
-            currentYear == getWeekNumber(new Date()).year && (
-              <p
-                className="text-[#888] text-[12px] cursor-pointer uppercase mt-2 hover:text-white transition-colors duration-200"
-                onClick={() => {
-                  fetchWeek("current");
-                  setAnimationDirection(0);
-                }}
-              >
-                Back to this week
-              </p>
-            )}
-        </div>
-      )}
+        <Week week={week} animationDirection={animationDirection} />
+        {week && (
+          <div className="w-full flex flex-col items-center">
+            <WeeksSwitch
+              weekNumber={week.weekNumber}
+              year={week.year}
+              startDate={week.startDate}
+              endDate={week.endDate}
+              onPrev={handlePrev}
+              onNext={handleNext}
+            />
+            {currentWeekNumber !== getWeekNumber(new Date()).weekNumber - 1 &&
+              currentYear == getWeekNumber(new Date()).year && (
+                <p
+                  className="text-[#888] text-[12px] cursor-pointer uppercase mt-2 hover:text-white transition-colors duration-200"
+                  onClick={() => {
+                    fetchWeek("current");
+                    setAnimationDirection(0);
+                  }}
+                >
+                  Back to this week
+                </p>
+              )}
+          </div>
+        )}
       </div>
       {settingsOpened && (
         <div
@@ -152,6 +152,13 @@ export default function WeekPage({ setUser }: WeekPageProps) {
           />
         </div>
       )}
+      <a
+        href="/privacy"
+        target="_blank"
+        className="text-xs text-gray-500 hover:text-gray-400"
+      >
+        Privacy Policy
+      </a>
     </div>
   );
 }
