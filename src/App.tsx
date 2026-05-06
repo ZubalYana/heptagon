@@ -8,6 +8,7 @@ import type User from "./interfaces/User";
 import { setNavigator } from "./helpers/apiClient";
 import Privacy from "./components/pages/Privacy";
 import Terms from "./components/pages/Terms";
+import Admin from "./components/pages/Admin";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -53,6 +54,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
 
         <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/admin" element={<Admin/>}/>
       </Routes>
     </div>
   );
