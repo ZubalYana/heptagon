@@ -35,13 +35,30 @@ export default function Admin() {
     getUsers();
   }, []);
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-[#151515] text-white p-4">
+    <div className="w-full h-full flex flex-col items-center bg-[#151515] text-white">
       <AnimatePresence>
         {alert.shown && (
           <Alert type={alert.type} text={alert.text} onClose={closeAlert} />
         )}
       </AnimatePresence>
-      <UsersList users={users}/>
+
+      <div className="w-full flex items-center justify-between mb-6 lg:mb-12">
+        <div className="flex gap-x-2 items-center">
+          <img
+            src="/heptagonLogo.svg"
+            alt="Heptagon Logo"
+            className="w-[35px] h-[35px]"
+          />
+          <h2 className="text-[20px] font-medium">Heptagon | Admin</h2>
+        </div>
+      </div>
+
+      <div className="w-full flex-col flex gap-x-4 lg:flex-row">
+        <div className="w-full lg:w-[50%]">
+            <UsersList users={users}/>
+        </div>
+      </div>
+      
     </div>
   );
 }
