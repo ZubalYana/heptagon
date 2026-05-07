@@ -9,6 +9,7 @@ import { setNavigator } from "./helpers/apiClient";
 import Privacy from "./components/pages/Privacy";
 import Terms from "./components/pages/Terms";
 import Admin from "./components/pages/Admin";
+import AdminAuth from "./components/pages/AdminAuth";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -27,6 +28,8 @@ function App() {
     }
     setLoading(false);
   }, []);
+
+  const isAdmin = !!localStorage.getItem("adminToken");
 
   //To be replaced with a proper loader later
   if (loading) return <div>Loading...</div>;
@@ -54,7 +57,11 @@ function App() {
         <Route path="/terms" element={<Terms />} />
 
         <Route path="*" element={<Navigate to="/" />} />
-        <Route path="/admin" element={<Admin/>}/>
+        <Route path="/admin-auth" element={<AdminAuth />} />
+        <Route
+          path="/admin"
+          element={isAdmin ? <Admin /> : <Navigate to="/admin-auth" />}
+        />
       </Routes>
     </div>
   );
