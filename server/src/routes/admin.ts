@@ -1,5 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import User from "../models/User";
+import { verifyAdmin } from "../middleware/verifyAdmin";
 const router = express.Router();
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL as string;
@@ -26,5 +28,17 @@ router.post("/login", (req, res) => {
     res.status(500).json({ message: "Error loggin in", error: err });
   }
 });
+
+router.get("/users", verifyAdmin, async (req,res)=>{
+  try{
+    const users = await User.find();
+    if(!users){
+      res.status(404).json({message: 'Users not found'});
+    }
+    res.status(200).json(users);
+  }catch(err){
+    res.status(500).json({message: 'Error getting users', err})
+  }
+})
 
 export default router;
