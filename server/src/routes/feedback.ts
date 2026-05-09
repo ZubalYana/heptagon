@@ -20,11 +20,11 @@ router.post('/create', authMiddleware, async (req,res)=>{
 
 router.get('/all', verifyAdmin, async (req,res)=>{
     try{
-        const feedback = Feedback.find();
+        const feedback = await Feedback.find();
         if(!feedback){
             res.status(404).json({message: 'Feedback not found'});
         }
-        res.status(200).json({feedback});
+        res.status(200).json(feedback);
     }catch(err){
         res.status(500).json({message: 'Error getting feedback.'})
     }

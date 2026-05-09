@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import type User from "../../interfaces/User";
 import UsersList from "../customElements/UsersList";
 import apiClient from "../../helpers/apiClient";
+import FeedbacksList from "../customElements/FeedbackList";
+import type Feedback from "../../interfaces/Feedback";
+
 export default function Admin() {
   const [alert, setAlert] = useState<{
     shown: boolean;
@@ -11,6 +14,7 @@ export default function Admin() {
     text: string;
   }>({ shown: false, type: "info", text: "" });
   const [users, setUsers] = useState<User[] | null>(null);
+  const [feedbacks, setFeedbacks] = useState<Feedback[] | null>(null);
 
   const closeAlert = () => setAlert((prev) => ({ ...prev, shown: false }));
   const getUsers = async () => {
@@ -18,8 +22,14 @@ export default function Admin() {
     setUsers(res.data);
   };
 
+  const getFeedbacks = async () => {
+    const res = await apiClient.get("/feedback/all");
+    setFeedbacks(res.data);
+  }
+
   useEffect(() => {
     getUsers();
+    getFeedbacks();
   }, []);
   return (
     <div className="w-full h-full flex flex-col items-center bg-[#151515] text-white">
@@ -42,7 +52,12 @@ export default function Admin() {
 
       <div className="w-full flex-col flex gap-x-4 lg:flex-row">
         <div className="w-full lg:w-[50%]">
+          <h3 className="mb-4">Registered Users:</h3>
           <UsersList users={users} />
+        </div>
+        <div className="w-full lg:w-[50%]">
+          <h3 className="mb-4">Received Feedback:</h3>
+          <FeedbacksList feedbacks={feedbacks}/>
         </div>
       </div>
     </div>
