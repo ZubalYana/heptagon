@@ -4,12 +4,17 @@ import type { NavigateFunction } from "react-router-dom";
 let navigator: NavigateFunction;
 let navigatorReady = false;
 let isRedirecting = false;
+let clearUser: (() => void) | null = null;
 
 const PUBLIC_401_ROUTES = ['/calendar/events', '/calendar/status'];
 
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;
   navigatorReady = true;
+};
+
+export const setClearUser = (fn: () => void) => { 
+  clearUser = fn;
 };
 
 const apiClient = axios.create({
@@ -38,8 +43,10 @@ apiClient.interceptors.response.use(
       isRedirecting = true;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      clearUser?.();
 
       if (navigatorReady && navigator) {
+        setTimeout(() => { isRedirecting = false; }, 500);
         navigator("/auth", { replace: true });
       } else {
         window.location.replace("/auth");

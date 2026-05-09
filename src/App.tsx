@@ -5,7 +5,7 @@ import AuthPage from "./components/pages/AuthPage";
 import DayFullPage from "./components/pages/DayFullPage";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import type User from "./interfaces/User";
-import { setNavigator } from "./helpers/apiClient";
+import { setNavigator, setClearUser } from "./helpers/apiClient";
 import Privacy from "./components/pages/Privacy";
 import Terms from "./components/pages/Terms";
 import Admin from "./components/pages/Admin";
@@ -19,6 +19,7 @@ function App() {
 
   useEffect(() => {
     setNavigator(navigate);
+    setClearUser(() => setUser(null));
   }, [navigate]);
 
   useEffect(() => {
