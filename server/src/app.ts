@@ -9,6 +9,7 @@ import daysRouter from "./routes/days";
 import taskRouter from "./routes/tasks";
 import calendarRouter from "./routes/calendar";
 import adminRouter from './routes/admin'
+import feedbackRouter from './routes/feedback'
 import cors from "cors";
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/days", daysRouter);
 app.use("/tasks", taskRouter);
 app.use("/calendar", calendarRouter);
 app.use("/admin", adminRouter)
+app.use("/feedback", feedbackRouter)
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Welcome!" });
