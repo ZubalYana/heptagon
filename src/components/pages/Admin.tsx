@@ -3,6 +3,7 @@ import Alert from "../customElements/Alert";
 import { useState, useEffect } from "react";
 import type User from "../../interfaces/User";
 import UsersList from "../customElements/UsersList";
+import apiClient from "../../helpers/apiClient";
 export default function Admin() {
   const [alert, setAlert] = useState<{
     shown: boolean;
@@ -12,23 +13,9 @@ export default function Admin() {
   const [users, setUsers] = useState<User[] | null>(null);
 
   const closeAlert = () => setAlert((prev) => ({ ...prev, shown: false }));
-
-  const baseBackendURL = import.meta.env.DEV
-    ? "http://localhost:5000"
-    : import.meta.env.VITE_API_URL;
-
   const getUsers = async () => {
-    const adminToken = localStorage.getItem("adminToken");
-    const res = await fetch(`${baseBackendURL}/admin/users`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer: ${adminToken}`,
-        "Content-type": "application/json",
-      },
-    });
-    const data = await res.json();
-    console.log(data);
-    setUsers(data);
+    const res = await apiClient.get("/admin/users");
+    setUsers(res.data);
   };
 
   useEffect(() => {
@@ -55,10 +42,9 @@ export default function Admin() {
 
       <div className="w-full flex-col flex gap-x-4 lg:flex-row">
         <div className="w-full lg:w-[50%]">
-            <UsersList users={users}/>
+          <UsersList users={users} />
         </div>
       </div>
-      
     </div>
   );
 }

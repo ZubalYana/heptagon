@@ -10,16 +10,18 @@ import Privacy from "./components/pages/Privacy";
 import Terms from "./components/pages/Terms";
 import Admin from "./components/pages/Admin";
 import AdminAuth from "./components/pages/AdminAuth";
+import { setClearAdmin } from "./helpers/apiClient";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [isAdmin, setIsAdmin] = useState(!!localStorage.getItem("adminToken"));
   const navigate = useNavigate();
 
   useEffect(() => {
     setNavigator(navigate);
     setClearUser(() => setUser(null));
+    setClearAdmin(() => setIsAdmin(false));
   }, [navigate]);
 
   useEffect(() => {
@@ -29,8 +31,6 @@ function App() {
     }
     setLoading(false);
   }, []);
-
-  const isAdmin = !!localStorage.getItem("adminToken");
 
   //To be replaced with a proper loader later
   if (loading) return <div>Loading...</div>;

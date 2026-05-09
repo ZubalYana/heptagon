@@ -5,16 +5,21 @@ let navigator: NavigateFunction;
 let navigatorReady = false;
 let isRedirecting = false;
 let clearUser: (() => void) | null = null;
+let clearAdmin: (() => void) | null = null;
 
-const PUBLIC_401_ROUTES = ['/calendar/events', '/calendar/status'];
+const PUBLIC_401_ROUTES = ["/calendar/events", "/calendar/status"];
 
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;
   navigatorReady = true;
 };
 
-export const setClearUser = (fn: () => void) => { 
+export const setClearUser = (fn: () => void) => {
   clearUser = fn;
+};
+
+export const setClearAdmin = (fn: () => void) => {
+  clearAdmin = fn;
 };
 
 const apiClient = axios.create({
@@ -35,7 +40,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const is401 = error.response?.status === 401;
-    const isPublicRoute = PUBLIC_401_ROUTES.some(route =>
+    const isPublicRoute = PUBLIC_401_ROUTES.some((route) =>
       error.config?.url?.includes(route)
     );
 
@@ -46,12 +51,25 @@ apiClient.interceptors.response.use(
       clearUser?.();
 
       if (navigatorReady && navigator) {
-        setTimeout(() => { isRedirecting = false; }, 500);
+        setTimeout(() => {
+          isRedirecting = false;
+        }, 500);
         navigator("/auth", { replace: true });
       } else {
         window.location.replace("/auth");
       }
 
+      return new Promise(() => {});
+    }
+
+    if (error.response?.status === 403 && !isRedirecting) {
+      isRedirecting = true;
+      localStorage.removeItem("adminToken");
+      clearAdmin?.();
+      navigator("/admin-auth", { replace: true });
+      setTimeout(() => {
+        isRedirecting = false;
+      }, 500);
       return new Promise(() => {});
     }
 
