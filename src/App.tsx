@@ -62,8 +62,8 @@ function App() {
           path="/admin"
           element={isAdmin ? <Admin /> : <Navigate to="/admin-auth" />}
         />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      <Route path="*" element={<Navigate to="/" />} />
     </div>
   );
 }
