@@ -1,10 +1,11 @@
 import express from 'express';
 import Feedback from '../models/Feedback';
 import { verifyAdmin } from '../middleware/verifyAdmin';
+import { authMiddleware } from '../middleware/auth';
 
 const router = express.Router();
 
-router.post('/create', async (req,res)=>{
+router.post('/create', authMiddleware, async (req,res)=>{
     try{
         const {userName, userEmail, feedbackText} = req.body;
         if(!userName || !userEmail || !feedbackText){

@@ -8,6 +8,8 @@ import { LogOut, Send } from "lucide-react";
 import TextArea from "../customElements/TextArea";
 import Button from "../customElements/PrimaryButton";
 import AppConnection from "../customElements/AppConnection";
+import apiClient from "../../helpers/apiClient";
+import Alert from "../customElements/Alert";
 
 interface SettingsProps {
   onClose?: () => void;
@@ -18,8 +20,13 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
   const [activeSection, setActiveSection] = useState<SettingSection>("General");
   const [optionalIncluded, setOptionalIncluded] = useState<boolean>(false);
   const [calendarConnected, setCalendarConnected] = useState<boolean>(false);
-
   const [user, setLocalUser] = useState<User | null>(null);
+  const [feedbackText, setFeedbackText] = useState<string>("");
+  const [alert, setAlert] = useState<{
+    shown: boolean;
+    text: string;
+    type: "success" | "info" | "error";
+  }>({ shown: false, text: "", type: "success" });
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
@@ -29,33 +36,59 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
   }, []);
 
   useEffect(() => {
-  const token = localStorage.getItem('token');
-  fetch(`${baseURL}/calendar/status`, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(r => r.json())
-    .then(data => setCalendarConnected(data.connected));
+    const token = localStorage.getItem("token");
+    fetch(`${baseURL}/calendar/status`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((data) => setCalendarConnected(data.connected));
   }, []);
 
   const logOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setLocalUser(null);
-    setUser(null); 
+    setUser(null);
   };
 
-  const baseURL = import.meta.env.DEV 
-  ? "http://localhost:5000" 
-  : import.meta.env.VITE_API_URL
+  const baseURL = import.meta.env.DEV
+    ? "http://localhost:5000"
+    : import.meta.env.VITE_API_URL;
 
   const connectCalendar = async () => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     const response = await fetch(`${baseURL}/calendar/auth-url`, {
-      headers: {Authorization: `Bearer ${token}`}
-    })
-    const {url} = await response.json();
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const { url } = await response.json();
     window.location.href = url;
-    setCalendarConnected
+    setCalendarConnected;
+  };
+
+  const sendFeedback = async () => {
+    try {
+      await apiClient.post("/feedback/create", {
+        userName: user?.name,
+        userEmail: user?.email,
+        feedbackText: feedbackText,
+      });
+      setAlert({
+        shown: true,
+        text: "Feedback sent successfully! Thanks!",
+        type: "success",
+      });
+      setFeedbackText("")
+    } catch (err) {
+      setAlert({
+        shown: true,
+        text: "Error sending feedback. Please get in touch with us.",
+        type: "error",
+      });
+    }
+  };
+
+  const onAlertClose = () => {
+    setAlert({shown: false, text: "", type: "success"})
   }
 
   return (
@@ -115,18 +148,28 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
         )}
         {activeSection == "Help" && (
           <div className="flex flex-col items-center">
-            <h3 className="mb-4">Problems? Questions? Suggestions? Let us know!</h3>
+            <h3 className="mb-4">
+              Problems? Questions? Suggestions? Let us know!
+            </h3>
             <TextArea
-             placeholder="Leave your message here" 
+              placeholder="Leave your message here"
+              value={feedbackText}
+              onChange={(e) => {
+                setFeedbackText(e.target.value);
+              }}
             />
-            <Button className="mt-6">
+            <Button className="mt-6" onClick={()=>{sendFeedback()}}>
               <div className="flex items-center gap-x-2">
-              <Send size={18}/> Send
+                <Send size={18} /> Send
               </div>
             </Button>
           </div>
         )}
       </div>
+
+      {alert.shown && (
+        <Alert type={alert.type} text={alert.text} onClose={onAlertClose}/>
+      )}
     </div>
   );
 }
