@@ -42,21 +42,18 @@ function App() {
           path="/auth"
           element={!user ? <AuthPage setUser={setUser} /> : <Navigate to="/" />}
         />
-
         <Route
           path="/"
           element={
             user ? <WeekPage setUser={setUser} /> : <Navigate to="/auth" />
           }
         />
-
         <Route
           path="/day/:dayId"
           element={user ? <DayFullPage /> : <Navigate to="/auth" />}
         />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
-
         <Route path="/admin-auth" element={<AdminAuth />} />
         <Route
           path="/admin"
