@@ -57,13 +57,13 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
 
-        <Route path="*" element={<Navigate to="/" />} />
         <Route path="/admin-auth" element={<AdminAuth />} />
         <Route
           path="/admin"
           element={isAdmin ? <Admin /> : <Navigate to="/admin-auth" />}
         />
       </Routes>
+      <Route path="*" element={<Navigate to="/" />} />
     </div>
   );
 }
