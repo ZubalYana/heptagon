@@ -50,12 +50,12 @@ export default function Admin() {
         </div>
       </div>
 
-      <div className="w-full flex-col flex gap-x-4 lg:flex-row">
-        <div className="w-full lg:w-[50%]">
+      <div className="w-full flex-col flex gap-x-6 lg:flex-row">
+        <div className="w-full lg:w-[35%]">
           <h3 className="mb-4">Registered Users:</h3>
           <UsersList users={users} />
         </div>
-        <div className="w-full lg:w-[50%]">
+        <div className="w-full lg:w-[65%]">
           <h3 className="mb-4">Received Feedback:</h3>
           <FeedbacksList feedbacks={feedbacks}/>
         </div>
