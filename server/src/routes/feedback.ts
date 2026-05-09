@@ -1,5 +1,6 @@
 import express from 'express';
 import Feedback from '../models/Feedback';
+import { verifyAdmin } from '../middleware/verifyAdmin';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.post('/create', async (req,res)=>{
     }
 })
 
-router.get('/all', async (req,res)=>{
+router.get('/all', verifyAdmin, async (req,res)=>{
     try{
         const feedback = Feedback.find();
         if(!feedback){
