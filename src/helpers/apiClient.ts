@@ -62,16 +62,14 @@ apiClient.interceptors.response.use(
       return new Promise(() => {});
     }
 
-    if (error.response?.status === 403 && !isRedirecting) {
-      isRedirecting = true;
-      localStorage.removeItem("adminToken");
-      clearAdmin?.();
-      navigator("/admin-auth", { replace: true });
-      setTimeout(() => {
-        isRedirecting = false;
-      }, 500);
-      return new Promise(() => {});
-    }
+    if (error.response?.status === 403 && !isRedirecting && clearAdmin) {
+  isRedirecting = true;
+  localStorage.removeItem("adminToken");
+  clearAdmin?.();
+  navigator("/admin-auth", { replace: true });
+  setTimeout(() => { isRedirecting = false; }, 500);
+  return new Promise(() => {});
+}
 
     return Promise.reject(error);
   }
