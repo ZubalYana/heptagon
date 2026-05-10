@@ -87,7 +87,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
 
   return (
     <div
-      className="w-full md:h-full h-fit flex flex-col items-center"
+      className="w-full md:h-full h-fit flex flex-col items-center relative"
       onMouseDown={(e) => onDragStart(e.clientX)}
       onMouseUp={(e) => onDragEnd(e.clientX)}
       onMouseLeave={() => {
@@ -155,7 +155,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
       <a
         href="/privacy"
         target="_blank"
-        className="text-xs text-gray-500 hover:text-gray-400"
+        className="absolute -bottom-10 text-xs text-gray-500 hover:text-gray-400"
       >
         Privacy Policy
       </a>
