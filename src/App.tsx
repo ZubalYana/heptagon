@@ -36,7 +36,7 @@ function App() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="w-full p-[20px] lg:p-[40px] flex justify-center md:items-center md:overflow-y-auto">
+    <div className="w-full min-h-screen p-[20px] lg:p-[40px] flex justify-center">
       <Routes>
         <Route
           path="/auth"
