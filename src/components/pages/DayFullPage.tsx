@@ -23,7 +23,7 @@ export default function DayFullPage() {
   if (!day) return <div>Loading your day...</div>;
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col min-h-0">
       <p
         className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
         onClick={() => navigate(`/${location.search}`)}
@@ -35,7 +35,7 @@ export default function DayFullPage() {
       <p className="lg:text-[16px] text-[14px] text-[#ccc] font-light lg:-mt-[3px]">
         {formatDate(day.date, "long", "includingYear")}
       </p>
-      <div className="w-full flex-1 flex flex-col md:flex-row gap-x-6 mt-4">
+     <div className="w-full flex flex-col md:flex-row gap-x-6 mt-4">
         <div className="flex-1 flex flex-col">
           <DayTasksController
             tasks={day.tasks}
