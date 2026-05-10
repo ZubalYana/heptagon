@@ -35,13 +35,7 @@ router.get("/events", authMiddleware, async (req, res) => {
   try {
     const auth = await getAuthClient(req.user.id);
     if (!auth)
-      return res.status(403).json({ message: "Calendar not connected" });
-
-    if (!auth) {
-      return res.status(401).json({
-        message: "Not authorised. Visit /api/calendar/auth first.",
-      });
-    }
+      return res.status(200).json({ events: [], connected: false });
 
     const calendar = google.calendar({ version: "v3", auth });
     const result = await calendar.events.list({
