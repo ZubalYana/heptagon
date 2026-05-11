@@ -87,7 +87,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
 
   return (
     <div
-      className="w-full md:h-full h-fit flex flex-col items-center relative"
+      className="w-full md:h-full min-h-0 flex flex-col items-center"
       onMouseDown={(e) => onDragStart(e.clientX)}
       onMouseUp={(e) => onDragEnd(e.clientX)}
       onMouseLeave={() => {
@@ -141,6 +141,14 @@ export default function WeekPage({ setUser }: WeekPageProps) {
           </div>
         )}
       </div>
+
+          <a
+        href="/privacy"
+        target="_blank"
+        className="mt-6 text-xs text-gray-500 hover:text-gray-400"
+      >
+        Privacy Policy
+      </a>
       {settingsOpened && (
         <div
           className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
@@ -152,13 +160,8 @@ export default function WeekPage({ setUser }: WeekPageProps) {
           />
         </div>
       )}
-      <a
-        href="/privacy"
-        target="_blank"
-        className="absolute -bottom-10 text-xs text-gray-500 hover:text-gray-400"
-      >
-        Privacy Policy
-      </a>
+
+  
     </div>
   );
 }
