@@ -1,7 +1,7 @@
 export default function Privacy() {
   return (
-    <div>
-        <div className="flex items-center gap-x-2 p-[20px] lg:p-[40px]">
+    <div className="p-[20px] lg:p-[40px]">
+        <div className="flex items-center gap-x-2 ">
             <div className="w-[35px] h-[35px]">
                 <img src="./heptagonLogo.svg" alt="Heptagon" />
             </div>
