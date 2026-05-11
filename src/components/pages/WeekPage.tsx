@@ -129,7 +129,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
             {currentWeekNumber !== getWeekNumber(new Date()).weekNumber - 1 &&
               currentYear == getWeekNumber(new Date()).year && (
                 <p
-                  className="text-[#888] text-[12px] cursor-pointer uppercase mt-2 hover:text-white transition-colors duration-200"
+                  className="text-[#888] text-[10px] cursor-pointer uppercase mt-2 lg:mt-2 hover:text-white transition-colors duration-200"
                   onClick={() => {
                     fetchWeek("current");
                     setAnimationDirection(0);
@@ -145,7 +145,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
           <a
         href="/privacy"
         target="_blank"
-        className="mt-6 text-xs text-gray-500 hover:text-gray-400"
+        className="mt-6 lg:mt-4 text-xs text-gray-500 hover:text-gray-400"
       >
         Privacy Policy
       </a>
