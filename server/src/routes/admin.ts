@@ -44,8 +44,13 @@ router.get("/users", verifyAdmin, async (req,res)=>{
 router.delete("/delete-user", verifyAdmin, async (req, res)=>{
   try{
     const { userId } = req.body;
-    const user = await User.findByIdAndDelete(userId);
-    await user.save();
+    const user = await User.findById(userId);
+    if(!user){
+      res.status(404).json({message: 'User not found'});
+      return;
+    }
+    await user.deleteOne();
+    user.save();
     res.status(200).json({message: 'User deleted successfully'});
   }catch(err){
     res.status(500).json({message: 'Error deleting user.'});
