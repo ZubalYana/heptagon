@@ -39,7 +39,7 @@ export default function AuthPage() {
         return;
       }
 
-      localStorage.setItem("adminToken", data.adminToken); // <-- save it
+      localStorage.setItem("adminToken", data.adminToken); 
       navigate("/admin");
     } catch (err) {
       console.error("Failed to log admin in:", err);
@@ -48,7 +48,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-[#151515] text-white p-4 p-[20px] lg:p-[40px]">
+    <div className="w-full h-screen flex flex-col justify-center items-center bg-[#151515] text-white p-4 p-[20px] lg:p-[40px]">
       <AnimatePresence>
         {alert.shown && (
           <Alert type={alert.type} text={alert.text} onClose={closeAlert} />

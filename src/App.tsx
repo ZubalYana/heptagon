@@ -8,20 +8,20 @@ import type User from "./interfaces/User";
 import { setNavigator, setClearUser } from "./helpers/apiClient";
 import Privacy from "./components/pages/Privacy";
 import Terms from "./components/pages/Terms";
-// import Admin from "./components/pages/Admin";
-// import AdminAuth from "./components/pages/AdminAuth";
-// import { setClearAdmin } from "./helpers/apiClient";
+import Admin from "./components/pages/Admin";
+import AdminAuth from "./components/pages/AdminAuth";
+import { setClearAdmin } from "./helpers/apiClient";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  // const [isAdmin, setIsAdmin] = useState(!!localStorage.getItem("adminToken"));
+  const [isAdmin, setIsAdmin] = useState(!!localStorage.getItem("adminToken"));
   const navigate = useNavigate();
 
   useEffect(() => {
     setNavigator(navigate);
     setClearUser(() => setUser(null));
-    // setClearAdmin(() => setIsAdmin(false));
+    setClearAdmin(() => setIsAdmin(false));
   }, [navigate]);
 
   useEffect(() => {
@@ -54,11 +54,11 @@ function App() {
         />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
-        {/* <Route path="/admin-auth" element={<AdminAuth />} />
+        <Route path="/admin-auth" element={<AdminAuth />} />
         <Route
           path="/admin"
           element={isAdmin ? <Admin /> : <Navigate to="/admin-auth" />}
-        /> */}
+        />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
