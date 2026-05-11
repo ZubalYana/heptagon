@@ -41,4 +41,15 @@ router.get("/users", verifyAdmin, async (req,res)=>{
   }
 })
 
+router.delete("/delete-user", verifyAdmin, async (req, res)=>{
+  try{
+    const { userId } = req.body;
+    const user = await User.findByIdAndDelete(userId);
+    await user.save();
+    res.status(200).json({message: 'User deleted successfully'});
+  }catch(err){
+    res.status(500).json({message: 'Error deleting user.'});
+  }
+})
+
 export default router;
