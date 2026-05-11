@@ -23,7 +23,7 @@ export default function DayFullPage() {
   if (!day) return <div>Loading your day...</div>;
 
   return (
-    <div className="w-full flex flex-col min-h-0">
+    <div className="w-full flex flex-col min-h-0 p-[20px] lg:p-[40px]">
       <p
         className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
         onClick={() => navigate(`/${location.search}`)}

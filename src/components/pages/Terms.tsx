@@ -9,7 +9,7 @@ export default function Terms() {
           Terms of Service for Heptagon
         </h3>
       </div>
-      <p className="text-[14px] md:text-[16px] mt-4 flex flex-col gap-y-2">
+      <p className="text-[14px] md:text-[16px] mt-4 flex flex-col gap-y-2 p-[20px] lg:p-[40px]">
         <span>
           By using Heptagon you agree to use it for lawful purposes only. The
           app is provided as-is. We reserve the right to terminate access for

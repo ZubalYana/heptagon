@@ -32,7 +32,7 @@ export default function Admin() {
     getFeedbacks();
   }, []);
   return (
-    <div className="w-full h-full flex flex-col items-center bg-[#151515] text-white">
+    <div className="w-full h-full flex flex-col items-center bg-[#151515] text-white p-[20px] lg:p-[40px]">
       <AnimatePresence>
         {alert.shown && (
           <Alert type={alert.type} text={alert.text} onClose={closeAlert} />

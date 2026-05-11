@@ -87,7 +87,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
 
   return (
     <div
-      className="w-full md:h-full min-h-0 flex flex-col items-center"
+      className="w-full md:h-full min-h-0 flex flex-col items-center p-[20px] lg:p-[40px]"
       onMouseDown={(e) => onDragStart(e.clientX)}
       onMouseUp={(e) => onDragEnd(e.clientX)}
       onMouseLeave={() => {

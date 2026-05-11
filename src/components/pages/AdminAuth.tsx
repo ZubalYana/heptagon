@@ -48,7 +48,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-[#151515] text-white p-4">
+    <div className="w-full h-full flex flex-col justify-center items-center bg-[#151515] text-white p-4 p-[20px] lg:p-[40px]">
       <AnimatePresence>
         {alert.shown && (
           <Alert type={alert.type} text={alert.text} onClose={closeAlert} />
