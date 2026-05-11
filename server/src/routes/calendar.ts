@@ -53,4 +53,10 @@ router.get("/events", authMiddleware, async (req, res) => {
   }
 });
 
+router.delete("/disconnect", authMiddleware, async (req, res) => {
+  if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+  await User.findByIdAndUpdate(req.user.id, { $unset: { googleTokens: "" } });
+  res.json({ success: true });
+});
+
 export default router;

@@ -57,12 +57,21 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
 
   const connectCalendar = async () => {
     const token = localStorage.getItem("token");
+
+    if (calendarConnected) {
+      await fetch(`${baseURL}/calendar/disconnect`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCalendarConnected(false);
+      return;
+    }
+
     const response = await fetch(`${baseURL}/calendar/auth-url`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const { url } = await response.json();
     window.location.href = url;
-    setCalendarConnected;
   };
 
   const sendFeedback = async () => {
@@ -77,7 +86,7 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
         text: "Feedback sent successfully! Thanks!",
         type: "success",
       });
-      setFeedbackText("")
+      setFeedbackText("");
     } catch (err) {
       setAlert({
         shown: true,
@@ -88,8 +97,8 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
   };
 
   const onAlertClose = () => {
-    setAlert({shown: false, text: "", type: "success"})
-  }
+    setAlert({ shown: false, text: "", type: "success" });
+  };
 
   return (
     <div
@@ -158,7 +167,12 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
                 setFeedbackText(e.target.value);
               }}
             />
-            <Button className="mt-6" onClick={()=>{sendFeedback()}}>
+            <Button
+              className="mt-6"
+              onClick={() => {
+                sendFeedback();
+              }}
+            >
               <div className="flex items-center gap-x-2">
                 <Send size={18} /> Send
               </div>
@@ -168,7 +182,7 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
       </div>
 
       {alert.shown && (
-        <Alert type={alert.type} text={alert.text} onClose={onAlertClose}/>
+        <Alert type={alert.type} text={alert.text} onClose={onAlertClose} />
       )}
     </div>
   );
