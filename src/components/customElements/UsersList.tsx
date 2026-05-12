@@ -1,11 +1,15 @@
 import type User from "../../interfaces/User";
 import { Trash2 } from "lucide-react";
+import ActionConfirmation from "../popups/ActionConfirmation";
+import { useState } from "react";
 
 interface UsersListProps {
   users: User[] | null;
 }
 
 export default function UsersList({ users }: UsersListProps) {
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState<boolean>(false);
+  const [deletingUserEmail, setDeletingUserEmail] = useState<string>("");
   if (!users || users.length === 0) {
     return (
       <div className="w-full flex items-center justify-center py-10">
@@ -19,9 +23,15 @@ export default function UsersList({ users }: UsersListProps) {
   return (
     <div className="w-full flex flex-col gap-y-2">
       <div className="w-full flex items-center gap-4">
-        <span className="text-[11px] tracking-widest uppercase text-[#444] w-6">#</span>
-        <span className="text-[11px] tracking-widest uppercase text-[#444] flex-1">Name</span>
-        <span className="text-[11px] tracking-widest uppercase text-[#444] flex-1">Email</span>
+        <span className="text-[11px] tracking-widest uppercase text-[#444] w-6">
+          #
+        </span>
+        <span className="text-[11px] tracking-widest uppercase text-[#444] flex-1">
+          Name
+        </span>
+        <span className="text-[11px] tracking-widest uppercase text-[#444] flex-1">
+          Email
+        </span>
       </div>
 
       {users.map((user, index) => (
@@ -43,14 +53,33 @@ export default function UsersList({ users }: UsersListProps) {
             {user.email}
           </p>
 
-          <Trash2 className="text-red-400 w-[15px] h-[15px] hover:scale-[1.2] hover:shadow cursor-pointer transition-all duration-300" strokeWidth={1.5}/>
-
+          <Trash2
+            className="text-red-400 w-[15px] h-[15px] hover:scale-[1.2] hover:shadow cursor-pointer transition-all duration-300"
+            strokeWidth={1.5}
+            onClick={() => {
+              setDeletingUserEmail(user.email);
+              setIsConfirmationOpen(true);
+            }}
+          />
         </div>
       ))}
 
       <p className="text-[11px] text-[#333] tracking-widest uppercase px-4 pt-2">
         {users.length} user{users.length !== 1 ? "s" : ""} total
       </p>
+
+      {isConfirmationOpen && (
+        <div
+          className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
+          onClick={() => setIsConfirmationOpen(false)}
+        >
+          <ActionConfirmation
+            confirmationText={`Are you sure you want to delete user ${deletingUserEmail}?`}
+            onClose={() => setIsConfirmationOpen(false)}
+            buttonText={'Delete permanently'}
+          />
+        </div>
+      )}
     </div>
   );
 }
