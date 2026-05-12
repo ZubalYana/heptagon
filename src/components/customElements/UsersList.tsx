@@ -1,4 +1,5 @@
 import type User from "../../interfaces/User";
+import { Trash2 } from "lucide-react";
 
 interface UsersListProps {
   users: User[] | null;
@@ -42,7 +43,8 @@ export default function UsersList({ users }: UsersListProps) {
             {user.email}
           </p>
 
-          <div className="w-1.5 h-1.5 rounded-full bg-[#39FF14]/0 group-hover:bg-[#39FF14] transition-all duration-200 shadow-[0_0_6px_#39FF14]" />
+          <Trash2 className="text-red-400 w-[15px] h-[15px] hover:scale-[1.2] hover:shadow cursor-pointer transition-all duration-300" strokeWidth={1.5}/>
+
         </div>
       ))}
 
