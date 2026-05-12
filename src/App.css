@@ -1,6 +1,6 @@
 #root{
     width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
     background-color: #151515;
     color: #F5F5F5
 }
@@ -37,3 +37,6 @@ div, p, a, link, label, button, span{
   background-color: rgba(0, 255, 38, 0.6);
 }
 
+html, body {
+  background-color: #151515; 
+}
