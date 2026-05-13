@@ -4,11 +4,13 @@ interface ActionConfirmationProps {
   onClose?: () => void;
   confirmationText: String;
   buttonText: String;
+  onConfirm: () => void;
 }
 export default function ActionConfirmation({
   onClose,
   confirmationText,
   buttonText,
+  onConfirm,
 }: ActionConfirmationProps) {
   return (
     <div
@@ -50,6 +52,7 @@ export default function ActionConfirmation({
           "focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:bg-red-500/10",
           "active:scale-[0.98] active:translate-y-0",
         ].join(" ")}
+        onClick={()=>onConfirm()}
       >
         {buttonText}
       </button>

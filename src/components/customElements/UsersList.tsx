@@ -2,6 +2,7 @@ import type User from "../../interfaces/User";
 import { Trash2 } from "lucide-react";
 import ActionConfirmation from "../popups/ActionConfirmation";
 import { useState } from "react";
+import apiClient from "../../helpers/apiClient";
 
 interface UsersListProps {
   users: User[] | null;
@@ -10,6 +11,7 @@ interface UsersListProps {
 export default function UsersList({ users }: UsersListProps) {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState<boolean>(false);
   const [deletingUserEmail, setDeletingUserEmail] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
   if (!users || users.length === 0) {
     return (
       <div className="w-full flex items-center justify-center py-10">
@@ -18,6 +20,10 @@ export default function UsersList({ users }: UsersListProps) {
         </p>
       </div>
     );
+  }
+
+  function onDeleteUser(){
+    apiClient.delete("admin/delete-user", {data: {userId}})
   }
 
   return (
@@ -36,7 +42,7 @@ export default function UsersList({ users }: UsersListProps) {
 
       {users.map((user, index) => (
         <div
-          key={user.id}
+          key={user._id}
           className="w-full px-4 py-3 flex items-center gap-4 rounded-lg border border-[#2a2a2a] bg-[#1B1B1B] hover:border-[#39FF14]/40 hover:bg-[#1f1f1f] transition-all duration-200 group"
         >
           <span className="text-[12px] text-[#333] w-6 font-mono group-hover:text-[#39FF14]/50 transition-colors duration-200">
@@ -58,6 +64,8 @@ export default function UsersList({ users }: UsersListProps) {
             strokeWidth={1.5}
             onClick={() => {
               setDeletingUserEmail(user.email);
+              setUserId(user._id)
+              console.log(user._id)
               setIsConfirmationOpen(true);
             }}
           />
@@ -77,6 +85,7 @@ export default function UsersList({ users }: UsersListProps) {
             confirmationText={`Are you sure you want to delete user ${deletingUserEmail}?`}
             onClose={() => setIsConfirmationOpen(false)}
             buttonText={'Delete permanently'}
+            onConfirm={()=>onDeleteUser()}
           />
         </div>
       )}

@@ -50,7 +50,6 @@ router.delete("/delete-user", verifyAdmin, async (req, res)=>{
       return;
     }
     await user.deleteOne();
-    user.save();
     res.status(200).json({message: 'User deleted successfully'});
   }catch(err){
     res.status(500).json({message: 'Error deleting user.'});
