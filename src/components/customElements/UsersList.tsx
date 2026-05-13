@@ -20,8 +20,8 @@ export default function UsersList({ users, onUserDeleted }: UsersListProps) {
     text: string;
   }>({ shown: false, type: "success", text: "" });
 
-  function onAlertClose(){
-    setAlert({shown: false, type: 'success', text: ''})
+  function onAlertClose() {
+    setAlert({ shown: false, type: "success", text: "" });
   }
 
   if (!users || users.length === 0) {
@@ -35,18 +35,27 @@ export default function UsersList({ users, onUserDeleted }: UsersListProps) {
   }
 
   function onDeleteUser() {
-    apiClient.delete("admin/delete-user", { data: { userId } })
-    .then(()=>{
-      setIsConfirmationOpen(false);
-      onUserDeleted(userId)
-      setDeletingUserEmail("")
-      setUserId("")
-      setAlert({shown: true, type: 'success', text: 'User deleted successfully!'})
-    })
-    .catch((err)=>{
-      setAlert({shown: true, type: 'error', text: 'Failed to delete user. See error in console.'})
-      console.log(err.message);
-    })
+    apiClient
+      .delete("admin/delete-user", { data: { userId } })
+      .then(() => {
+        setIsConfirmationOpen(false);
+        onUserDeleted(userId);
+        setDeletingUserEmail("");
+        setUserId("");
+        setAlert({
+          shown: true,
+          type: "success",
+          text: "User deleted successfully!",
+        });
+      })
+      .catch((err) => {
+        setAlert({
+          shown: true,
+          type: "error",
+          text: "Failed to delete user. See error in console.",
+        });
+        console.log(err.message);
+      });
   }
 
   return (
@@ -55,7 +64,7 @@ export default function UsersList({ users, onUserDeleted }: UsersListProps) {
         <span className="text-[11px] tracking-widest uppercase text-[#444] w-6">
           #
         </span>
-        <span className="text-[11px] tracking-widest uppercase text-[#444] flex-1">
+        <span className="text-[11px] tracking-widest uppercase text-[#444] w-[100px]">
           Name
         </span>
         <span className="text-[11px] tracking-widest uppercase text-[#444] flex-1">
@@ -72,7 +81,7 @@ export default function UsersList({ users, onUserDeleted }: UsersListProps) {
             {String(index + 1).padStart(2, "0")}
           </span>
 
-          <h3 className="flex-1 text-[14px] font-medium text-white truncate">
+          <h3 className="w-[100px] text-[14px] font-medium text-white truncate">
             {user.name}
           </h3>
 
@@ -114,7 +123,11 @@ export default function UsersList({ users, onUserDeleted }: UsersListProps) {
       )}
 
       {alert.shown && (
-        <Alert type={alert.type} text={alert.text} onClose={()=>onAlertClose()}/>
+        <Alert
+          type={alert.type}
+          text={alert.text}
+          onClose={() => onAlertClose()}
+        />
       )}
     </div>
   );

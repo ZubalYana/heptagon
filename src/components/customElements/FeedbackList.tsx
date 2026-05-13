@@ -19,8 +19,8 @@ export default function FeedbacksList({ feedbacks }: FeedbacksListProps) {
     <div className="w-full flex flex-col gap-y-2">
       <div className="w-full flex items-center gap-4 px-4">
         <span className="text-[11px] tracking-widest uppercase text-[#444] w-6">#</span>
-        <span className="text-[11px] tracking-widest uppercase text-[#444] w-[140px]">Name</span>
-        <span className="text-[11px] tracking-widest uppercase text-[#444] w-[180px]">Email</span>
+        <span className="text-[11px] tracking-widest uppercase text-[#444] w-[110px]">Name</span>
+        <span className="text-[11px] tracking-widest uppercase text-[#444] w-[150px]">Email</span>
         <span className="text-[11px] tracking-widest uppercase text-[#444] flex-1">Feedback</span>
         <span className="text-[11px] tracking-widest uppercase text-[#444] w-[90px] text-right">Date</span>
       </div>
@@ -32,11 +32,11 @@ export default function FeedbacksList({ feedbacks }: FeedbacksListProps) {
           <span className="text-[12px] text-[#333] w-6 font-mono group-hover:text-[#39FF14]/50 transition-colors duration-200 pt-0.5">
             {String(index + 1).padStart(2, "0")}
           </span>
-          <h3 className="w-[140px] text-[14px] font-medium text-white truncate">
+          <h3 className="w-[110px] text-[14px] font-medium text-white truncate">
             {String(feedback.userName)}
           </h3>
           <div className="w-px self-stretch bg-[#2a2a2a] group-hover:bg-[#39FF14]/20 transition-colors duration-200" />
-          <p className="w-[180px] text-[13px] text-[#888] truncate font-light">
+          <p className="w-[150px] text-[13px] text-[#888] truncate font-light">
             {String(feedback.userEmail)}
           </p>
           <div className="w-px self-stretch bg-[#2a2a2a] group-hover:bg-[#39FF14]/20 transition-colors duration-200" />
