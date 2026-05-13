@@ -7,9 +7,10 @@ import Alert from "./Alert";
 
 interface UsersListProps {
   users: User[] | null;
+  onUserDeleted: (userId: string) => void;
 }
 
-export default function UsersList({ users }: UsersListProps) {
+export default function UsersList({ users, onUserDeleted }: UsersListProps) {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState<boolean>(false);
   const [deletingUserEmail, setDeletingUserEmail] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
@@ -37,6 +38,9 @@ export default function UsersList({ users }: UsersListProps) {
     apiClient.delete("admin/delete-user", { data: { userId } })
     .then(()=>{
       setIsConfirmationOpen(false);
+      onUserDeleted(userId)
+      setDeletingUserEmail("")
+      setUserId("")
       setAlert({shown: true, type: 'success', text: 'User deleted successfully!'})
     })
     .catch((err)=>{
