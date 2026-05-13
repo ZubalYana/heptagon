@@ -18,7 +18,10 @@ interface SettingsProps {
 
 export default function Settings({ onClose, setUser }: SettingsProps) {
   const [activeSection, setActiveSection] = useState<SettingSection>("General");
-  const [optionalIncluded, setOptionalIncluded] = useState<boolean>(false);
+  const [optionalIncluded, setOptionalIncluded] = useState<boolean>(() => {
+  const saved = localStorage.getItem("optionalIncluded");
+  return saved !== null ? saved === "true" : false;
+});
   const [calendarConnected, setCalendarConnected] = useState<boolean>(false);
   const [user, setLocalUser] = useState<User | null>(null);
   const [feedbackText, setFeedbackText] = useState<string>("");
@@ -30,9 +33,7 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
-    if (stored) {
-      setLocalUser(JSON.parse(stored));
-    }
+    if (stored) setLocalUser(JSON.parse(stored));
   }, []);
 
   useEffect(() => {
@@ -43,6 +44,10 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
       .then((r) => r.json())
       .then((data) => setCalendarConnected(data.connected));
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("optionalIncluded", `${optionalIncluded}`);
+  }, [optionalIncluded]);
 
   const logOut = () => {
     localStorage.removeItem("token");
