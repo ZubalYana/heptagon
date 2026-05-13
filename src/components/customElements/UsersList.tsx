@@ -3,6 +3,7 @@ import { Trash2 } from "lucide-react";
 import ActionConfirmation from "../popups/ActionConfirmation";
 import { useState } from "react";
 import apiClient from "../../helpers/apiClient";
+import Alert from "./Alert";
 
 interface UsersListProps {
   users: User[] | null;
@@ -12,6 +13,16 @@ export default function UsersList({ users }: UsersListProps) {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState<boolean>(false);
   const [deletingUserEmail, setDeletingUserEmail] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
+  const [alert, setAlert] = useState<{
+    shown: boolean;
+    type: "success" | "info" | "error";
+    text: string;
+  }>({ shown: false, type: "success", text: "" });
+
+  function onAlertClose(){
+    setAlert({shown: false, type: 'success', text: ''})
+  }
+
   if (!users || users.length === 0) {
     return (
       <div className="w-full flex items-center justify-center py-10">
@@ -22,8 +33,16 @@ export default function UsersList({ users }: UsersListProps) {
     );
   }
 
-  function onDeleteUser(){
-    apiClient.delete("admin/delete-user", {data: {userId}})
+  function onDeleteUser() {
+    apiClient.delete("admin/delete-user", { data: { userId } })
+    .then(()=>{
+      setIsConfirmationOpen(false);
+      setAlert({shown: true, type: 'success', text: 'User deleted successfully!'})
+    })
+    .catch((err)=>{
+      setAlert({shown: true, type: 'error', text: 'Failed to delete user. See error in console.'})
+      console.log(err.message);
+    })
   }
 
   return (
@@ -64,8 +83,8 @@ export default function UsersList({ users }: UsersListProps) {
             strokeWidth={1.5}
             onClick={() => {
               setDeletingUserEmail(user.email);
-              setUserId(user._id)
-              console.log(user._id)
+              setUserId(user._id);
+              console.log(user._id);
               setIsConfirmationOpen(true);
             }}
           />
@@ -84,10 +103,14 @@ export default function UsersList({ users }: UsersListProps) {
           <ActionConfirmation
             confirmationText={`Are you sure you want to delete user ${deletingUserEmail}?`}
             onClose={() => setIsConfirmationOpen(false)}
-            buttonText={'Delete permanently'}
-            onConfirm={()=>onDeleteUser()}
+            buttonText={"Delete permanently"}
+            onConfirm={() => onDeleteUser()}
           />
         </div>
+      )}
+
+      {alert.shown && (
+        <Alert type={alert.type} text={alert.text} onClose={()=>onAlertClose()}/>
       )}
     </div>
   );
