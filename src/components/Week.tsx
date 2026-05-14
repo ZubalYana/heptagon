@@ -1,4 +1,5 @@
 import type Week from "../interfaces/Week";
+import Loader from "./customElements/Loader";
 import WeekDay from "./WeekDay";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -8,7 +9,7 @@ interface WeekProps {
 }
 export default function Week({ week, animationDirection }: WeekProps) {
   if (!week) {
-    return <div>Loading your week...</div>;
+    return <div className="w-full h-full flex items-center justify-center absolute top-0 left-0"><Loader size="lg" label="Loading week..."/></div>
   }
 
   const optionalIncluded = localStorage.getItem("optionalIncluded") === "true";

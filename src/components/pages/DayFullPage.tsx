@@ -7,6 +7,7 @@ import EventsViewWindow from "../EventsViewWindow";
 import apiClient from "../../helpers/apiClient";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Loader from "../customElements/Loader";
 
 export default function DayFullPage() {
   const { dayId } = useParams();
@@ -20,7 +21,7 @@ export default function DayFullPage() {
     });
   }, [dayId]);
 
-  if (!day) return <div>Loading your day...</div>;
+  if (!day) return <div className="w-full h-full flex items-center justify-center absolute top-0 left-0"><Loader size="lg" label="Loading day..."/></div>;
 
   return (
     <div className="w-full flex flex-col p-[20px] lg:p-[40px]">

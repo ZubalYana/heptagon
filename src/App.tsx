@@ -11,6 +11,7 @@ import Terms from "./components/pages/Terms";
 import Admin from "./components/pages/Admin";
 import AdminAuth from "./components/pages/AdminAuth";
 import { setClearAdmin } from "./helpers/apiClient";
+import Loader from "./components/customElements/Loader";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -32,8 +33,7 @@ function App() {
     setLoading(false);
   }, []);
 
-  //To be replaced with a proper loader later
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="w-full h-screen flex items-center justify-center absolute top-0 left-0"><Loader size="lg" label="Loading application..."/></div>;
 
   return (
     <div className="w-full min-h-dvh flex justify-center">
