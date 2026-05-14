@@ -35,28 +35,64 @@ export default function DayTasksController({
   }
 
   function onToggle(id: string) {
-    apiClient.put("/tasks/complete", { id }).then(({ data }) => {
-      setLocalTasks((prev) =>
-        prev.map((task) =>
-          task._id === id
-            ? {
-                ...task,
-                completed: data.task.completed,
-                subtasks: data.task.subtasks,
-              }
-            : task
-        )
-      );
-    });
+    const previousTasks = localTasks;
+
+    setLocalTasks((prev) =>
+      prev.map((task) =>
+        task._id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+    apiClient
+      .put("/tasks/complete", { id })
+      .then(({ data }) => {
+        setLocalTasks((prev) =>
+          prev.map((task) =>
+            task._id === id
+              ? {
+                  ...task,
+                  completed: data.task.completed,
+                  subtasks: data.task.subtasks,
+                }
+              : task
+          )
+        );
+      })
+      .catch(() => {
+        setLocalTasks(previousTasks);
+        setAlert({ shown: true, type: "error", text: "Failed to update task" });
+      });
   }
 
   function onToggleSubtask(taskId: string, subtaskId: string) {
+    const previousTasks = localTasks;
+
+    setLocalTasks((prev) =>
+      prev.map((task) =>
+        task._id === taskId
+          ? {
+              ...task,
+              subtasks: task.subtasks?.map((s) =>
+                s._id === subtaskId ? { ...s, completed: !s.completed } : s
+              ),
+            }
+          : task
+      )
+    );
+
     apiClient
       .patch("/tasks/complete-subtask", { taskId, subtaskId })
       .then(({ data }) => {
         setLocalTasks((prev) =>
           prev.map((task) => (task._id === taskId ? data.task : task))
         );
+      })
+      .catch(() => {
+        setLocalTasks(previousTasks);
+        setAlert({
+          shown: true,
+          type: "error",
+          text: "Failed to update subtask",
+        });
       });
   }
 
