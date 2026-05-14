@@ -11,6 +11,8 @@ export default function Week({ week, animationDirection }: WeekProps) {
     return <div>Loading your week...</div>;
   }
 
+  const optionalIncluded = localStorage.getItem("optionalIncluded") === "true";
+
   return (
     <AnimatePresence mode="wait" custom={animationDirection}>
       <motion.div
@@ -47,6 +49,14 @@ export default function Week({ week, animationDirection }: WeekProps) {
               0
             );
 
+            const totalItemsExeptOptional = allTasks.reduce(
+              (acc, task) =>
+                task.priority !== "optional"
+                  ? acc + 1 + (task.subtasks?.length ?? 0)
+                  : acc,
+              0
+            );
+
             allTasks.forEach((task) => {
               if (task.priority === "high") {
                 crucial++;
@@ -66,7 +76,15 @@ export default function Week({ week, animationDirection }: WeekProps) {
             const percentage =
               totalItems === 0
                 ? 0
-                : Math.round((completedItems / totalItems) * 100);
+                : optionalIncluded
+                ? Math.round((completedItems / totalItems) * 100)
+                : totalItemsExeptOptional === 0
+                ? 0
+                : Math.round(
+                    ((completedItems - completedOptional) /
+                      totalItemsExeptOptional) *
+                      100
+                  );
 
             return (
               <WeekDay
