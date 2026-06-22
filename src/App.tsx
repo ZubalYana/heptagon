@@ -12,6 +12,7 @@ import Admin from "./components/pages/Admin";
 import AdminAuth from "./components/pages/AdminAuth";
 import { setClearAdmin } from "./helpers/apiClient";
 import Loader from "./components/customElements/Loader";
+import Landing from "./components/pages/Landing";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -40,10 +41,10 @@ function App() {
       <Routes>
         <Route
           path="/auth"
-          element={!user ? <AuthPage setUser={setUser} /> : <Navigate to="/" />}
+          element={!user ? <AuthPage setUser={setUser} /> : <Navigate to="/app" />}
         />
         <Route
-          path="/"
+          path="/app"
           element={
             user ? <WeekPage setUser={setUser} /> : <Navigate to="/auth" />
           }
@@ -55,11 +56,12 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/admin-auth" element={<AdminAuth />} />
+        <Route path="/" element={<Landing/>} />
         <Route
           path="/admin"
           element={isAdmin ? <Admin /> : <Navigate to="/admin-auth" />}
         />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/app" />} />
       </Routes>
     </div>
   );

@@ -42,7 +42,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         setUser(data.user);
-        navigate("/");
+        navigate("/app");
       })
       .catch((err) => {
         setAlert({
@@ -64,7 +64,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         setUser(data.user);
-        navigate("/");
+        navigate("/app");
       })
       .catch((err) => {
         setAlert({
