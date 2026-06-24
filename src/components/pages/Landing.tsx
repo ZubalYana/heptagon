@@ -1,6 +1,5 @@
 import PrimaryButton from "../customElements/PrimaryButton";
 import { UserRoundPlus, Search } from "lucide-react";
-import SecondaryButton from "../customElements/SecondaryButton";
 import OutlineButton from "../customElements/OutlineButton";
 
 export default function Landing() {
@@ -35,7 +34,7 @@ export default function Landing() {
       <div className="w-full flex-1 flex items-center">
         <div className="w-full flex flex-col lg:flex-row items-center gap-y-10 lg:gap-x-12">
 
-          <div className="w-full flex flex-col items-center">
+          <div className="w-full flex flex-col items-center text-center">
             <h2 className="uppercase text-[28px] lg:text-[32px] font-semibold leading-tight">
               Your time has a structure, too.
             </h2>
