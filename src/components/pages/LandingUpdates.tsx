@@ -10,7 +10,7 @@ export default function LandingUpdates() {
       status: "Next up",
       title: "Recurring tasks",
       description:
-        "Let's be honest: most of our days look pretty similar. Manually adding tasks like \"wash the dishes\" or \"walk the dog\" every single day is tedious and unnecessary. The next update focuses on fixing exactly that, with recurring tasks done right.",
+        'Let\'s be honest: most of our days look pretty similar. Manually adding tasks like "wash the dishes" or "walk the dog" every single day is tedious and unnecessary. The next update focuses on fixing exactly that, with recurring tasks done right.',
     },
     {
       status: "Long-term",
@@ -26,7 +26,8 @@ export default function LandingUpdates() {
         What to expect in upcoming updates?
       </h2>
 
-<div className="w-full max-w-[1100px] flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 items-start content-center gap-4 lg:gap-6 mt-8 lg:mt-12">        {upcomingUpdates.map((update, index) => (
+      <div className="w-full max-w-[1100px] flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 items-start content-center gap-4 lg:gap-6 mt-8 lg:mt-12">
+        {upcomingUpdates.map((update, index) => (
           <div
             key={index}
             className="relative flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-6 lg:p-7 overflow-hidden hover:border-[#00FF26]/30 transition-colors duration-300"

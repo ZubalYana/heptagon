@@ -6,6 +6,8 @@ export default function LandingHome() {
   const nav = [
     { title: "Usage", link: "" },
     { title: "Updates", link: "" },
+    { title: "FAQ", link: "" },
+    { title: "Get in touch", link: ""}
   ];
 
   return (

@@ -1,6 +1,7 @@
 import LandingHome from "./LandingHome";
 import LandingUsage from "./LandingUsage";
 import LandingUpdates from "./LandingUpdates";
+import LandingFAQ from "./LandingFAQ";
 
 export default function Landing() {
   return (
@@ -8,6 +9,7 @@ export default function Landing() {
       <LandingHome/>
       <LandingUsage/>
       <LandingUpdates/>
+      <LandingFAQ/>
     </div>
   );
 }
