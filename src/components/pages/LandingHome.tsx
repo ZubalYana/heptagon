@@ -4,10 +4,10 @@ import OutlineButton from "../customElements/OutlineButton";
 
 export default function LandingHome() {
   const nav = [
-    { title: "Concept", link: "" },
+    { title: "Usage", link: "" },
     { title: "Updates", link: "" },
   ];
-  
+
   return (
     <div className="w-full h-screen flex flex-col p-[20px] lg:p-[40px]">
       <div className="w-full flex items-center justify-between mb-6 lg:mb-12">
@@ -52,12 +52,14 @@ export default function LandingHome() {
                   Explore
                 </div>
               </OutlineButton>
+              <a href="/auth">
               <PrimaryButton>
                 <div className="flex gap-x-2 text-[16px]">
                   <UserRoundPlus />
                   Sign up
                 </div>
               </PrimaryButton>
+              </a>
             </div>
           </div>
         </div>
