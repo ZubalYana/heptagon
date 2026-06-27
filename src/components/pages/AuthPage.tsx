@@ -76,21 +76,31 @@ export default function AuthPage({ setUser }: AuthPageProps) {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center bg-[#151515] text-white p-[20px] lg:p-[40px]">
+    <div className="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden bg-[#151515] text-white p-[20px] lg:p-[40px]">
+      <div className="absolute inset-0">
+        <div className="absolute top-[-10%] left-[-15%] w-[380px] h-[380px] lg:w-[560px] lg:h-[560px] rounded-full bg-[#00FF26]/[0.07] blur-[100px] lg:blur-[130px]" />
+        <div className="absolute bottom-[-15%] right-[-15%] w-[380px] h-[380px] lg:w-[560px] lg:h-[560px] rounded-full bg-[#00FF26]/[0.05] blur-[100px] lg:blur-[130px]" />
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+      </div>
       <AnimatePresence>
         {alert.shown && (
           <Alert type={alert.type} text={alert.text} onClose={closeAlert} />
         )}
       </AnimatePresence>
-
-      <h1 className="text-[24px] font-medium lg:text-[32px]">
+      <h1 className="relative z-10 text-[24px] font-medium lg:text-[32px]">
         Strike the 100% every day.
       </h1>
-      <p className="text-[14px] font-light lg:text-[16px] text-gray-400 mt-2 text-center">
+      <p className="relative z-10 text-[14px] font-light lg:text-[16px] text-gray-400 mt-2 text-center">
         Heptagon - set up your week from all 7 perspectives.
       </p>
-
-      <div className="w-full h-auto p-[15px] mt-[20px] lg:w-[400px] lg:mt-[30px] lg:p-[20px] bg-[#1B1B1B] border border-[#2a2a2a] rounded-xl shadow-lg">
+      <div className="relative z-10 w-full h-auto p-[15px] mt-[20px] lg:w-[400px] lg:mt-[30px] lg:p-[20px] bg-[#1B1B1B] border border-[#2a2a2a] rounded-xl shadow-lg">
         <AnimatePresence mode="wait">
           {mode === "login" ? (
             <motion.div
