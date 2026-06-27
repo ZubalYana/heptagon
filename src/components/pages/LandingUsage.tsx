@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function LandingUsage() {
@@ -25,7 +25,7 @@ export default function LandingUsage() {
   ];
 
   const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(0); 
+  const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   const next = useCallback(() => {
@@ -49,6 +49,12 @@ export default function LandingUsage() {
     return () => clearInterval(timer);
   }, [isPaused, next]);
 
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
+    setIsPaused(false);
+    if (info.offset.x < -60) next();
+    else if (info.offset.x > 60) prev();
+  };
+
   const variants = {
     enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 0.4 }),
     center: { x: 0, opacity: 1 },
@@ -56,7 +62,10 @@ export default function LandingUsage() {
   };
 
   return (
-    <div id="usage" className="w-full h-screen flex flex-col items-center p-[20px] lg:p-[40px]">
+    <div
+      id="usage"
+      className="w-full h-[70vh] lg:h-screen flex flex-col items-center p-[20px] lg:p-[40px]"
+    >
       <h2 className="uppercase text-[24px] lg:text-[28px] font-semibold leading-tight shrink-0">
         How to use it?
       </h2>
@@ -65,13 +74,13 @@ export default function LandingUsage() {
         <button
           onClick={prev}
           aria-label="Previous slide"
-          className="self-center shrink-0 cursor-pointer p-2 lg:p-3 rounded-full border border-white/15 text-white/50 hover:text-[#00FF26] hover:border-[#00FF26] transition-colors duration-200"
+          className="hidden lg:flex self-center shrink-0 cursor-pointer p-2 lg:p-3 rounded-full border border-white/15 text-white/50 hover:text-[#00FF26] hover:border-[#00FF26] transition-colors duration-200"
         >
           <ChevronLeft size={20} />
         </button>
 
         <div
-          className="relative flex-1 h-full rounded-2xl overflow-hidden border border-white/10"
+          className="relative flex-1 h-[85%] lg:h-full rounded-2xl overflow-hidden border border-white/10"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -84,27 +93,47 @@ export default function LandingUsage() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.15}
+              onDragStart={() => setIsPaused(true)}
+              onDragEnd={handleDragEnd}
+              className="absolute inset-0 cursor-grab active:cursor-grabbing touch-pan-y"
             >
               <img
                 src={slides[index].img}
                 alt={slides[index].title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover pointer-events-none"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/20" />
 
-              <div className="absolute bottom-0 left-0 w-full p-6 lg:p-10 text-center lg:text-left">
-                <h3 className="text-white text-[20px] lg:text-[24px] font-medium">
+              <div className="absolute bottom-0 left-0 w-full p-4 sm:p-6 lg:p-10 text-left">
+                <h3 className="text-white text-[17px] sm:text-[20px] lg:text-[24px] font-medium">
                   {slides[index].title}
                 </h3>
-                <p className="text-white/75 text-[14px] lg:text-[15px] mt-2 max-w-[560px] mx-auto lg:mx-0">
+                <p className="text-white/75 text-[12.5px] sm:text-[14px] lg:text-[15px] mt-1.5 sm:mt-2 max-w-[560px] line-clamp-3 lg:line-clamp-none">
                   {slides[index].description}
                 </p>
               </div>
             </motion.div>
           </AnimatePresence>
 
-          <div className="absolute bottom-4 right-4 lg:right-6 flex gap-x-2 z-10">
+          <button
+            onClick={prev}
+            aria-label="Previous slide"
+            className="lg:hidden absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-black/40 backdrop-blur-sm border border-white/15 text-white/70 cursor-pointer"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={next}
+            aria-label="Next slide"
+            className="lg:hidden absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-black/40 backdrop-blur-sm border border-white/15 text-white/70 cursor-pointer"
+          >
+            <ChevronRight size={18} />
+          </button>
+
+          <div className="absolute top-3 right-3 lg:top-auto lg:bottom-4 lg:right-6 flex gap-x-1.5 lg:gap-x-2 z-10">
             {slides.map((_, i) => (
               <button
                 key={i}
@@ -121,7 +150,7 @@ export default function LandingUsage() {
         <button
           onClick={next}
           aria-label="Next slide"
-          className="self-center shrink-0 cursor-pointer p-2 lg:p-3 rounded-full border border-white/15 text-white/50 hover:text-[#00FF26] hover:border-[#00FF26] transition-colors duration-200"
+          className="hidden lg:flex self-center shrink-0 cursor-pointer p-2 lg:p-3 rounded-full border border-white/15 text-white/50 hover:text-[#00FF26] hover:border-[#00FF26] transition-colors duration-200"
         >
           <ChevronRight size={20} />
         </button>

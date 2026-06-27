@@ -98,7 +98,7 @@ export default function LandingHome() {
             <h2 className="uppercase text-[28px] lg:text-[32px] font-semibold leading-tight">
               Your time has a structure, too.
             </h2>
-            <p className="text-[16px] font-normal text-[#F5F5F5]/70 mt-4 max-w-[560px]">
+            <p className="text-[14px] lg:text-[16px] font-normal text-[#F5F5F5]/70 mt-4 max-w-[560px]">
               A to-do list isn't always enough — and overengineering your week
               isn't the fix either. Heptagon sits in between: structured, but
               simple.
