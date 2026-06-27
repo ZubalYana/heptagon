@@ -27,7 +27,21 @@ export default function LandingFooter() {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-y-8 gap-x-12 lg:gap-x-16">
+        <div className="flex flex-wrap lg:flex-nowrap gap-y-8 gap-x-12 lg:gap-x-16">
+          <div className="flex flex-col gap-y-3">
+            <h4 className="text-[11px] uppercase tracking-wide text-[#00FF26]/70">
+              Navigation
+            </h4>
+            {nav.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => scrollToSection(item.id)}
+                className="cursor-pointer text-[13px] uppercase tracking-wide text-white/60 hover:text-[#00FF26] transition-colors duration-200 text-left"
+              >
+                {item.title}
+              </button>
+            ))}
+          </div>
           <div className="flex flex-col gap-y-3">
             <h4 className="text-[11px] uppercase tracking-wide text-[#00FF26]/70">
               Start planning
@@ -44,21 +58,6 @@ export default function LandingFooter() {
             >
               Log in
             </a>
-          </div>
-
-          <div className="flex flex-col gap-y-3">
-            <h4 className="text-[11px] uppercase tracking-wide text-[#00FF26]/70">
-              Navigation
-            </h4>
-            {nav.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => scrollToSection(item.id)}
-                className="cursor-pointer text-[13px] uppercase tracking-wide text-white/60 hover:text-[#00FF26] transition-colors duration-200 text-left"
-              >
-                {item.title}
-              </button>
-            ))}
           </div>
 
           <div className="flex flex-col gap-y-3">
@@ -105,7 +104,11 @@ export default function LandingFooter() {
           Yana.
         </p>
         <p className="text-[12px] text-white/30 flex items-center">
-          Made with <span className="text-[#00FF26]/70 mx-1"><Heart size={12}/></span> and a lot of coffee.
+          Made with{" "}
+          <span className="text-[#00FF26]/70 mx-1">
+            <Heart size={12} />
+          </span>{" "}
+          and a lot of coffee.
         </p>
       </div>
     </div>
