@@ -21,7 +21,7 @@ export default function LandingUpdates() {
   ];
 
   return (
-    <div className="w-full lg:max-h-screen flex flex-col items-center p-[20px] lg:p-[40px]">
+    <div id="updates" className="w-full lg:max-h-screen flex flex-col items-center p-[20px] lg:p-[40px]">
       <h2 className="uppercase text-[24px] lg:text-[28px] font-semibold leading-tight text-center shrink-0">
         What to expect in upcoming updates?
       </h2>

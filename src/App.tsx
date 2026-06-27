@@ -34,14 +34,21 @@ function App() {
     setLoading(false);
   }, []);
 
-  if (loading) return <div className="w-full h-screen flex items-center justify-center absolute top-0 left-0"><Loader size="lg" label="Loading application..."/></div>;
+  if (loading)
+    return (
+      <div className="w-full h-screen flex items-center justify-center absolute top-0 left-0">
+        <Loader size="lg" label="Loading application..." />
+      </div>
+    );
 
   return (
     <div className="w-full min-h-dvh flex justify-center">
       <Routes>
         <Route
           path="/auth"
-          element={!user ? <AuthPage setUser={setUser} /> : <Navigate to="/app" />}
+          element={
+            !user ? <AuthPage setUser={setUser} /> : <Navigate to="/app" />
+          }
         />
         <Route
           path="/app"
@@ -56,7 +63,7 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/admin-auth" element={<AdminAuth />} />
-        <Route path="/" element={<Landing/>} />
+        <Route path="/" element={<Landing/>}/>
         <Route
           path="/admin"
           element={isAdmin ? <Admin /> : <Navigate to="/admin-auth" />}

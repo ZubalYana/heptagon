@@ -1,14 +1,16 @@
 import { Phone, Mail, ArrowUpRight } from "lucide-react";
+import scrollToSection from "../../helpers/scroll";
 
 export default function LandingFooter() {
   const nav = [
-    { title: "Usage", link: "#usage" },
-    { title: "Updates", link: "#updates" },
-    { title: "FAQ", link: "#faq" },
+    { title: "Home", id: "home" },
+    { title: "Usage", id: "usage" },
+    { title: "Updates", id: "updates" },
+    { title: "FAQ", id: "faq" },
   ];
 
   return (
-    <div className="w-full border-t border-[#00FF26]/15">
+    <div id="get-in-touch" className="w-full border-t border-[#00FF26]/15">
       <div className="w-full flex flex-col lg:flex-row justify-between gap-y-10 lg:gap-x-12 p-[20px] lg:p-[40px]">
         <div className="w-full lg:max-w-[440px]">
           <h2 className="uppercase text-[24px] lg:text-[28px] font-semibold leading-tight flex gap-x-2 items-center">
@@ -21,8 +23,7 @@ export default function LandingFooter() {
           </h2>
           <p className="text-[14px] font-normal text-[#F5F5F5]/70 mt-3">
             Feel free to contact me with any questions, suggestions, bug
-            reports, or collaboration proposals — I'm always open to new
-            ideas!
+            reports, or collaboration proposals — I'm always open to new ideas!
           </p>
         </div>
 
@@ -50,13 +51,13 @@ export default function LandingFooter() {
               Navigation
             </h4>
             {nav.map((item, index) => (
-              <a
+              <button
                 key={index}
-                href={item.link}
-                className="cursor-pointer text-[13px] uppercase tracking-wide text-white/60 hover:text-[#00FF26] transition-colors duration-200"
+                onClick={() => scrollToSection(item.id)}
+                className="cursor-pointer text-[13px] uppercase tracking-wide text-white/60 hover:text-[#00FF26] transition-colors duration-200 text-left"
               >
                 {item.title}
-              </a>
+              </button>
             ))}
           </div>
 
@@ -100,7 +101,8 @@ export default function LandingFooter() {
 
       <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-y-2 px-[20px] lg:px-[40px] py-4 border-t border-white/5">
         <p className="text-[12px] text-white/30">
-          <a href="/privacy">© {new Date().getFullYear()} Heptagon.</a> Built by Yana.
+          <a href="/privacy">© {new Date().getFullYear()} Heptagon.</a> Built by
+          Yana.
         </p>
         <p className="text-[12px] text-white/30">
           Made with <span className="text-[#00FF26]/70">♥</span> and a lot of

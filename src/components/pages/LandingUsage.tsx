@@ -56,7 +56,7 @@ export default function LandingUsage() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col items-center p-[20px] lg:p-[40px]">
+    <div id="usage" className="w-full h-screen flex flex-col items-center p-[20px] lg:p-[40px]">
       <h2 className="uppercase text-[24px] lg:text-[28px] font-semibold leading-tight shrink-0">
         How to use it?
       </h2>

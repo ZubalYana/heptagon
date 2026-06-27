@@ -37,7 +37,7 @@ export default function LandingFAQ() {
   };
 
   return (
-    <div className="w-full lg:max-h-screen flex flex-col items-center p-[20px] lg:p-[40px]">
+    <div id="faq" className="w-full lg:max-h-screen flex flex-col items-center p-[20px] lg:p-[40px]">
       <h2 className="uppercase text-[24px] lg:text-[28px] font-semibold leading-tight shrink-0">
         FAQ
       </h2>
