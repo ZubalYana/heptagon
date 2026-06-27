@@ -1,4 +1,4 @@
-import { Phone, Mail, ArrowUpRight } from "lucide-react";
+import { Phone, Mail, ArrowUpRight, Heart } from "lucide-react";
 import scrollToSection from "../../helpers/scroll";
 
 export default function LandingFooter() {
@@ -104,9 +104,8 @@ export default function LandingFooter() {
           <a href="/privacy">© {new Date().getFullYear()} Heptagon.</a> Built by
           Yana.
         </p>
-        <p className="text-[12px] text-white/30">
-          Made with <span className="text-[#00FF26]/70">♥</span> and a lot of
-          coffee.
+        <p className="text-[12px] text-white/30 flex items-center">
+          Made with <span className="text-[#00FF26]/70 mx-1"><Heart size={12}/></span> and a lot of coffee.
         </p>
       </div>
     </div>
