@@ -27,7 +27,7 @@ export default function DayFullPage() {
     <div className="w-full flex flex-col p-[20px] lg:p-[40px]">
       <p
         className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
-        onClick={() => navigate(`/${location.search}`)}
+        onClick={() => navigate(`/app${location.search}`)}
       >
         <ArrowLeft className="w-[15px] h-[15px]" />
         Back
