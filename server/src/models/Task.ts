@@ -16,7 +16,6 @@ const repetitionSchema = new mongoose.Schema(
     daysOfWeek: { type: [Number], default: [] },   
     startDate: { type: Date, required: true },     
     endDate: { type: Date, default: null },    
-    occurrences: { type: Number, default: null },    
   },
   { _id: false } 
 );

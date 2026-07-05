@@ -9,7 +9,6 @@ interface Repetition{
     days: [number],
     startDate: Date,
     endDate: Date,
-    occurrences: number
 }
 
 export default interface Task{
