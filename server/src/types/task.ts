@@ -3,10 +3,10 @@ interface Subtask{
     completed: boolean
 }
 
-interface Repetition{
+export interface Repetition{
     frequency: string,
     interval: number,
-    days: [number],
+    daysOfWeek: [number],
     startDate: Date,
     endDate: Date,
 }

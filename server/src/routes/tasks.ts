@@ -2,14 +2,33 @@ import express from "express";
 import Task from "../models/Task";
 import Day from "../models/Day";
 import { authMiddleware } from "../middleware/auth";
+import type { Repetition } from "../types/task";
 
 const router = express.Router();
 router.use(authMiddleware);
 
 router.post("/", async (req, res) => {
   try {
-    const { text, priority, dayId } = req.body;
-    const task = await Task.create({ text, priority });
+    const { text, priority, regular, frequency, interval, daysOfWeek, startDate, endDate, dayId } = req.body;
+
+    let repetition: Repetition | null = regular? {frequency, interval, daysOfWeek, startDate, endDate} : null;
+
+    if(regular){
+      repetition = {
+        frequency: frequency,
+        interval: interval,
+        daysOfWeek: daysOfWeek,
+        startDate: startDate,
+        endDate: endDate
+      }
+    }
+
+    const task = await Task.create({ 
+      text, 
+      priority,
+      repetition
+    });
+
     const day = await Day.findByIdAndUpdate(
       dayId,
       { $push: { tasks: task._id } },

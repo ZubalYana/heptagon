@@ -13,7 +13,7 @@ export default function occursOn(task: Task, date: Date): boolean {
     return isSameDay(task.date, date);
   }
 
-  const { startDate, endDate, frequency, interval, days } = task.repetition;
+  const { startDate, endDate, frequency, interval, daysOfWeek } = task.repetition;
 
   if (startDate > date) return false;
   if (endDate && endDate < date) return false;
@@ -26,7 +26,7 @@ export default function occursOn(task: Task, date: Date): boolean {
 
   if (frequency === 'weekly') {
     const weeksElapsed = Math.floor(span / 7);
-    return days.includes(date.getDay()) && weeksElapsed % interval === 0;
+    return daysOfWeek.includes(date.getDay()) && weeksElapsed % interval === 0;
   }
 
   if (frequency === 'monthly') {
