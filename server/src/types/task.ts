@@ -6,17 +6,17 @@ interface Subtask{
 export interface Repetition{
     frequency: string,
     interval: number,
-    daysOfWeek: [number],
+    daysOfWeek: number[],
     startDate: Date,
-    endDate: Date,
+    endDate?: Date | null,
 }
 
 export default interface Task{
     text: string;
     priority: string;
-    date: Date;
+    date?: Date | null;
     completed: boolean;
-    completedDates: [string];
-    subtasks: [Subtask];
-    repetition: Repetition
+    completedDates: string[];
+    subtasks: Subtask[];
+    repetition?: Repetition | null;
 }

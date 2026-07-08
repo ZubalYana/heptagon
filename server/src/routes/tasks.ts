@@ -3,41 +3,69 @@ import Task from "../models/Task";
 import Day from "../models/Day";
 import { authMiddleware } from "../middleware/auth";
 import type { Repetition } from "../types/task";
+import occursOn from "../utils/occursOn";
 
 const router = express.Router();
 router.use(authMiddleware);
 
+router.get("/dayTasks/:dayId", async (req, res) => {
+  try {
+    const dayId = req.params.dayId;
+    if (!dayId) {
+      return res.status(400).json({ message: "Day id not shipped to server" });
+    }
+    const day = await Day.findById(dayId);
+    if (!day) {
+      return res.status(404).json({ message: "Day not found" });
+    }
+    const daysTasks = day.tasks;
+    const allRegularTasks = await Task.find({ repetition: { $ne: null } });
+    const occurringTasks = allRegularTasks.filter((task) =>
+      occursOn(task, day.date)
+    );
+    res.status(200).json([...daysTasks, ...occurringTasks]);
+  } catch (err) {
+    res.status(500).json({
+      message: `Error getting the day's tasks: ${(err as Error).message}`,
+    });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
-    const { text, priority, regular, frequency, interval, daysOfWeek, startDate, endDate, dayId } = req.body;
+    const {
+      text,
+      priority,
+      regular,
+      frequency,
+      interval,
+      daysOfWeek,
+      startDate,
+      endDate,
+      dayId,
+    } = req.body;
 
-    let repetition: Repetition | null = regular? {frequency, interval, daysOfWeek, startDate, endDate} : null;
+    const repetition: Repetition | null = regular
+      ? { frequency, interval, daysOfWeek, startDate, endDate }
+      : null;
 
-    if(regular){
-      repetition = {
-        frequency: frequency,
-        interval: interval,
-        daysOfWeek: daysOfWeek,
-        startDate: startDate,
-        endDate: endDate
-      }
+    const task = new Task({ text, priority, repetition });
+    await task.save();
+    if (!regular) {
+      const day = await Day.findByIdAndUpdate(
+        dayId,
+        { $push: { tasks: task._id } },
+        { returnDocument: "after" }
+      );
+      if (!day) return res.status(404).json({ message: "Day not found" });
     }
 
-    const task = await Task.create({ 
-      text, 
-      priority,
-      repetition
-    });
-
-    const day = await Day.findByIdAndUpdate(
-      dayId,
-      { $push: { tasks: task._id } },
-      { returnDocument: "after" }
-    );
-    if (!day) return res.status(404).json({ message: "Day not found" });
     res.status(201).json(task);
   } catch (err) {
-    return res.status(500).json({ message: "Failed to create task", error: (err as Error).message });
+    return res.status(500).json({
+      message: "Failed to create task",
+      error: (err as Error).message,
+    });
   }
 });
 
@@ -49,12 +77,19 @@ router.put("/complete", async (req, res) => {
     const newCompleted = !task.completed;
     const updated = await Task.findByIdAndUpdate(
       id,
-      { $set: { completed: newCompleted, "subtasks.$[].completed": newCompleted } },
+      {
+        $set: {
+          completed: newCompleted,
+          "subtasks.$[].completed": newCompleted,
+        },
+      },
       { returnDocument: "after" }
     );
     return res.status(200).json({ task: updated });
   } catch (err) {
-    return res.status(500).json({ message: "Error marking task:", error: (err as Error).message });
+    return res
+      .status(500)
+      .json({ message: "Error marking task:", error: (err as Error).message });
   }
 });
 
@@ -72,7 +107,9 @@ router.patch("/edit", async (req, res) => {
     if (!updated) return res.status(404).json({ message: "Task not found" });
     return res.status(200).json({ task: updated });
   } catch (err) {
-    return res.status(500).json({ message: "Error editing task:", error: (err as Error).message });
+    return res
+      .status(500)
+      .json({ message: "Error editing task:", error: (err as Error).message });
   }
 });
 
@@ -83,7 +120,10 @@ router.delete("/delete", async (req, res) => {
     if (!task) return res.status(404).json({ message: "Task not found" });
     return res.status(200).json({ message: "Task deleted successfully" });
   } catch (err) {
-    return res.status(500).json({ message: "Error deleting the task:", error: (err as Error).message });
+    return res.status(500).json({
+      message: "Error deleting the task:",
+      error: (err as Error).message,
+    });
   }
 });
 
@@ -91,12 +131,16 @@ router.patch("/add-subtask", async (req, res) => {
   try {
     const { id, text } = req.body;
     const parentalTask = await Task.findById(id);
-    if (!parentalTask) return res.status(404).json({ message: "Task not found" });
+    if (!parentalTask)
+      return res.status(404).json({ message: "Task not found" });
     parentalTask.subtasks.push({ text });
     await parentalTask.save();
     return res.status(200).json({ task: parentalTask });
   } catch (err) {
-    return res.status(500).json({ message: "Error creating subtask:", error: (err as Error).message });
+    return res.status(500).json({
+      message: "Error creating subtask:",
+      error: (err as Error).message,
+    });
   }
 });
 
@@ -104,7 +148,8 @@ router.patch("/complete-subtask", async (req, res) => {
   try {
     const { taskId, subtaskId } = req.body;
     const parentalTask = await Task.findById(taskId);
-    if (!parentalTask) return res.status(404).json({ message: "Task not found" });
+    if (!parentalTask)
+      return res.status(404).json({ message: "Task not found" });
     const subtask = parentalTask.subtasks.id(subtaskId);
     if (!subtask) return res.status(404).json({ message: "Subtask not found" });
     subtask.completed = !subtask.completed;
@@ -112,7 +157,10 @@ router.patch("/complete-subtask", async (req, res) => {
     await parentalTask.save();
     return res.status(200).json({ task: parentalTask });
   } catch (err) {
-    return res.status(500).json({ message: "Error marking subtask as completed:", error: (err as Error).message });
+    return res.status(500).json({
+      message: "Error marking subtask as completed:",
+      error: (err as Error).message,
+    });
   }
 });
 
@@ -120,27 +168,35 @@ router.patch("/edit-subtask", async (req, res) => {
   try {
     const { taskId, subtaskId, newText } = req.body;
     const parentalTask = await Task.findById(taskId);
-    if (!parentalTask) return res.status(404).json({ message: "Task not found" });
+    if (!parentalTask)
+      return res.status(404).json({ message: "Task not found" });
     const subtask = parentalTask.subtasks.id(subtaskId);
     if (!subtask) return res.status(404).json({ message: "Subtask not found" });
     subtask.text = newText;
     await parentalTask.save();
     return res.status(200).json({ task: parentalTask });
   } catch (err) {
-    return res.status(500).json({ message: "Error editing subtask:", error: (err as Error).message });
+    return res.status(500).json({
+      message: "Error editing subtask:",
+      error: (err as Error).message,
+    });
   }
 });
 
-router.delete('/delete-subtask', async (req, res) => {
+router.delete("/delete-subtask", async (req, res) => {
   try {
     const { taskId, subtaskId } = req.body;
     const parentalTask = await Task.findById(taskId);
-    if (!parentalTask) return res.status(404).json({ message: "Task not found" });
+    if (!parentalTask)
+      return res.status(404).json({ message: "Task not found" });
     parentalTask.subtasks.pull({ _id: subtaskId });
     await parentalTask.save();
     return res.status(200).json({ message: "Subtask deleted successfully" });
   } catch (err) {
-    return res.status(500).json({ message: "Error deleting subtask:", error: (err as Error).message });
+    return res.status(500).json({
+      message: "Error deleting subtask:",
+      error: (err as Error).message,
+    });
   }
 });
 
