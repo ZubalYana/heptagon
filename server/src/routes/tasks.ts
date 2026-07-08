@@ -1,9 +1,11 @@
 import express from "express";
 import Task from "../models/Task";
+import type TaskType from "../types/task";
 import Day from "../models/Day";
 import { authMiddleware } from "../middleware/auth";
 import type { Repetition } from "../types/task";
 import occursOn from "../utils/occursOn";
+import toDateString from "../utils/toDateString";
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -71,11 +73,15 @@ router.post("/", async (req, res) => {
 
 router.put("/complete", async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id, dayId } = req.body;
     const task = await Task.findById(id);
     if (!task) return res.status(404).json({ message: "Task not found" });
+
+    let updated: TaskType;
+
+    if(task.repetition === null){
     const newCompleted = !task.completed;
-    const updated = await Task.findByIdAndUpdate(
+    updated = await Task.findByIdAndUpdate(
       id,
       {
         $set: {
@@ -85,6 +91,23 @@ router.put("/complete", async (req, res) => {
       },
       { returnDocument: "after" }
     );
+    }else{
+      const day = await Day.findById(dayId);
+      if(!day) return res.status(404).json({message: 'Day not found'});
+      const dayDate = toDateString(day.date);
+
+      updated = await Task.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            completedDates: task.completedDates.includes(dayDate)?
+            task.completedDates.filter(date => date !== dayDate) : 
+            [...task.completedDates, dayDate]
+          },
+        },
+        {returnDocument: 'after'}
+      )
+    }
     return res.status(200).json({ task: updated });
   } catch (err) {
     return res
