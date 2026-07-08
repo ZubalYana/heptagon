@@ -118,13 +118,13 @@ router.put("/complete", async (req, res) => {
 
 router.patch("/edit", async (req, res) => {
   try {
-    const { id, text, priority } = req.body;
-    if (!text && !priority) {
+    const { id, text, priority, repetition } = req.body;
+    if (!text && !priority && !repetition) {
       return res.status(400).json({ message: "Nothing to update" });
     }
     const updated = await Task.findByIdAndUpdate(
       id,
-      { $set: { text, priority } },
+      { $set: { text, priority, repetition } },
       { returnDocument: "after" }
     );
     if (!updated) return res.status(404).json({ message: "Task not found" });
