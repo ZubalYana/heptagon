@@ -113,7 +113,7 @@ export default function TaskCreation({
         value={priority}
         placeholder="Select task priority"
         onChange={(value) => setPriority(value)}
-        className="mt-2"
+        className="mt-2 relative z-[60]"
       />
 
       <Checkbox
