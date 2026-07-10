@@ -1,3 +1,6 @@
+import { useState, useEffect } from 'react';
+import apiClient from '../helpers/apiClient';
+import type Task from '../interfaces/Task';
 import type Week from "../interfaces/Week";
 import Loader from "./customElements/Loader";
 import WeekDay from "./WeekDay";
@@ -7,9 +10,39 @@ interface WeekProps {
   week: Week | null;
   animationDirection: number;
 }
+
 export default function Week({ week, animationDirection }: WeekProps) {
+  const [tasksByDay, setTasksByDay] = useState<Record<string, Task[]>>({});
+
+  useEffect(() => {
+    if (!week) return;
+
+    Promise.all(
+      week.days.map((day) =>
+        apiClient.get(`/tasks/dayTasks/${day._id}`).then(({ data }) => ({
+          dayId: day._id,
+          tasks: data as Task[],
+        }))
+      )
+    )
+      .then((results) => {
+        const grouped: Record<string, Task[]> = {};
+        results.forEach(({ dayId, tasks }) => {
+          grouped[dayId] = tasks;
+        });
+        setTasksByDay(grouped);
+      })
+      .catch((err) => {
+        console.error('Error fetching tasks in week:', err);
+      });
+  }, [week]);
+
   if (!week) {
-    return <div className="w-full h-full flex items-center justify-center absolute top-0 left-0"><Loader size="lg" label="Loading week..."/></div>
+    return (
+      <div className="w-full h-full flex items-center justify-center absolute top-0 left-0">
+        <Loader size="lg" label="Loading week..." />
+      </div>
+    );
   }
 
   const optionalIncluded = localStorage.getItem("optionalIncluded") === "true";
@@ -25,32 +58,29 @@ export default function Week({ week, animationDirection }: WeekProps) {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="w-full"
       >
-        <div
-          className="w-full flex flex-wrap gap-x-2 justify-between items-center 
-          md:flex-row md:gap-x-0"
-        >
+        <div className="w-full flex flex-wrap gap-x-2 justify-between items-center md:flex-row md:gap-x-0">
           {week.days.map((day) => {
-            const allTasks = day.tasks;
+            const dayTasks = tasksByDay[day._id] ?? [];
+
             let crucial = 0;
             let important = 0;
             let optional = 0;
-
             let completedCrucial = 0;
             let completedImportant = 0;
             let completedOptional = 0;
-            const totalItems = allTasks.reduce(
+
+            const totalItems = dayTasks.reduce(
               (acc, task) => acc + 1 + (task.subtasks?.length ?? 0),
               0
             );
-            const completedItems = allTasks.reduce(
+            const completedItems = dayTasks.reduce(
               (acc, task) =>
                 acc +
                 (task.completed ? 1 : 0) +
                 (task.subtasks?.filter((s) => s.completed).length ?? 0),
               0
             );
-
-            const totalItemsExeptOptional = allTasks.reduce(
+            const totalItemsExeptOptional = dayTasks.reduce(
               (acc, task) =>
                 task.priority !== "optional"
                   ? acc + 1 + (task.subtasks?.length ?? 0)
@@ -58,22 +88,19 @@ export default function Week({ week, animationDirection }: WeekProps) {
               0
             );
 
-            allTasks.forEach((task) => {
+            dayTasks.forEach((task) => {
               if (task.priority === "high") {
                 crucial++;
-                task.completed === true ? completedCrucial++ : completedCrucial;
+                if (task.completed) completedCrucial++;
               } else if (task.priority === "medium") {
                 important++;
-                task.completed === true
-                  ? completedImportant++
-                  : completedImportant;
+                if (task.completed) completedImportant++;
               } else {
                 optional++;
-                task.completed === true
-                  ? completedOptional++
-                  : completedOptional;
+                if (task.completed) completedOptional++;
               }
             });
+
             const percentage =
               totalItems === 0
                 ? 0
@@ -82,9 +109,7 @@ export default function Week({ week, animationDirection }: WeekProps) {
                 : totalItemsExeptOptional === 0
                 ? 0
                 : Math.round(
-                    ((completedItems - completedOptional) /
-                      totalItemsExeptOptional) *
-                      100
+                    ((completedItems - completedOptional) / totalItemsExeptOptional) * 100
                   );
 
             return (
