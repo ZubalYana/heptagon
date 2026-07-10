@@ -16,7 +16,7 @@ router.get("/dayTasks/:dayId", async (req, res) => {
     if (!dayId) {
       return res.status(400).json({ message: "Day id not shipped to server" });
     }
-    const day = await Day.findById(dayId);
+    const day = await Day.findById(dayId).populate('tasks');
     if (!day) {
       return res.status(404).json({ message: "Day not found" });
     }

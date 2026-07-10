@@ -21,6 +21,7 @@ export default function DayFullPage() {
     });
   }, [dayId]);
 
+
   if (!day) return <div className="w-full h-full flex items-center justify-center absolute top-0 left-0"><Loader size="lg" label="Loading day..."/></div>;
 
   return (
@@ -39,7 +40,6 @@ export default function DayFullPage() {
      <div className="w-full flex-1 flex flex-col md:flex-row gap-x-6 mt-4">
         <div className="flex-1 flex flex-col">
           <DayTasksController
-            tasks={day.tasks}
             day={day.dayOfWeek}
             dayId={day._id}
           />

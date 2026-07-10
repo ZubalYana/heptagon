@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type Task from "../interfaces/Task";
 import Button from "./customElements/PrimaryButton";
 import TaskCreation from "./popups/TaskCreation";
@@ -11,13 +11,11 @@ import { Plus } from "lucide-react";
 import apiClient from "../helpers/apiClient";
 
 interface dayTasksControllerProps {
-  tasks: Task[] | [];
   day: string;
   dayId: string;
 }
 
 export default function DayTasksController({
-  tasks,
   day,
   dayId,
 }: dayTasksControllerProps) {
@@ -28,7 +26,21 @@ export default function DayTasksController({
     type: "success" | "info" | "error";
     text: string;
   }>({ shown: false, type: "info", text: "" });
-  const [localTasks, setLocalTasks] = useState(tasks);
+  const [localTasks, setLocalTasks] = useState<Task[]>([]);
+  
+  useEffect(()=>{
+    apiClient.get(`/tasks/dayTasks/${dayId}`)
+    .then(({data})=>{
+      setLocalTasks(data);
+    })
+    .catch((err)=>{
+      console.error('Error fetching tasks:', err);
+    })
+  }, [dayId])
+
+  useEffect(() => {
+  console.log('Current tasks state:', localTasks);
+}, [localTasks]);
 
   function closeAlert() {
     setAlert({ shown: false, text: "", type: "info" });
