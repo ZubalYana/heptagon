@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET as string;
 
 router.post("/register", async (req, res) => {
   try {
@@ -19,7 +18,7 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
-    const token = jwt.sign({ id: newUser._id }, JWT_SECRET, {
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET as string, {
       expiresIn: "24h",
     });
     res.status(200).json({
@@ -36,6 +35,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('JWT secret loaded:', !!process.env.JWT_SECRET);
     if (!email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
     if (!passwordMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "24h" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: "24h" });
     res.status(200).json({
       token,
       user: { id: user._id, name: user.name, email: user.email },
