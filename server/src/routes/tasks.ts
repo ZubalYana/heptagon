@@ -47,8 +47,18 @@ router.post("/", async (req, res) => {
       dayId,
     } = req.body;
 
+    if (regular && !startDate) {
+      return res.status(400).json({ message: "startDate is required for regular tasks" });
+    }
+
     const repetition: Repetition | null = regular
-      ? { frequency, interval, daysOfWeek, startDate, endDate }
+      ? {
+          frequency,
+          interval,
+          daysOfWeek,
+          startDate: new Date(startDate),
+          endDate: endDate ? new Date(endDate) : null,
+        }
       : null;
 
     const task = new Task({ text, priority, repetition });
@@ -77,37 +87,39 @@ router.put("/complete", async (req, res) => {
     const task = await Task.findById(id);
     if (!task) return res.status(404).json({ message: "Task not found" });
 
-    let updated: TaskType;
+    let updated: TaskType | null;
 
-    if(task.repetition === null){
-    const newCompleted = !task.completed;
-    updated = await Task.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          completed: newCompleted,
-          "subtasks.$[].completed": newCompleted,
+    if (task.repetition === null) {
+      const newCompleted = !task.completed;
+      updated = await Task.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            completed: newCompleted,
+            "subtasks.$[].completed": newCompleted,
+          },
         },
-      },
-      { returnDocument: "after" }
-    );
-    }else{
+        { returnDocument: "after" }
+      );
+    } else {
       const day = await Day.findById(dayId);
-      if(!day) return res.status(404).json({message: 'Day not found'});
+      if (!day) return res.status(404).json({ message: 'Day not found' });
       const dayDate = toDateString(day.date);
 
       updated = await Task.findByIdAndUpdate(
         id,
         {
           $set: {
-            completedDates: task.completedDates.includes(dayDate)?
-            task.completedDates.filter(date => date !== dayDate) : 
-            [...task.completedDates, dayDate]
+            completedDates: task.completedDates.includes(dayDate)
+              ? task.completedDates.filter(date => date !== dayDate)
+              : [...task.completedDates, dayDate],
           },
         },
-        {returnDocument: 'after'}
-      )
+        { returnDocument: 'after' }
+      );
     }
+
+    if (!updated) return res.status(404).json({ message: "Task not found after update" });
     return res.status(200).json({ task: updated });
   } catch (err) {
     return res

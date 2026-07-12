@@ -9,7 +9,8 @@ function isSameDay(d1: Date, d2: Date) {
 export default function occursOn(task: Task, date: Date): boolean {
   const msPerDay = 24 * 60 * 60 * 1000;
 
-  if (task.repetition === null) {
+  if (!task.repetition) {
+    if (!task.date) return false;
     return isSameDay(task.date, date);
   }
 
@@ -30,11 +31,11 @@ export default function occursOn(task: Task, date: Date): boolean {
   }
 
   if (frequency === 'monthly') {
-    return span % interval === 0; 
+    return span % interval === 0;
   }
 
   if (frequency === 'yearly') {
-    return span % interval === 0; 
+    return span % interval === 0;
   }
 
   return false;
