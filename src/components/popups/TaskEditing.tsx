@@ -4,10 +4,11 @@ import Button from "../customElements/PrimaryButton";
 import Select from "../customElements/Select";
 import Alert from "../customElements/Alert";
 import { AnimatePresence } from "framer-motion";
+import RepetitionFields from "../customElements/RepetitionFields";
 import { X, Pencil, Trash2, Check, X as XIcon } from "lucide-react";
 import type Task from "../../interfaces/Task";
+import type { Repetition } from "../../interfaces/Task";
 import apiClient from "../../helpers/apiClient";
-import RepetitionFields from "../customElements/RepetitionFields";
 import Checkbox from "../customElements/Checkbox";
 
 interface TaskEditingProps {
@@ -16,6 +17,14 @@ interface TaskEditingProps {
   onSuccess?: (task: Task) => void;
   onSubtaskChange?: (taskId: string, subtasks: Array<{ _id: string; text: string; completed: boolean }>) => void;
 }
+
+const DEFAULT_REPETITION: Repetition = {
+  frequency: "daily",
+  interval: 1,
+  daysOfWeek: [],
+  startDate: new Date(),
+  endDate: null,
+};
 
 export default function TaskEditing({
   editingTask,
@@ -26,12 +35,16 @@ export default function TaskEditing({
   const [newTaskText, setNewTaskText] = useState(editingTask.text);
   const [newTaskPriority, setNewTaskPriority] = useState(editingTask.priority);
   const [subtasks, setSubtasks] = useState(editingTask.subtasks ?? []);
-  const [repetition, setRepetition] = useState(editingTask.repetition)
-  const [regular, setRegular] = useState<boolean>(editingTask.repetition === null? false : true)
+  const [regular, setRegular] = useState<boolean>(!!editingTask.repetition);
+  const [repetition, setRepetition] = useState<Repetition>(
+    editingTask.repetition ?? DEFAULT_REPETITION
+  );
 
   const hasChanges =
     newTaskText.trim() !== editingTask.text.trim() ||
-    newTaskPriority !== editingTask.priority;
+    newTaskPriority !== editingTask.priority ||
+    regular !== !!editingTask.repetition ||
+    (regular && JSON.stringify(repetition) !== JSON.stringify(editingTask.repetition));
 
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
   const [editingSubtaskText, setEditingSubtaskText] = useState("");
@@ -56,6 +69,7 @@ export default function TaskEditing({
         id: editingTask._id,
         text: newTaskText,
         priority: newTaskPriority,
+        repetition: regular ? repetition : null,
       })
       .then(({ data }) => onSuccess?.(data.task))
       .catch(() => showAlert("error", "Failed to edit task"));
@@ -129,7 +143,21 @@ export default function TaskEditing({
         onChange={(value) => setNewTaskPriority(value)}
         className="mt-2"
       />
-      
+
+      <Checkbox
+        text="Regular task"
+        value={regular}
+        onChange={(newValue) => setRegular(newValue)}
+      />
+
+      <AnimatePresence>
+        {regular && (
+          <RepetitionFields
+            value={repetition}
+            onChange={setRepetition}
+          />
+        )}
+      </AnimatePresence>
 
       {subtasks.length > 0 && (
         <p className="w-full mt-4 font-semibold text-[14px]">Subtasks:</p>
@@ -176,15 +204,6 @@ export default function TaskEditing({
           )}
         </div>
       ))}
-
-      <Checkbox text="Set as regular" value={regular} onChange={()=>setRegular}/>
-
-      {regular && (
-        <RepetitionFields
-          value={repetition}
-          onChange={setRepetition}
-        />
-      )}
 
       <Button onClick={editTask} disabled={!hasChanges} className="mt-6">
         Confirm changes
