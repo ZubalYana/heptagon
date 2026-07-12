@@ -16,9 +16,12 @@ router.get("/dayTasks/:dayId", async (req, res) => {
     if (!dayId) {
       return res.status(400).json({ message: "Day id not shipped to server" });
     }
-    const day = await Day.findById(dayId).populate('tasks');
+    const day = await Day.findById(dayId).populate("tasks");
     if (!day) {
       return res.status(404).json({ message: "Day not found" });
+    }
+    if (!day.date) {
+      return res.status(500).json({ message: "Day is missing a date" });
     }
     const daysTasks = day.tasks;
     const allRegularTasks = await Task.find({ repetition: { $ne: null } });
@@ -48,7 +51,9 @@ router.post("/", async (req, res) => {
     } = req.body;
 
     if (regular && !startDate) {
-      return res.status(400).json({ message: "startDate is required for regular tasks" });
+      return res
+        .status(400)
+        .json({ message: "startDate is required for regular tasks" });
     }
 
     const repetition: Repetition | null = regular
@@ -103,7 +108,9 @@ router.put("/complete", async (req, res) => {
       );
     } else {
       const day = await Day.findById(dayId);
-      if (!day) return res.status(404).json({ message: 'Day not found' });
+      if (!day) return res.status(404).json({ message: "Day not found" });
+      if (!day.date)
+        return res.status(500).json({ message: "Day is missing a date" });
       const dayDate = toDateString(day.date);
 
       updated = await Task.findByIdAndUpdate(
@@ -111,15 +118,16 @@ router.put("/complete", async (req, res) => {
         {
           $set: {
             completedDates: task.completedDates.includes(dayDate)
-              ? task.completedDates.filter(date => date !== dayDate)
+              ? task.completedDates.filter((date) => date !== dayDate)
               : [...task.completedDates, dayDate],
           },
         },
-        { returnDocument: 'after' }
+        { returnDocument: "after" }
       );
     }
 
-    if (!updated) return res.status(404).json({ message: "Task not found after update" });
+    if (!updated)
+      return res.status(404).json({ message: "Task not found after update" });
     return res.status(200).json({ task: updated });
   } catch (err) {
     return res
