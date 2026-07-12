@@ -23,10 +23,13 @@ router.get("/dayTasks/:dayId", async (req, res) => {
     if (!day.date) {
       return res.status(500).json({ message: "Day is missing a date" });
     }
+
+    const dayDate = day.date;
+
     const daysTasks = day.tasks;
     const allRegularTasks = await Task.find({ repetition: { $ne: null } });
     const occurringTasks = allRegularTasks.filter((task) =>
-      occursOn(task, day.date)
+      occursOn(task, dayDate)
     );
     res.status(200).json([...daysTasks, ...occurringTasks]);
   } catch (err) {
