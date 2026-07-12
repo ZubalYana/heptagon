@@ -7,6 +7,8 @@ import { AnimatePresence } from "framer-motion";
 import { X, Pencil, Trash2, Check, X as XIcon } from "lucide-react";
 import type Task from "../../interfaces/Task";
 import apiClient from "../../helpers/apiClient";
+import RepetitionFields from "../customElements/RepetitionFields";
+import Checkbox from "../customElements/Checkbox";
 
 interface TaskEditingProps {
   editingTask: Task;
@@ -24,6 +26,8 @@ export default function TaskEditing({
   const [newTaskText, setNewTaskText] = useState(editingTask.text);
   const [newTaskPriority, setNewTaskPriority] = useState(editingTask.priority);
   const [subtasks, setSubtasks] = useState(editingTask.subtasks ?? []);
+  const [repetition, setRepetition] = useState(editingTask.repetition)
+  const [regular, setRegular] = useState<boolean>(editingTask.repetition === null? false : true)
 
   const hasChanges =
     newTaskText.trim() !== editingTask.text.trim() ||
@@ -125,8 +129,7 @@ export default function TaskEditing({
         onChange={(value) => setNewTaskPriority(value)}
         className="mt-2"
       />
-
-      {}
+      
 
       {subtasks.length > 0 && (
         <p className="w-full mt-4 font-semibold text-[14px]">Subtasks:</p>
@@ -173,6 +176,15 @@ export default function TaskEditing({
           )}
         </div>
       ))}
+
+      <Checkbox text="Set as regular" value={regular} onChange={()=>setRegular}/>
+
+      {regular && (
+        <RepetitionFields
+          value={repetition}
+          onChange={setRepetition}
+        />
+      )}
 
       <Button onClick={editTask} disabled={!hasChanges} className="mt-6">
         Confirm changes
