@@ -268,10 +268,7 @@ export default function DayTasksController({
           onClick={() => setEditingTask(null)}
         >
           <TaskEditing
-            taskId={editingTask._id}
-            taskText={editingTask.text}
-            taskPriority={editingTask.priority}
-            taskSubtasks={editingTask.subtasks}
+            editingTask={editingTask}
             onClose={() => setEditingTask(null)}
             onSubtaskChange={(taskId, updatedSubtasks) => {
               setLocalTasks((prev) =>

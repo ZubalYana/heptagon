@@ -9,31 +9,25 @@ import type Task from "../../interfaces/Task";
 import apiClient from "../../helpers/apiClient";
 
 interface TaskEditingProps {
-  taskId: string;
-  taskText: string;
-  taskPriority: string;
-  taskSubtasks?: Array<{ _id: string; text: string; completed: boolean }>;
+  editingTask: Task;
   onClose?: () => void;
   onSuccess?: (task: Task) => void;
   onSubtaskChange?: (taskId: string, subtasks: Array<{ _id: string; text: string; completed: boolean }>) => void;
 }
 
 export default function TaskEditing({
-  taskId,
-  taskText,
-  taskPriority,
-  taskSubtasks,
+  editingTask,
   onClose,
   onSuccess,
   onSubtaskChange,
 }: TaskEditingProps) {
-  const [newTaskText, setNewTaskText] = useState(taskText);
-  const [newTaskPriority, setNewTaskPriority] = useState(taskPriority);
-  const [subtasks, setSubtasks] = useState(taskSubtasks ?? []);
+  const [newTaskText, setNewTaskText] = useState(editingTask.text);
+  const [newTaskPriority, setNewTaskPriority] = useState(editingTask.priority);
+  const [subtasks, setSubtasks] = useState(editingTask.subtasks ?? []);
 
   const hasChanges =
-    newTaskText.trim() !== taskText.trim() ||
-    newTaskPriority !== taskPriority;
+    newTaskText.trim() !== editingTask.text.trim() ||
+    newTaskPriority !== editingTask.priority;
 
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
   const [editingSubtaskText, setEditingSubtaskText] = useState("");
@@ -55,7 +49,7 @@ export default function TaskEditing({
   function editTask() {
     apiClient
       .patch("/tasks/edit", {
-        id: taskId,
+        id: editingTask._id,
         text: newTaskText,
         priority: newTaskPriority,
       })
@@ -76,7 +70,7 @@ export default function TaskEditing({
   function confirmEditSubtask(subtaskId: string) {
     apiClient
       .patch("/tasks/edit-subtask", {
-        taskId,
+        taskId: editingTask._id,
         subtaskId,
         newText: editingSubtaskText,
       })
@@ -85,7 +79,7 @@ export default function TaskEditing({
           s._id === subtaskId ? { ...s, text: editingSubtaskText } : s
         );
         setSubtasks(updated);
-        onSubtaskChange?.(taskId, updated);
+        onSubtaskChange?.(editingTask._id, updated);
         cancelEditingSubtask();
         showAlert("success", "Subtask updated");
       })
@@ -94,11 +88,11 @@ export default function TaskEditing({
 
   function deleteSubtask(subtaskId: string) {
     apiClient
-      .delete("/tasks/delete-subtask", { data: { taskId, subtaskId } })
+      .delete("/tasks/delete-subtask", { data: { taskId: editingTask._id, subtaskId } })
       .then(() => {
         const updated = subtasks.filter((s) => s._id !== subtaskId);
         setSubtasks(updated);
-        onSubtaskChange?.(taskId, updated);
+        onSubtaskChange?.(editingTask._id, updated);
         showAlert("success", "Subtask deleted");
       })
       .catch(() => showAlert("error", "Failed to delete subtask"));
@@ -131,6 +125,8 @@ export default function TaskEditing({
         onChange={(value) => setNewTaskPriority(value)}
         className="mt-2"
       />
+
+      {}
 
       {subtasks.length > 0 && (
         <p className="w-full mt-4 font-semibold text-[14px]">Subtasks:</p>
