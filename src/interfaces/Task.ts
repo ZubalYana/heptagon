@@ -12,5 +12,6 @@ export default interface Task{
     priority: string,
     completed: boolean,
     subtasks: { _id: string; text: string; completed: boolean }[];
+    completedDates: string[];
     repetition?: Repetition | null; 
 }

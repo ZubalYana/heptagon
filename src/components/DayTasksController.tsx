@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type Task from "../interfaces/Task";
+import type Day from "../interfaces/Day";
 import Button from "./customElements/PrimaryButton";
 import TaskCreation from "./popups/TaskCreation";
 import TaskEditing from "./popups/TaskEditing";
@@ -7,11 +8,12 @@ import Alert from "./customElements/Alert";
 import { AnimatePresence } from "framer-motion";
 import TaskComponent from "./customElements/Task";
 import SecondaryButton from "./customElements/SecondaryButton";
+import toDateString from "../helpers/toDateString";
 import { Plus } from "lucide-react";
 import apiClient from "../helpers/apiClient";
 
 interface dayTasksControllerProps {
-  day: string;
+  day: Day;
   dayId: string;
 }
 
@@ -177,7 +179,9 @@ export default function DayTasksController({
                   <TaskComponent
                     key={task._id}
                     text={task.text}
-                    done={task.completed}
+                    done={
+                      task.repetition === null? task.completed : task.completedDates.includes(toDateString(day.date))
+                    }
                     subtasks={task.subtasks}
                     onToggle={() => onToggle(task._id)}
                     onEdit={() => setEditingTask(task)}
@@ -201,7 +205,9 @@ export default function DayTasksController({
                   <TaskComponent
                     key={task._id}
                     text={task.text}
-                    done={task.completed}
+                    done={
+                      task.repetition === null? task.completed : task.completedDates.includes(toDateString(day.date))
+                    }
                     subtasks={task.subtasks}
                     onToggle={() => onToggle(task._id)}
                     onEdit={() => setEditingTask(task)}
@@ -225,7 +231,9 @@ export default function DayTasksController({
                   <TaskComponent
                     key={task._id}
                     text={task.text}
-                    done={task.completed}
+                    done={
+                      task.repetition === null? task.completed : task.completedDates.includes(toDateString(day.date))
+                    }
                     subtasks={task.subtasks}
                     onToggle={() => onToggle(task._id)}
                     onEdit={() => setEditingTask(task)}
@@ -249,7 +257,7 @@ export default function DayTasksController({
           onClick={() => setTaskCreationMode(false)}
         >
           <TaskCreation
-            day={day}
+            day={day.dayOfWeek}
             dayId={dayId}
             onClose={() => setTaskCreationMode(false)}
             onSuccess={(newTask) => {

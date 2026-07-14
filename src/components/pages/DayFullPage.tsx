@@ -40,7 +40,7 @@ export default function DayFullPage() {
      <div className="w-full flex-1 flex flex-col md:flex-row gap-x-6 mt-4">
         <div className="flex-1 flex flex-col">
           <DayTasksController
-            day={day.dayOfWeek}
+            day={day}
             dayId={day._id}
           />
         </div>
