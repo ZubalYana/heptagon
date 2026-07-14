@@ -178,11 +178,11 @@ export default function DayTasksController({
                 .map((task) => (
                   <TaskComponent
                     key={task._id}
-                    text={task.text}
+                    task={task}
+                    date={toDateString(day.date)}
                     done={
                       task.repetition === null? task.completed : task.completedDates.includes(toDateString(day.date))
                     }
-                    subtasks={task.subtasks}
                     onToggle={() => onToggle(task._id)}
                     onEdit={() => setEditingTask(task)}
                     onDelete={() => onDelete(task._id)}
@@ -204,11 +204,11 @@ export default function DayTasksController({
                 .map((task) => (
                   <TaskComponent
                     key={task._id}
-                    text={task.text}
+                    task={task}
+                    date={toDateString(day.date)}
                     done={
                       task.repetition === null? task.completed : task.completedDates.includes(toDateString(day.date))
                     }
-                    subtasks={task.subtasks}
                     onToggle={() => onToggle(task._id)}
                     onEdit={() => setEditingTask(task)}
                     onDelete={() => onDelete(task._id)}
@@ -230,11 +230,11 @@ export default function DayTasksController({
                 .map((task) => (
                   <TaskComponent
                     key={task._id}
-                    text={task.text}
+                    task={task}
+                    date={toDateString(day.date)}
                     done={
                       task.repetition === null? task.completed : task.completedDates.includes(toDateString(day.date))
                     }
-                    subtasks={task.subtasks}
                     onToggle={() => onToggle(task._id)}
                     onEdit={() => setEditingTask(task)}
                     onDelete={() => onDelete(task._id)}

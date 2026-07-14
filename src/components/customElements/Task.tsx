@@ -1,19 +1,20 @@
 import { useState } from "react";
 import TaskMenu from "../TaskMenu";
+import type Task from "../../interfaces/Task";
 
-type Priority = "high" | "medium" | "optional";
+// type Priority = "high" | "medium" | "optional";
 
 interface Subtask {
   _id: string;
   text: string;
   completed: boolean;
+  completedDates?: string[];
 }
 
 interface TaskProps {
-  text: string;
-  priority?: Priority;
+  task: Task;
   done?: boolean;
-  subtasks?: Subtask[];
+  date: string
   onToggle?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -21,22 +22,21 @@ interface TaskProps {
   onToggleSubtask?: (subtaskId: string) => void;
 }
 
-const priorityConfig: Record<Priority, { label: string; classes: string }> = {
-  high: { label: "High", classes: "bg-red-950 text-red-400" },
-  medium: { label: "Medium", classes: "bg-yellow-950 text-yellow-400" },
-  optional: { label: "Optional", classes: "bg-[#151a15] text-gray-500" },
-};
-const dotColor: Record<Priority, string> = {
-  high: "bg-red-400",
-  medium: "bg-yellow-400",
-  optional: "bg-gray-500",
-};
+// const priorityConfig: Record<Priority, { label: string; classes: string }> = {
+//   high: { label: "High", classes: "bg-red-950 text-red-400" },
+//   medium: { label: "Medium", classes: "bg-yellow-950 text-yellow-400" },
+//   optional: { label: "Optional", classes: "bg-[#151a15] text-gray-500" },
+// };
+// const dotColor: Record<Priority, string> = {
+//   high: "bg-red-400",
+//   medium: "bg-yellow-400",
+//   optional: "bg-gray-500",
+// };
 
 export default function Task({
-  text,
-  priority,
+  task,
   done = false,
-  subtasks = [],
+  date,
   onToggle,
   onEdit,
   onDelete,
@@ -83,6 +83,17 @@ export default function Task({
     );
   };
 
+  const subtaskCompletedThisDay = (subtask: Subtask) => {
+    let completed;
+    if(task.repetition === null){
+      completed = subtask.completed;
+    }else{
+      completed = subtask.completedDates?.includes(date);
+    }
+
+    return completed;
+  }
+
   return (
     <div className="w-full flex flex-col">
       <div
@@ -114,18 +125,18 @@ export default function Task({
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col gap-1">
-          {priority && (
+          {/* {task.priority && (
             <span
               className={`inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded-full w-fit tracking-wide transition-opacity duration-250 ${
-                priorityConfig[priority].classes
+                priorityConfig[task.priority].classes
               } ${done ? "opacity-35" : ""}`}
             >
               <span
-                className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${dotColor[priority]}`}
+                className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${dotColor[task.priority]}`}
               />
-              {priorityConfig[priority].label}
+              {priorityConfig[task.priority].label}
             </span>
-          )}
+          )} */}
           <div className="relative">
             <span
               className={`text-sm leading-relaxed transition-colors duration-250 break-words ${
@@ -135,7 +146,7 @@ export default function Task({
               }`}
               onClick={(e) => e.stopPropagation()}
             >
-              {URLChecker(text)}
+              {URLChecker(task.text)}
             </span>
           </div>
         </div>
@@ -147,9 +158,9 @@ export default function Task({
         />
       </div>
 
-      {subtasks.length > 0 && (
+      {task.subtasks.length > 0 && (
         <div className="ml-9 pr-2 flex flex-col gap-0.5 mb-1">
-          {subtasks.map((subtask) => (
+          {task.subtasks.map((subtask) => (
             <div
               key={subtask._id}
               className="flex items-center gap-2 py-1 px-2 rounded-md group w-fit hover:bg-[#1a1a1a] transition-colors duration-200"
@@ -160,7 +171,7 @@ export default function Task({
             >
               <div
                 className={`flex-shrink-0 w-[16px] h-[16px] rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                  subtask.completed
+                  subtaskCompletedThisDay(subtask)
                     ? "border-[#00FF26] bg-[#00FF26]"
                     : "border-[#3a3a3a] group-hover:border-[#555]"
                 }`}
@@ -171,7 +182,7 @@ export default function Task({
                   viewBox="0 0 12 12"
                   fill="none"
                   className={`transition-all duration-200 ${
-                    subtask.completed
+                    subtaskCompletedThisDay(subtask)
                       ? "opacity-100 scale-100"
                       : "opacity-0 scale-50"
                   }`}
@@ -187,7 +198,7 @@ export default function Task({
               </div>
               <span
                 className={`text-[12px] leading-relaxed transition-colors duration-200 ${
-                  subtask.completed ? "line-through text-[#555]" : "text-[#888]"
+                  subtaskCompletedThisDay(subtask) ? "line-through text-[#555]" : "text-[#888]"
                 }`}
                 onClick={(e) => e.stopPropagation()}
               >
