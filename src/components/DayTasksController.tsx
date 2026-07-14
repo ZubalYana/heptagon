@@ -55,7 +55,7 @@ export default function DayTasksController({
       )
     );
     apiClient
-      .put("/tasks/complete", { id })
+      .put("/tasks/complete", { id, dayId })
       .then(({ data }) => {
         setLocalTasks((prev) =>
           prev.map((task) =>
@@ -64,10 +64,12 @@ export default function DayTasksController({
                   ...task,
                   completed: data.task.completed,
                   subtasks: data.task.subtasks,
+                  completedDates: data.task.completedDates
                 }
               : task
           )
         );
+        console.log('data.task:', data.task)
       })
       .catch(() => {
         setLocalTasks(previousTasks);
