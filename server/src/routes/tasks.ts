@@ -192,14 +192,32 @@ router.patch("/add-subtask", async (req, res) => {
 
 router.patch("/complete-subtask", async (req, res) => {
   try {
-    const { taskId, subtaskId } = req.body;
+    const { taskId, subtaskId, day } = req.body;
     const parentalTask = await Task.findById(taskId);
     if (!parentalTask)
       return res.status(404).json({ message: "Task not found" });
     const subtask = parentalTask.subtasks.id(subtaskId);
     if (!subtask) return res.status(404).json({ message: "Subtask not found" });
-    subtask.completed = !subtask.completed;
-    parentalTask.completed = parentalTask.subtasks.every((s) => s.completed);
+
+    if(parentalTask.repetition === null){
+      subtask.completed = !subtask.completed;
+      parentalTask.completed = parentalTask.subtasks.every((s) => s.completed);
+    }else{
+      const dateStr = toDateString(day.date)
+      subtask.completedDates.includes(dateStr)?
+      subtask.completedDates = subtask.completedDates.filter(d => d !== dateStr):
+      subtask.completedDates = [...subtask.completedDates, dateStr]
+      
+      const allSubtasksCompleted = parentalTask.subtasks.every(s => s.completedDates.includes(dateStr));
+      const taskCompleted = parentalTask.completedDates.includes(dateStr);
+
+      if(allSubtasksCompleted && !taskCompleted){
+        parentalTask.completedDates = [...parentalTask.completedDates, dateStr]
+      }else if(taskCompleted && !allSubtasksCompleted){
+        parentalTask.completedDates = parentalTask.completedDates.filter(d => d !== dateStr)
+      }
+    }
+    
     await parentalTask.save();
     return res.status(200).json({ task: parentalTask });
   } catch (err) {

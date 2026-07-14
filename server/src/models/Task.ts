@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const subtaskSchema = new mongoose.Schema({
   text: { type: String, required: true },
   completed: { type: Boolean, default: false },
+  completedDates: { type: [String], default: []}
 });
 
 const repetitionSchema = new mongoose.Schema(

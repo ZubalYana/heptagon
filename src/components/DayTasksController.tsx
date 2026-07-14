@@ -96,7 +96,7 @@ export default function DayTasksController({
     );
 
     apiClient
-      .patch("/tasks/complete-subtask", { taskId, subtaskId })
+      .patch("/tasks/complete-subtask", { taskId, subtaskId, day })
       .then(({ data }) => {
         setLocalTasks((prev) =>
           prev.map((task) => (task._id === taskId ? data.task : task))
