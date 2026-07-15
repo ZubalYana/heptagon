@@ -1,9 +1,9 @@
 import type Task from "../types/task";
 
 function isSameDay(d1: Date, d2: Date) {
-  return d1.getFullYear() === d2.getFullYear() &&
-         d1.getMonth() === d2.getMonth() &&
-         d1.getDate() === d2.getDate();
+  return d1.getUTCFullYear() === d2.getUTCFullYear() &&
+         d1.getUTCMonth() === d2.getUTCMonth() &&
+         d1.getUTCDate() === d2.getUTCDate();
 }
 
 export default function occursOn(task: Task, date: Date): boolean {
@@ -27,7 +27,7 @@ export default function occursOn(task: Task, date: Date): boolean {
 
   if (frequency === 'weekly') {
     const weeksElapsed = Math.floor(span / 7);
-    return daysOfWeek.includes(date.getDay()) && weeksElapsed % interval === 0;
+    return daysOfWeek.includes(date.getUTCDay()) && weeksElapsed % interval === 0;
   }
 
   if (frequency === 'monthly') {
