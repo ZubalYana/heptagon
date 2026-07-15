@@ -51,11 +51,25 @@ export default function DayTasksController({
   function onToggle(id: string) {
     const previousTasks = localTasks;
 
-    setLocalTasks((prev) =>
-      prev.map((task) =>
-        task._id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+ setLocalTasks((prev) =>
+  prev.map((task) => {
+    if (task._id !== id) return task;
+
+    if (task.repetition === null) {
+      return { ...task, completed: !task.completed };
+    }
+
+    const dateStr = toDateString(day.date);
+    const isDone = task.completedDates.includes(dateStr);
+
+    return {
+      ...task,
+      completedDates: isDone
+        ? task.completedDates.filter((d) => d !== dateStr)
+        : [...task.completedDates, dateStr],
+    };
+  })
+);
     apiClient
       .put("/tasks/complete", { id, dayId })
       .then(({ data }) => {
