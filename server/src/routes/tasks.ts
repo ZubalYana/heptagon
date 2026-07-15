@@ -204,30 +204,48 @@ router.patch("/complete-subtask", async (req, res) => {
     if (parentalTask.repetition === null) {
       subtask.completed = !subtask.completed;
       parentalTask.completed = parentalTask.subtasks.every((s) => s.completed);
+      await parentalTask.save();
     } else {
       const dateStr = toDateString(day.date);
-      subtask.completedDates.includes(dateStr)
-        ? (subtask.completedDates = subtask.completedDates.filter(
-            (d) => d !== dateStr
-          ))
-        : (subtask.completedDates = [...subtask.completedDates, dateStr]);
 
-      const allSubtasksCompleted = parentalTask.subtasks.every((s) =>
+      const pullResult = await Task.updateOne(
+        { _id: taskId },
+        { $pull: { "subtasks.$[elem].completedDates": dateStr } },
+        { arrayFilters: [{ "elem._id": subtaskId }] }
+      );
+
+      if (pullResult.modifiedCount === 0) {
+        await Task.updateOne(
+          { _id: taskId },
+          { $addToSet: { "subtasks.$[elem].completedDates": dateStr } },
+          { arrayFilters: [{ "elem._id": subtaskId }] }
+        );
+      }
+
+      const freshTask = await Task.findById(taskId);
+      if (!freshTask)
+        return res.status(404).json({ message: "Task not found after update" });
+
+      const allSubtasksCompleted = freshTask.subtasks.every((s) =>
         s.completedDates.includes(dateStr)
       );
-      const taskCompleted = parentalTask.completedDates.includes(dateStr);
+      const taskCompleted = freshTask.completedDates.includes(dateStr);
 
       if (allSubtasksCompleted && !taskCompleted) {
-        parentalTask.completedDates = [...parentalTask.completedDates, dateStr];
-      } else if (taskCompleted && !allSubtasksCompleted) {
-        parentalTask.completedDates = parentalTask.completedDates.filter(
-          (d) => d !== dateStr
+        await Task.updateOne(
+          { _id: taskId },
+          { $addToSet: { completedDates: dateStr } }
+        );
+      } else if (!allSubtasksCompleted && taskCompleted) {
+        await Task.updateOne(
+          { _id: taskId },
+          { $pull: { completedDates: dateStr } }
         );
       }
     }
 
-    await parentalTask.save();
-    return res.status(200).json({ task: parentalTask });
+    const updated = await Task.findById(taskId);
+    return res.status(200).json({ task: updated });
   } catch (err) {
     return res.status(500).json({
       message: "Error marking subtask as completed:",
