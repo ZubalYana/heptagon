@@ -116,17 +116,19 @@ router.put("/complete", async (req, res) => {
         return res.status(500).json({ message: "Day is missing a date" });
       const dayDate = toDateString(day.date);
 
-      updated = await Task.findByIdAndUpdate(
-        id,
-        {
-          $set: {
-            completedDates: task.completedDates.includes(dayDate)
-              ? task.completedDates.filter((date) => date !== dayDate)
-              : [...task.completedDates, dayDate],
-          },
-        },
-        { returnDocument: "after" }
+      const pullResult = await Task.updateOne(
+        { _id: id },
+        { $pull: { completedDates: dayDate } }
       );
+
+      if (pullResult.modifiedCount === 0) {
+        await Task.updateOne(
+          { _id: id },
+          { $addToSet: { completedDates: dayDate } }
+        );
+      }
+
+      updated = await Task.findById(id);
     }
 
     if (!updated)
@@ -199,25 +201,31 @@ router.patch("/complete-subtask", async (req, res) => {
     const subtask = parentalTask.subtasks.id(subtaskId);
     if (!subtask) return res.status(404).json({ message: "Subtask not found" });
 
-    if(parentalTask.repetition === null){
+    if (parentalTask.repetition === null) {
       subtask.completed = !subtask.completed;
       parentalTask.completed = parentalTask.subtasks.every((s) => s.completed);
-    }else{
-      const dateStr = toDateString(day.date)
-      subtask.completedDates.includes(dateStr)?
-      subtask.completedDates = subtask.completedDates.filter(d => d !== dateStr):
-      subtask.completedDates = [...subtask.completedDates, dateStr]
-      
-      const allSubtasksCompleted = parentalTask.subtasks.every(s => s.completedDates.includes(dateStr));
+    } else {
+      const dateStr = toDateString(day.date);
+      subtask.completedDates.includes(dateStr)
+        ? (subtask.completedDates = subtask.completedDates.filter(
+            (d) => d !== dateStr
+          ))
+        : (subtask.completedDates = [...subtask.completedDates, dateStr]);
+
+      const allSubtasksCompleted = parentalTask.subtasks.every((s) =>
+        s.completedDates.includes(dateStr)
+      );
       const taskCompleted = parentalTask.completedDates.includes(dateStr);
 
-      if(allSubtasksCompleted && !taskCompleted){
-        parentalTask.completedDates = [...parentalTask.completedDates, dateStr]
-      }else if(taskCompleted && !allSubtasksCompleted){
-        parentalTask.completedDates = parentalTask.completedDates.filter(d => d !== dateStr)
+      if (allSubtasksCompleted && !taskCompleted) {
+        parentalTask.completedDates = [...parentalTask.completedDates, dateStr];
+      } else if (taskCompleted && !allSubtasksCompleted) {
+        parentalTask.completedDates = parentalTask.completedDates.filter(
+          (d) => d !== dateStr
+        );
       }
     }
-    
+
     await parentalTask.save();
     return res.status(200).json({ task: parentalTask });
   } catch (err) {
