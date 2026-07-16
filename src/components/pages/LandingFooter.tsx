@@ -30,6 +30,23 @@ export default function LandingFooter() {
         <div className="flex flex-wrap lg:flex-nowrap gap-y-8 gap-x-12 lg:gap-x-16">
           <div className="flex flex-col gap-y-3">
             <h4 className="text-[11px] uppercase tracking-wide text-[#00FF26]/70">
+              Data Usage
+            </h4>
+              <a
+                href="/privacy"
+                className="cursor-pointer text-[13px] uppercase tracking-wide text-white/60 hover:text-[#00FF26] transition-colors duration-200 text-left"
+              >
+                Privacy Policy
+              </a>
+              <a
+                href="/terms"
+                className="cursor-pointer text-[13px] uppercase tracking-wide text-white/60 hover:text-[#00FF26] transition-colors duration-200 text-left"
+              >
+                Terms of Service
+              </a>
+          </div>
+          <div className="flex flex-col gap-y-3">
+            <h4 className="text-[11px] uppercase tracking-wide text-[#00FF26]/70">
               Navigation
             </h4>
             {nav.map((item, index) => (
@@ -59,7 +76,6 @@ export default function LandingFooter() {
               Log in
             </a>
           </div>
-
           <div className="flex flex-col gap-y-3">
             <h4 className="text-[11px] uppercase tracking-wide text-[#00FF26]/70">
               Contact dev
