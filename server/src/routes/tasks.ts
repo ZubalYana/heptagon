@@ -121,10 +121,22 @@ router.put("/complete", async (req, res) => {
         { $pull: { completedDates: dayDate } }
       );
 
-      if (pullResult.modifiedCount === 0) {
+      const nowCompleted = pullResult.modifiedCount === 0;
+
+      if (nowCompleted) {
         await Task.updateOne(
           { _id: id },
-          { $addToSet: { completedDates: dayDate } }
+          {
+            $addToSet: {
+              completedDates: dayDate,
+              "subtasks.$[].completedDates": dayDate,
+            },
+          }
+        );
+      } else {
+        await Task.updateOne(
+          { _id: id },
+          { $pull: { "subtasks.$[].completedDates": dayDate } }
         );
       }
 
