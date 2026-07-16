@@ -95,13 +95,18 @@ export default function LandingHome() {
       <div className="relative z-10 flex-1 w-full flex items-center justify-center min-h-0">
         <div className="w-full flex flex-col lg:flex-row items-center gap-y-10 lg:gap-x-12">
           <div className="w-full flex flex-col items-center text-center">
+            <p className="text-[12px] lg:text-[13px] uppercase tracking-widest text-[#00FF26]/80 mb-3">
+              A weekly planner & task tracker
+            </p>
             <h2 className="uppercase text-[28px] lg:text-[32px] font-semibold leading-tight">
-              Your time has a structure, too.
+              Plan your time, be pleased with progress.
             </h2>
             <p className="text-[14px] lg:text-[16px] font-normal text-[#F5F5F5]/70 mt-4 max-w-[560px]">
-              A to-do list isn't always enough — and overengineering your week
-              isn't the fix either. Heptagon sits in between: structured, but
-              simple.
+              Heptagon is a personal planning web app. It lays your week out
+              day by day so you can create one-off and recurring tasks, check
+              them off as you complete them, and see your progress build up
+              over time — without the overhead of a full project-management
+              tool.
             </p>
             <p className="text-[14px] font-normal text-[#F5F5F5]/40 mt-3">
               Built by a student juggling school, work, and everything in
