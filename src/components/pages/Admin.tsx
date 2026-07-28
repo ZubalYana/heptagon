@@ -1,10 +1,10 @@
 import { AnimatePresence } from "framer-motion";
-import Alert from "../customElements/Alert";
+import Alert from "../ui/Alert";
 import { useState, useEffect } from "react";
 import type User from "../../interfaces/User";
-import UsersList from "../customElements/UsersList";
+import UsersList from "../features/admin/UsersList";
 import apiClient from "../../helpers/apiClient";
-import FeedbacksList from "../customElements/FeedbackList";
+import FeedbacksList from "../features/admin/FeedbackList";
 import type Feedback from "../../interfaces/Feedback";
 
 export default function Admin() {

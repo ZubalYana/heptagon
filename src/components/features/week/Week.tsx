@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import apiClient from '../helpers/apiClient';
-import type Task from '../interfaces/Task';
-import type Week from "../interfaces/Week";
-import Loader from "./customElements/Loader";
+import apiClient from '../../../helpers/apiClient';
+import type Task from '../../../interfaces/Task';
+import type Week from "../../../interfaces/Week";
+import Loader from "../../ui/Loader";
 import WeekDay from "./WeekDay";
 import { motion, AnimatePresence } from "framer-motion";
 

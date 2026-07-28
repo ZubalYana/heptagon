@@ -2,12 +2,12 @@ import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type Day from "../../interfaces/Day";
 import formatDate from "../../helpers/fotmatDate";
-import DayTasksController from "../DayTasksController";
-import EventsViewWindow from "../EventsViewWindow";
+import DayTasksController from "../features/tasks/DayTasksController";
+import EventsViewWindow from "../features/events/EventsViewWindow";
 import apiClient from "../../helpers/apiClient";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Loader from "../customElements/Loader";
+import Loader from "../ui/Loader";
 
 export default function DayFullPage() {
   const { dayId } = useParams();

@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import type InterfaceWeek from "../../interfaces/Week";
-import Week from "../Week";
-import WeeksSwitch from "../WeeksSwitch";
+import Week from "../features/week/Week";
+import WeeksSwitch from "../features/week/WeeksSwitch";
 import { Settings } from "lucide-react";
 import apiClient from "../../helpers/apiClient";
 import { getWeekNumber } from "../../helpers/getWeekNumber";
-import SettingsPopup from "../popups/Settings";
+import SettingsPopup from "../modals/Settings";
 import type User from "../../interfaces/User";
 import { useSearchParams } from "react-router-dom";
 const SWIPE_THRESHOLD = 50;

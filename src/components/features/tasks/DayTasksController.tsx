@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import type Task from "../interfaces/Task";
-import type Day from "../interfaces/Day";
-import Button from "./customElements/PrimaryButton";
-import TaskCreation from "./popups/TaskCreation";
-import TaskEditing from "./popups/TaskEditing";
-import Alert from "./customElements/Alert";
+import type Task from "../../../interfaces/Task";
+import type Day from "../../../interfaces/Day";
+import Button from "../../ui/PrimaryButton";
+import TaskCreation from "../../modals/TaskCreation";
+import TaskEditing from "../../modals/TaskEditing";
+import Alert from "../../ui/Alert";
 import { AnimatePresence } from "framer-motion";
-import TaskComponent from "./customElements/Task";
-import SecondaryButton from "./customElements/SecondaryButton";
-import toDateString from "../helpers/toDateString";
+import TaskComponent from "./Task";
+import SecondaryButton from "../../ui/SecondaryButton";
+import toDateString from "../../../helpers/toDateString";
 import { Plus } from "lucide-react";
-import apiClient from "../helpers/apiClient";
+import apiClient from "../../../helpers/apiClient";
 
 interface dayTasksControllerProps {
   day: Day;

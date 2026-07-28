@@ -27,7 +27,7 @@ export default function SettingSwitch({
         aria-checked={value}
         onClick={() => onChange(!value)}
         className={`
-          relative shrink-0 w-[42px] h-[24px] rounded-full border transition-all duration-300 ease-in-out cursor-pointer
+          relative shrink-0 w-10.5 h-6 rounded-full border transition-all duration-300 ease-in-out cursor-pointer
           focus:outline-none
           ${value
             ? "bg-[#00FF26]/10 border-[#00FF26] shadow-[0_0_10px_rgba(0,255,38,0.2)]"
@@ -37,10 +37,10 @@ export default function SettingSwitch({
       >
         <span
           className={`
-            absolute top-[3px] w-[16px] h-[16px] rounded-full transition-all duration-300 ease-in-out
+            absolute top-0.75 w-4 h-4 rounded-full transition-all duration-300 ease-in-out
             ${value
-              ? "left-[22px] bg-[#00FF26] shadow-[0_0_6px_rgba(0,255,38,0.6)]"
-              : "left-[3px] bg-[#444]"
+              ? "left-5.5 bg-[#00FF26] shadow-[0_0_6px_rgba(0,255,38,0.6)]"
+              : "left-0.75 bg-[#444]"
             }
           `}
         />

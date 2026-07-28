@@ -1,6 +1,6 @@
 import { useState } from "react";
-import TaskMenu from "../TaskMenu";
-import type Task from "../../interfaces/Task";
+import TaskMenu from "./TaskMenu";
+import type Task from "../../../interfaces/Task";
 
 // type Priority = "high" | "medium" | "optional";
 

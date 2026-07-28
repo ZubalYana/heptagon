@@ -1,4 +1,4 @@
-import type {EventDateTime} from "../../interfaces/CalendarEvent";
+import type {EventDateTime} from "../../../interfaces/CalendarEvent";
 
 const CALENDAR_COLORS: Record<string, { bg: string; text: string }> = {
   "1":  { bg: "#1a1f3a", text: "#7b9cff" }, 

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import Input from "../customElements/Input";
-import Button from "../customElements/PrimaryButton";
-import Select from "../customElements/Select";
-import Alert from "../customElements/Alert";
+import Input from "../ui/Input";
+import Button from "../ui/PrimaryButton";
+import Select from "../ui/Select";
+import Alert from "../ui/Alert";
 import { AnimatePresence } from "framer-motion";
-import RepetitionFields from "../customElements/RepetitionFields";
+import RepetitionFields from "../features/tasks/RepetitionFields";
 import { X } from "lucide-react";
 import type Task from "../../interfaces/Task";
 import apiClient from "../../helpers/apiClient";
-import Checkbox from "../customElements/Checkbox";
+import Checkbox from "../ui/Checkbox";
 import type { Repetition } from "../../interfaces/Task";
 
 interface TaskCreationProps {

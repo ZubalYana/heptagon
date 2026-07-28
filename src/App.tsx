@@ -11,8 +11,8 @@ import Terms from "./components/pages/Terms";
 import Admin from "./components/pages/Admin";
 import AdminAuth from "./components/pages/AdminAuth";
 import { setClearAdmin } from "./helpers/apiClient";
-import Loader from "./components/customElements/Loader";
-import Landing from "./components/pages/Landing";
+import Loader from "./components/ui/Loader";
+import Landing from "./components/pages/landing/Landing";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);

@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import formatDate from "../helpers/fotmatDate";
+import formatDate from "../../../helpers/fotmatDate";
 
 interface WeeksProps {
   weekNumber: number;

@@ -1,4 +1,4 @@
-import type Feedback from "../../interfaces/Feedback";
+import type Feedback from "../../../interfaces/Feedback";
 
 interface FeedbacksListProps {
   feedbacks: Feedback[] | null;

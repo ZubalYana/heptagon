@@ -1,9 +1,9 @@
-import type User from "../../interfaces/User";
+import type User from "../../../interfaces/User";
 import { Trash2 } from "lucide-react";
-import ActionConfirmation from "../popups/ActionConfirmation";
+import ActionConfirmation from "../../modals/ActionConfirmation";
 import { useState } from "react";
-import apiClient from "../../helpers/apiClient";
-import Alert from "./Alert";
+import apiClient from "../../../helpers/apiClient";
+import Alert from "../../ui/Alert";
 
 interface UsersListProps {
   users: User[] | null;

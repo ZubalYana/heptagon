@@ -1,5 +1,5 @@
 import { Phone, Mail, ArrowUpRight, Heart } from "lucide-react";
-import scrollToSection from "../../helpers/scroll";
+import scrollToSection from "../../../helpers/scroll";
 
 export default function LandingFooter() {
   const nav = [

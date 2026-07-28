@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import EventBlock from "./customElements/EventBlock";
-import type { CalendarEvent } from "../interfaces/CalendarEvent";
-import apiClient from "../helpers/apiClient";
+import EventBlock from "./EventBlock";
+import type { CalendarEvent } from "../../../interfaces/CalendarEvent";
+import apiClient from "../../../helpers/apiClient";
 interface EventsViewWindowProps {
   day: Date | string;
 }

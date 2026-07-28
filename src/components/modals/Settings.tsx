@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import { SettingsNav } from "../customElements/SettingsNav";
-import type { SettingSection } from "../customElements/SettingsNav";
-import SettingSwitch from "../customElements/SettingsSwitch";
+import { SettingsNav } from "../features/settings/SettingsNav";
+import type { SettingSection } from "../features/settings/SettingsNav";
+import SettingSwitch from "../features/settings/SettingsSwitch";
 import type User from "../../interfaces/User";
 import { LogOut, Send } from "lucide-react";
-import TextArea from "../customElements/TextArea";
-import Button from "../customElements/PrimaryButton";
-import AppConnection from "../customElements/AppConnection";
+import TextArea from "../ui/TextArea";
+import Button from "../ui/PrimaryButton";
+import AppConnection from "../ui/AppConnection";
 import apiClient from "../../helpers/apiClient";
-import Alert from "../customElements/Alert";
+import Alert from "../ui/Alert";
 
 interface SettingsProps {
   onClose?: () => void;

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
-import Input from "./Input";
-import Select from "./Select";
-import type { Repetition } from "../../interfaces/Task";
+import Input from "../../ui/Input";
+import Select from "../../ui/Select";
+import type { Repetition } from "../../../interfaces/Task";
 
 const WEEKDAYS = [
   { label: "M", value: 1 },

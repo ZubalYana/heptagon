@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import Input from "../customElements/Input";
-import PrimaryButton from "../customElements/PrimaryButton";
-import Alert from "../customElements/Alert";
+import Input from "../ui/Input";
+import PrimaryButton from "../ui/PrimaryButton";
+import Alert from "../ui/Alert";
 import { useNavigate } from "react-router-dom";
 import type User from "../../interfaces/User";
 import PasswordStrengthIndicator, {
   getPasswordLevel,
-} from "../PasswordStrengthIndicator";
+} from "../ui/PasswordStrengthIndicator";
 import apiClient from "../../helpers/apiClient";
 
 interface AuthPageProps {

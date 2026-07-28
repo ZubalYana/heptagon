@@ -1,9 +1,9 @@
 import { useState } from "react";
-import PrimaryButton from "../customElements/PrimaryButton";
+import PrimaryButton from "../../ui/PrimaryButton";
 import { UserRoundPlus, Search, Menu, X } from "lucide-react";
-import OutlineButton from "../customElements/OutlineButton";
+import OutlineButton from "../../ui/OutlineButton";
 import { AnimatePresence, motion } from "framer-motion";
-import scrollToSection from "../../helpers/scroll";
+import scrollToSection from "../../../helpers/scroll";
 
 export default function LandingHome() {
   const nav = [
