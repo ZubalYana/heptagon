@@ -62,7 +62,7 @@ function App() {
         />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
-        <Route path="/admin-auth" element={<AdminAuth />} />
+        <Route path="/admin-auth" element={<AdminAuth setIsAdmin={setIsAdmin} />} />
         <Route path="/" element={<Landing/>}/>
         <Route
           path="/admin"

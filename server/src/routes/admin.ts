@@ -4,10 +4,6 @@ import User from "../models/User";
 import { verifyAdmin } from "../middleware/verifyAdmin";
 const router = express.Router();
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL as string;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD as string;
-const JWT_SECRET = process.env.JWT_SECRET as string;
-
 router.post("/login", (req, res) => {
   try {
     const { email, password } = req.body;
@@ -15,10 +11,10 @@ router.post("/login", (req, res) => {
       res.status(400).json({ message: "All fields are required." });
       return;
     }
-    if (email != ADMIN_EMAIL || password != ADMIN_PASSWORD) {
+    if (email != process.env.ADMIN_EMAIL || password != process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
-    const adminToken = jwt.sign({ role: "admin" }, JWT_SECRET, {
+    const adminToken = jwt.sign({ role: "admin" }, process.env.JWT_SECRET, {
       expiresIn: "2h",
     });
     res

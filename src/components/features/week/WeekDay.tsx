@@ -1,4 +1,4 @@
-import CircularProgressbar from "./CircularProgressbar";
+import CircularProgressbar from "../../ui/CircularProgressbar";
 import { Link, useLocation } from "react-router-dom";
 import type Day from "../../../interfaces/Day";
 import formatDate from "../../../helpers/fotmatDate";

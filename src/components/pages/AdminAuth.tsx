@@ -5,7 +5,11 @@ import PrimaryButton from "../ui/PrimaryButton";
 import Alert from "../ui/Alert";
 import { useNavigate } from "react-router-dom";
 
-export default function AuthPage() {
+interface AdminAuthProps {
+  setIsAdmin: (value: boolean) => void;
+}
+
+export default function AuthPage({setIsAdmin}: AdminAuthProps) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [alert, setAlert] = useState<{
@@ -39,7 +43,8 @@ export default function AuthPage() {
         return;
       }
 
-      localStorage.setItem("adminToken", data.adminToken); 
+      localStorage.setItem("adminToken", data.adminToken);
+      setIsAdmin(true);
       navigate("/admin");
     } catch (err) {
       console.error("Failed to log admin in:", err);
