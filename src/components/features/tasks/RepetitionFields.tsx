@@ -4,13 +4,13 @@ import Select from "../../ui/Select";
 import type { Repetition } from "../../../interfaces/Task";
 
 const WEEKDAYS = [
-  { label: "M", value: 1 },
-  { label: "T", value: 2 },
-  { label: "W", value: 3 },
-  { label: "T", value: 4 },
-  { label: "F", value: 5 },
+  { label: "M", value: 0 },
+  { label: "T", value: 1 },
+  { label: "W", value: 2 },
+  { label: "T", value: 3 },
+  { label: "F", value: 4 },
+  { label: "S", value: 5 },
   { label: "S", value: 6 },
-  { label: "S", value: 0 },
 ];
 
 const DEFAULT_REPETITION: Repetition = {

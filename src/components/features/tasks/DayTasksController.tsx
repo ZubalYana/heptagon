@@ -288,7 +288,7 @@ export default function DayTasksController({
       )}
       {editingTask && (
         <div
-          className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
+          className="w-full h-full max-h-screen overflow-hidden fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
           onClick={() => setEditingTask(null)}
         >
           <TaskEditing
