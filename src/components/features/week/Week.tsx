@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
-import apiClient from '../../../helpers/apiClient';
-import type Task from '../../../interfaces/Task';
+import { useState, useEffect } from "react";
+import apiClient from "../../../helpers/apiClient";
+import type Task from "../../../interfaces/Task";
 import type Week from "../../../interfaces/Week";
+import type Day from "../../../interfaces/Day";
 import Loader from "../../ui/Loader";
 import WeekDay from "./WeekDay";
 import { motion, AnimatePresence } from "framer-motion";
+import toDateString from "../../../helpers/toDateString";
 
 interface WeekProps {
   week: Week | null;
@@ -33,7 +35,7 @@ export default function Week({ week, animationDirection }: WeekProps) {
         setTasksByDay(grouped);
       })
       .catch((err) => {
-        console.error('Error fetching tasks in week:', err);
+        console.error("Error fetching tasks in week:", err);
       });
   }, [week]);
 
@@ -46,6 +48,26 @@ export default function Week({ week, animationDirection }: WeekProps) {
   }
 
   const optionalIncluded = localStorage.getItem("optionalIncluded") === "true";
+
+  function isTaskCompleted(task: Task, day: Day): boolean {
+    if (!task.repetition) {
+      return task.completed;
+    } else {
+      return task.completedDates.includes(toDateString(day.date));
+    }
+  }
+
+  function countCompletedSubtasks(task: Task, day: Day): number {
+    if (!task.repetition) {
+      return task.subtasks.filter((s) => s.completed).length ?? 0;
+    } else {
+      return (
+        task.subtasks.filter((s) =>
+          s.completedDates.includes(toDateString(day.date))
+        ).length ?? 0
+      );
+    }
+  }
 
   return (
     <AnimatePresence mode="wait" custom={animationDirection}>
@@ -61,6 +83,7 @@ export default function Week({ week, animationDirection }: WeekProps) {
         <div className="w-full flex flex-wrap gap-x-2 justify-between items-center md:flex-row md:gap-x-0">
           {week.days.map((day) => {
             const dayTasks = tasksByDay[day._id] ?? [];
+            console.log(dayTasks);
 
             let crucial = 0;
             let important = 0;
@@ -76,8 +99,8 @@ export default function Week({ week, animationDirection }: WeekProps) {
             const completedItems = dayTasks.reduce(
               (acc, task) =>
                 acc +
-                (task.completed ? 1 : 0) +
-                (task.subtasks?.filter((s) => s.completed).length ?? 0),
+                (isTaskCompleted(task, day) ? 1 : 0) +
+                (countCompletedSubtasks(task, day) ?? 0),
               0
             );
             const totalItemsExeptOptional = dayTasks.reduce(
@@ -89,17 +112,20 @@ export default function Week({ week, animationDirection }: WeekProps) {
             );
 
             dayTasks.forEach((task) => {
-              if (task.priority === "high") {
-                crucial++;
-                if (task.completed) completedCrucial++;
-              } else if (task.priority === "medium") {
-                important++;
-                if (task.completed) completedImportant++;
-              } else {
-                optional++;
-                if (task.completed) completedOptional++;
-              }
-            });
+  const taskCompletedCount = isTaskCompleted(task, day) ? 1 : 0;
+  const subtasksCompletedCount = countCompletedSubtasks(task, day);
+
+  if (task.priority === "high") {
+    crucial++;
+    if (isTaskCompleted(task, day)) completedCrucial++;
+  } else if (task.priority === "medium") {
+    important++;
+    if (isTaskCompleted(task, day)) completedImportant++;
+  } else {
+    optional++;
+    completedOptional += taskCompletedCount + subtasksCompletedCount;
+  }
+});
 
             const percentage =
               totalItems === 0
@@ -109,7 +135,9 @@ export default function Week({ week, animationDirection }: WeekProps) {
                 : totalItemsExeptOptional === 0
                 ? 0
                 : Math.round(
-                    ((completedItems - completedOptional) / totalItemsExeptOptional) * 100
+                    ((completedItems - completedOptional) /
+                      totalItemsExeptOptional) *
+                      100
                   );
 
             return (
