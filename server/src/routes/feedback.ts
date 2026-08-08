@@ -10,6 +10,7 @@ router.post('/create', authMiddleware, async (req,res)=>{
         const {userName, userEmail, feedbackText} = req.body;
         if(!userName || !userEmail || !feedbackText){
             res.status(400).json({message: 'Missing credentials.'})
+            return
         }
         const feedback = await Feedback.create({userName, userEmail, feedbackText})
         res.status(201).json({feedback});
