@@ -189,11 +189,21 @@ router.delete("/delete", async (req, res) => {
 
 router.patch("/add-subtask", async (req, res) => {
   try {
-    const { id, text } = req.body;
+    const { id, text, date } = req.body;
+    let newDateArray = []
     const parentalTask = await Task.findById(id);
     if (!parentalTask)
       return res.status(404).json({ message: "Task not found" });
     parentalTask.subtasks.push({ text });
+    if(parentalTask.repetition){
+      newDateArray = parentalTask.completedDates.includes(date)?
+      parentalTask.completedDates.filter((d)=> d!=date) : 
+      parentalTask.completedDates
+
+      parentalTask.completedDates = newDateArray;
+    }else{
+      parentalTask.completed? parentalTask.completed = false : parentalTask.completed
+    }
     await parentalTask.save();
     return res.status(200).json({ task: parentalTask });
   } catch (err) {

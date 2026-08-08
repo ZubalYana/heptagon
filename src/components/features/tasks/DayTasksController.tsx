@@ -145,7 +145,7 @@ export default function DayTasksController({
 
   function onAddSubtask(id: string, text: string) {
     apiClient
-      .patch("/tasks/add-subtask", { id, text })
+      .patch("/tasks/add-subtask", { id, text, date: toDateString(day.date) })
       .then(({ data }) => {
         setLocalTasks((prev) =>
           prev.map((task) => (task._id === id ? data.task : task))
