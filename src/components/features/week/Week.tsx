@@ -63,7 +63,7 @@ export default function Week({ week, animationDirection }: WeekProps) {
     } else {
       return (
         task.subtasks.filter((s) =>
-          s.completedDates.includes(toDateString(day.date))
+          s.completedDates?.includes(toDateString(day.date))
         ).length ?? 0
       );
     }
