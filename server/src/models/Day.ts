@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import './Task';
 
 const daySchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     dayOfWeek: String,
     date: Date,
     events: [Object],

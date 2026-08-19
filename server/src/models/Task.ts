@@ -22,6 +22,7 @@ const repetitionSchema = new mongoose.Schema(
 );
 
 const taskSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   text: { type: String, required: true },
   priority: { type: String, enum: ['high', 'medium', 'optional'], required: true },
   date: { type: Date, default: null }, 

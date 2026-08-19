@@ -22,6 +22,7 @@ export async function getOrCreateWeek(year: number, weekNumber: number, userId: 
             date.setDate(startDate.getDate() + i);
 
             return Day.create({
+                userId: week.userId,
                 dayOfWeek: name,
                 date,
                 tasks: [],
