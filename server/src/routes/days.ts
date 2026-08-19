@@ -7,9 +7,9 @@ router.use(authMiddleware);
 
 router.get('/:id', async (req,res)=>{
     try{
-        if(!req.user.id) return res.status(401).json({message: 'Unauthorized'})
+        if(!req.user?.id) return res.status(401).json({message: 'Unauthorized'})
         const {id} = req.params;
-        const day = await Day.findOne({ _id: id, userId: req.user.id }).populate("tasks");
+        const day = await Day.findOne({ _id: id, userId: req.user?.id }).populate("tasks");
         if(!day) return res.status(404).json({message: 'Day not found'});
         return res.status(200).json(day);
     }catch(err){

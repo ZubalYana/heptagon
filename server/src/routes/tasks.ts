@@ -16,7 +16,7 @@ router.get("/dayTasks/:dayId", async (req, res) => {
     if (!dayId) {
       return res.status(400).json({ message: "Day id not shipped to server" });
     }
-const day = await Day.findOne({ _id: dayId, userId: req.user.id }).populate('tasks');
+const day = await Day.findOne({ _id: dayId, userId: req.user?.id }).populate('tasks');
     if (!day) {
       return res.status(404).json({ message: "Day not found" });
     }
@@ -27,7 +27,7 @@ const day = await Day.findOne({ _id: dayId, userId: req.user.id }).populate('tas
     const dayDate = day.date;
 
     const daysTasks = day.tasks;
-    const allRegularTasks = await Task.find({ repetition: { $ne: null }, userId: req.user.id, });
+    const allRegularTasks = await Task.find({ repetition: { $ne: null }, userId: req.user?.id, });
     const occurringTasks = allRegularTasks.filter((task) =>
       occursOn(task, dayDate)
     );
@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
       dayId,
     } = req.body;
 
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     if (regular && !startDate) {
       return res
