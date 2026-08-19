@@ -33,7 +33,8 @@ export default function WeekPage({ setUser }: WeekPageProps) {
   }, []);
 
   function fetchWeek(path: string) {
-    apiClient.get(`/weeks/${path}`).then(({ data }) => {
+  apiClient.get(`/weeks/${path}`)
+    .then(({ data }) => {
       setWeek(data);
       setCurrentYear(data.year);
       setCurrentWeekNumber(data.weekNumber);
@@ -42,7 +43,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
         { replace: true }
       );
     });
-  }
+}
 
   function handlePrev() {
     let y = currentYear!;

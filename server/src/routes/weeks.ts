@@ -8,6 +8,7 @@ router.use(authMiddleware);
 
 router.get('/current', async (req, res) => {
   try {
+    console.log("req.user:", req.user)
     if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
     const { year, weekNumber } = getWeekNumber(new Date());
     const week = await getOrCreateWeek(year, weekNumber - 1, req.user.id);
