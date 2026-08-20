@@ -1,6 +1,6 @@
-import Week from "../models/Week";
-import Day from "../models/Day";
-import "../models/Task";
+import Week from "../features/weeks/weekSchema";
+import Day from "../features/days/daysSchema";
+import "../features/tasks/taskSchema";
 import { getStartOfWeek } from "../utils/weekHelpers";
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];

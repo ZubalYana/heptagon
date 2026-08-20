@@ -3,6 +3,8 @@ interface Subtask{
     completed: boolean
 }
 
+export type Priority = 'high' | 'medium' | 'optional';
+
 export interface Repetition{
     frequency: string,
     interval: number,
@@ -13,7 +15,7 @@ export interface Repetition{
 
 export default interface Task{
     text: string;
-    priority: string;
+    priority: Priority;
     date?: Date | null;
     completed: boolean;
     completedDates: string[];

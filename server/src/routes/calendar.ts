@@ -6,7 +6,7 @@ import {
   exchangeCodeForToken,
 } from "../middleware/googleAuth";
 import { authMiddleware } from "../middleware/auth";
-import User from "../models/User";
+import User from "../features/users/userSchema";
 const router = express.Router();
 
 router.get("/auth-url", authMiddleware, async (req, res) => {

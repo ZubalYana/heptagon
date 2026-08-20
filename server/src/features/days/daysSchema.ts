@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import './Task';
+import '../tasks/taskSchema';
 
 const daySchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},

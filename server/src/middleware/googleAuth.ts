@@ -1,6 +1,6 @@
 import { google } from "googleapis";
 import process from "node:process";
-import User from "../models/User";
+import User from "../features/users/userSchema";
 
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
 

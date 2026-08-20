@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../models/User";
+import User from "../features/users/userSchema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

@@ -1,4 +1,4 @@
-import type Task from "../types/task";
+import type Task from "../features/tasks/taskTypes";
 
 function isSameDay(d1: Date, d2: Date) {
   return d1.getUTCFullYear() === d2.getUTCFullYear() &&

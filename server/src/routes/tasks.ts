@@ -1,44 +1,16 @@
 import express from "express";
-import Task from "../models/Task";
-import type TaskType from "../types/task";
-import Day from "../models/Day";
+import Task from "../features/tasks/taskSchema";
+import type TaskType from "../features/tasks/taskTypes";
+import Day from "../features/days/daysSchema";
 import { authMiddleware } from "../middleware/auth";
-import type { Repetition } from "../types/task";
+import type { Repetition } from "../features/tasks/taskTypes";
 import occursOn from "../utils/occursOn";
 import toDateString from "../utils/toDateString";
 
 const router = express.Router();
 router.use(authMiddleware);
 
-router.get("/dayTasks/:dayId", async (req, res) => {
-  try {
-    const dayId = req.params.dayId as string;
-    if (!dayId) {
-      return res.status(400).json({ message: "Day id not shipped to server" });
-    }
-const day = await Day.findOne({ _id: dayId, userId: req.user?.id }).populate('tasks');
-    if (!day) {
-      return res.status(404).json({ message: "Day not found" });
-    }
-    if (!day.date) {
-      return res.status(500).json({ message: "Day is missing a date" });
-    }
-
-    const dayDate = day.date;
-
-    const daysTasks = day.tasks;
-    const allRegularTasks = await Task.find({ repetition: { $ne: null }, userId: req.user?.id, });
-    const occurringTasks = allRegularTasks.filter((task) =>
-      occursOn(task, dayDate)
-    );
-    res.status(200).json([...daysTasks, ...occurringTasks]);
-  } catch (err) {
-    res.status(500).json({
-      message: `Error getting the day's tasks: ${(err as Error).message}`,
-    });
-  }
-});
-
+//repository done
 router.post("/", async (req, res) => {
   try {
     const {
@@ -91,6 +63,37 @@ router.post("/", async (req, res) => {
   }
 });
 
+//repository done
+router.get("/dayTasks/:dayId", async (req, res) => {
+  try {
+    const dayId = req.params.dayId as string;
+    if (!dayId) {
+      return res.status(400).json({ message: "Day id not shipped to server" });
+    }
+const day = await Day.findOne({ _id: dayId, userId: req.user?.id }).populate('tasks');
+    if (!day) {
+      return res.status(404).json({ message: "Day not found" });
+    }
+    if (!day.date) {
+      return res.status(500).json({ message: "Day is missing a date" });
+    }
+
+    const dayDate = day.date;
+
+    const daysTasks = day.tasks;
+    const allRegularTasks = await Task.find({ repetition: { $ne: null }, userId: req.user?.id, });
+    const occurringTasks = allRegularTasks.filter((task) =>
+      occursOn(task, dayDate)
+    );
+    res.status(200).json([...daysTasks, ...occurringTasks]);
+  } catch (err) {
+    res.status(500).json({
+      message: `Error getting the day's tasks: ${(err as Error).message}`,
+    });
+  }
+});
+
+//repository done
 router.put("/complete", async (req, res) => {
   try {
     const { id, dayId } = req.body;
@@ -155,6 +158,7 @@ router.put("/complete", async (req, res) => {
   }
 });
 
+//repository done
 router.patch("/edit", async (req, res) => {
   try {
     const { id, text, priority, repetition } = req.body;
@@ -175,6 +179,7 @@ router.patch("/edit", async (req, res) => {
   }
 });
 
+//repository done
 router.delete("/delete", async (req, res) => {
   try {
     const { id } = req.body;
@@ -189,6 +194,7 @@ router.delete("/delete", async (req, res) => {
   }
 });
 
+//repository done
 router.patch("/add-subtask", async (req, res) => {
   try {
     const { id, text, date } = req.body;
@@ -216,6 +222,7 @@ router.patch("/add-subtask", async (req, res) => {
   }
 });
 
+//repository done
 router.patch("/complete-subtask", async (req, res) => {
   try {
     const { taskId, subtaskId, day } = req.body;
@@ -278,6 +285,7 @@ router.patch("/complete-subtask", async (req, res) => {
   }
 });
 
+//repository done
 router.patch("/edit-subtask", async (req, res) => {
   try {
     const { taskId, subtaskId, newText } = req.body;
@@ -297,6 +305,7 @@ router.patch("/edit-subtask", async (req, res) => {
   }
 });
 
+//repository done
 router.delete("/delete-subtask", async (req, res) => {
   try {
     const { taskId, subtaskId } = req.body;

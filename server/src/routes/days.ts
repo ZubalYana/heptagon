@@ -1,6 +1,6 @@
 import express from 'express';
 import { authMiddleware } from '../middleware/auth';
-import Day from '../models/Day';
+import Day from '../features/days/daysSchema';
 
 const router = express.Router();
 router.use(authMiddleware);

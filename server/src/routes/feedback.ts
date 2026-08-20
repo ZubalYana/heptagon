@@ -1,5 +1,5 @@
 import express from 'express';
-import Feedback from '../models/Feedback';
+import Feedback from '../features/feedback/feedbackSchema';
 import { verifyAdmin } from '../middleware/verifyAdmin';
 import { authMiddleware } from '../middleware/auth';
 
