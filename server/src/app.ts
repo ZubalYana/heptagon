@@ -7,10 +7,10 @@ dotenv.config();
 import mongoose from "mongoose";
 import authRouter from "./routes/auth";
 import weeksRouter from "./routes/weeks";
-import daysRouter from "./routes/days";
 
 //properly architectured
 import taskRouter from './features/tasks/taskRoutes';
+import daysRouter from './features/days/daysRoutes'
 
 import calendarRouter from "./routes/calendar";
 import adminRouter from './routes/admin'

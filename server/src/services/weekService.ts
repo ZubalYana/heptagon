@@ -1,7 +1,8 @@
 import Week from "../features/weeks/weekSchema";
-import Day from "../features/days/daysSchema";
+import type Task from "../features/tasks/taskTypes";
 import "../features/tasks/taskSchema";
 import { getStartOfWeek } from "../helpers/weekHelpers";
+import { daysRepository } from "../features/days/daysRepository";
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -21,13 +22,7 @@ export async function getOrCreateWeek(year: number, weekNumber: number, userId: 
             const date = new Date(startDate);
             date.setDate(startDate.getDate() + i);
 
-            return Day.create({
-                userId,
-                dayOfWeek: name,
-                date,
-                tasks: [],
-                events: []
-            });
+            return daysRepository.create(userId, name, date.toISOString(), [], [])
         })
     )
 
