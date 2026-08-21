@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import mongoose from "mongoose";
-import authRouter from "./routes/auth";
 
 //properly architectured
 import taskRouter from './features/tasks/taskRoutes';
@@ -13,6 +12,7 @@ import daysRouter from './features/days/daysRoutes';
 import weeksRouter from "./features/weeks/weeksRoutes";
 import feedbackRouter from './features/feedback/feedbackRoutes';
 import adminRouter from './features/admin/adminRoutes';
+import userRouter from './features/users/userRoutes';
 
 import calendarRouter from "./routes/calendar";
 import cors from "cors";
@@ -21,7 +21,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/auth", authRouter);
+app.use("/auth", userRouter);
 app.use("/weeks", weeksRouter);
 app.use("/days", daysRouter);
 app.use("/tasks", taskRouter);
