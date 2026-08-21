@@ -74,19 +74,20 @@ export default function DayTasksController({
     apiClient
       .patch(`/tasks/toggle/${dayId}/${id}`, { id, dayId })
       .then(({ data }) => {
+        console.log(data)
         setLocalTasks((prev) =>
           prev.map((task) =>
             task._id === id
               ? {
                   ...task,
-                  completed: data.task.completed,
-                  subtasks: data.task.subtasks,
-                  completedDates: data.task.completedDates
+                  completed: data.completed,
+                  subtasks: data.subtasks,
+                  completedDates: data.completedDates
                 }
               : task
           )
         );
-        console.log('data.task:', data.task)
+        console.log('data.task:', data)
       })
       .catch(() => {
         setLocalTasks(previousTasks);
@@ -114,7 +115,7 @@ export default function DayTasksController({
       .patch(`/tasks/toggle-subtask/${taskId}/${subtaskId}`, { date })
       .then(({ data }) => {
         setLocalTasks((prev) =>
-          prev.map((task) => (task._id === taskId ? data.task : task))
+          prev.map((task) => (task._id === taskId ? data : task))
         );
       })
       .catch(() => {
