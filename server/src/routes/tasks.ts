@@ -4,8 +4,8 @@ import type TaskType from "../features/tasks/taskTypes";
 import Day from "../features/days/daysSchema";
 import { authMiddleware } from "../middleware/auth";
 import type { Repetition } from "../features/tasks/taskTypes";
-import occursOn from "../utils/occursOn";
-import toDateString from "../utils/toDateString";
+import occursOn from "../helpers/occursOn";
+import toDateString from "../helpers/toDateString";
 
 const router = express.Router();
 router.use(authMiddleware);

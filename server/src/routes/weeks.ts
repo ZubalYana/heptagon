@@ -1,5 +1,5 @@
 import express from 'express';
-import { getWeekNumber } from '../utils/weekHelpers';
+import { getWeekNumber } from '../helpers/weekHelpers';
 import { getOrCreateWeek } from '../services/weekService';
 import { authMiddleware } from '../middleware/auth';
 

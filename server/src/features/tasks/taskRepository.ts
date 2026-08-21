@@ -2,8 +2,8 @@ import Task from "./taskSchema";
 import Day from "../days/daysSchema";
 import type { Priority, Repetition } from "./taskTypes";
 import type TaskType from "./taskTypes";
-import occursOn from "../../utils/occursOn";
-import toDateString from "../../utils/toDateString";
+import occursOn from "../../helpers/occursOn";
+import toDateString from "../../helpers/toDateString";
 import { daysRepository } from "../days/daysRepository";
 
 export const taskRepository = {
