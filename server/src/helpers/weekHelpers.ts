@@ -9,12 +9,12 @@ export function getWeekNumber(date: Date): {year: number; weekNumber: number} {
     return { year, weekNumber };
 }
 
-export function getStartOfWeek(year: number, weekNumber: number): Date{
-    const jan1 = new Date(year, 0, 1);
-    const dayOfWeek = jan1.getDay();
-    const daysToMonday = dayOfWeek <= 1? 1-dayOfWeek : 8 - dayOfWeek;
-    const firstMonday = new Date(year, 0, 1 + daysToMonday);
-    const startDate = new Date(firstMonday);
-    startDate.setDate(firstMonday.getDate() + (weekNumber - 1) * 7);
-    return startDate;
+export function getStartOfWeek(year: number, weekNumber: number): Date {
+  const jan1 = new Date(year, 0, 1);
+  const jan1Day = jan1.getDay() || 7; 
+  const week1Monday = new Date(year, 0, 1 - (jan1Day - 1));
+
+  const startDate = new Date(week1Monday);
+  startDate.setDate(week1Monday.getDate() + (weekNumber - 1) * 7);
+  return startDate;
 }

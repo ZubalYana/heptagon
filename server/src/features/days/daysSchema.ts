@@ -4,7 +4,7 @@ import '../tasks/taskSchema';
 const daySchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     dayOfWeek: String,
-    date: Date,
+    date: { type: Date, required: true },
     events: [Object],
     tasks: [{type: mongoose.Schema.Types.ObjectId, ref: 'Task'}]
 })

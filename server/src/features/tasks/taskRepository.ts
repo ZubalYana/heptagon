@@ -11,7 +11,7 @@ export const taskRepository = {
     userId: string,
     text: string,
     priority: Priority,
-    repetition: Repetition
+    repetition: Repetition | null
   ) {
     const task = new Task({ userId, text, priority, repetition });
     await task.save();
