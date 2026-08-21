@@ -1,0 +1,31 @@
+import Router from "express";
+import type { Request, Response } from "express";
+import { feedbackService } from "./feedbackService";
+import { authMiddleware } from "../../middleware/auth";
+import { verifyAdmin } from "../../middleware/verifyAdmin";
+import { formErrorMessage } from "../../helpers/formErrorMessage";
+
+const router = Router();
+
+router.post("/create", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { userName, userEmail, feedbackText } = req.body;
+    const feedback = await feedbackService.create(userName, userEmail, feedbackText);
+    res.status(201).json({ feedback });
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
+router.get("/all", verifyAdmin, async (req: Request, res: Response) => {
+  try {
+    const feedback = await feedbackService.getAll();
+    res.status(200).json(feedback);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
+export default router;

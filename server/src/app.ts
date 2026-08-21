@@ -9,13 +9,12 @@ import authRouter from "./routes/auth";
 
 //properly architectured
 import taskRouter from './features/tasks/taskRoutes';
-import daysRouter from './features/days/daysRoutes'
+import daysRouter from './features/days/daysRoutes';
 import weeksRouter from "./features/weeks/weeksRoutes";
-
+import feedbackRouter from './features/feedback/feedbackRoutes';
 
 import calendarRouter from "./routes/calendar";
 import adminRouter from './routes/admin'
-import feedbackRouter from './routes/feedback'
 import cors from "cors";
 
 const app = express();
