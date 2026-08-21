@@ -65,8 +65,7 @@ export default function TaskEditing({
 
   function editTask() {
     apiClient
-      .patch("/tasks/edit", {
-        id: editingTask._id,
+      .patch(`/tasks/edit/${editingTask._id}`, {
         text: newTaskText,
         priority: newTaskPriority,
         repetition: regular ? repetition : null,
@@ -87,10 +86,8 @@ export default function TaskEditing({
 
   function confirmEditSubtask(subtaskId: string) {
     apiClient
-      .patch("/tasks/edit-subtask", {
-        taskId: editingTask._id,
-        subtaskId,
-        newText: editingSubtaskText,
+      .patch(`/tasks/edit-subtask/${editingTask._id}/${subtaskId}`, {
+        text: editingSubtaskText,
       })
       .then(() => {
         const updated = subtasks.map((s) =>
@@ -106,7 +103,7 @@ export default function TaskEditing({
 
   function deleteSubtask(subtaskId: string) {
     apiClient
-      .delete("/tasks/delete-subtask", { data: { taskId: editingTask._id, subtaskId } })
+      .delete(`/tasks/subtask/${editingTask._id}/${subtaskId}`)
       .then(() => {
         const updated = subtasks.filter((s) => s._id !== subtaskId);
         setSubtasks(updated);
@@ -122,7 +119,7 @@ export default function TaskEditing({
       onClick={(e) => e.stopPropagation()}
     >
       <X
-        className="w-[18px] h-[18px] absolute top-4 right-4 cursor-pointer"
+        className="w-4.5 h-4.5 absolute top-4 right-4 cursor-pointer"
         onClick={() => onClose?.()}
       />
       <h3 className="text-[20px] font-medium mb-4">Edit task</h3>
@@ -181,11 +178,11 @@ export default function TaskEditing({
                 autoFocus
               />
               <Check
-                className="w-[16px] h-[16px] cursor-pointer hover:text-green-400 transition-colors"
+                className="w-4 h-4 cursor-pointer hover:text-green-400 transition-colors"
                 onClick={() => confirmEditSubtask(subtask._id)}
               />
               <XIcon
-                className="w-[16px] h-[16px] cursor-pointer hover:text-red-400 transition-colors"
+                className="w-4 h-4 cursor-pointer hover:text-red-400 transition-colors"
                 onClick={cancelEditingSubtask}
               />
             </>
@@ -193,11 +190,11 @@ export default function TaskEditing({
             <>
               <p className="flex-1 text-sm">{subtask.text}</p>
               <Pencil
-                className="w-[16px] h-[16px] cursor-pointer hover:scale-[1.2] hover:text-blue-500 transition-all duration-300"
+                className="w-4 h-4 cursor-pointer hover:scale-[1.2] hover:text-blue-500 transition-all duration-300"
                 onClick={() => startEditingSubtask(subtask._id, subtask.text)}
               />
               <Trash2
-                className="w-[16px] h-[16px] cursor-pointer hover:scale-[1.2] hover:text-red-500 transition-all duration-300"
+                className="w-4 h-4 cursor-pointer hover:scale-[1.2] hover:text-red-500 transition-all duration-300"
                 onClick={() => deleteSubtask(subtask._id)}
               />
             </>

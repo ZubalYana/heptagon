@@ -29,9 +29,10 @@ export default function DayTasksController({
     text: string;
   }>({ shown: false, type: "info", text: "" });
   const [localTasks, setLocalTasks] = useState<Task[]>([]);
+  const date = toDateString(day.date)
   
   useEffect(()=>{
-    apiClient.get(`/tasks/dayTasks/${dayId}`)
+    apiClient.get(`/tasks/${dayId}`)
     .then(({data})=>{
       setLocalTasks(data);
     })
@@ -71,7 +72,7 @@ export default function DayTasksController({
   })
 );
     apiClient
-      .put("/tasks/complete", { id, dayId })
+      .patch(`/tasks/toggle/${dayId}/${id}`, { id, dayId })
       .then(({ data }) => {
         setLocalTasks((prev) =>
           prev.map((task) =>
@@ -110,7 +111,7 @@ export default function DayTasksController({
     );
 
     apiClient
-      .patch("/tasks/complete-subtask", { taskId, subtaskId, day })
+      .patch(`/tasks/toggle-subtask/${taskId}/${subtaskId}`, { date })
       .then(({ data }) => {
         setLocalTasks((prev) =>
           prev.map((task) => (task._id === taskId ? data.task : task))
@@ -128,7 +129,7 @@ export default function DayTasksController({
 
   function onDelete(id: string) {
     apiClient
-      .delete("/tasks/delete", { data: { id } })
+      .delete(`/tasks/${id}`)
       .then(() => {
         setLocalTasks((prev) => prev.filter((t) => t._id !== id));
         setAlert({
@@ -145,7 +146,7 @@ export default function DayTasksController({
 
   function onAddSubtask(id: string, text: string) {
     apiClient
-      .patch("/tasks/add-subtask", { id, text, date: toDateString(day.date) })
+      .patch(`/tasks/add-subtask/${id}`, { subtaskText: text, taskDate: toDateString(day.date) })
       .then(({ data }) => {
         setLocalTasks((prev) =>
           prev.map((task) => (task._id === id ? data.task : task))
@@ -267,7 +268,7 @@ export default function DayTasksController({
 
       {taskCreationMode && (
         <div
-          className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
+          className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-9999"
           onClick={() => setTaskCreationMode(false)}
         >
           <TaskCreation
@@ -288,7 +289,7 @@ export default function DayTasksController({
       )}
       {editingTask && (
         <div
-          className="w-full h-full max-h-screen overflow-hidden fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
+          className="w-full h-full max-h-screen overflow-hidden fixed inset-0 flex justify-center items-center backdrop-blur-lg z-9999"
           onClick={() => setEditingTask(null)}
         >
           <TaskEditing

@@ -50,7 +50,7 @@ export default function TaskCreation({
       ? { text, priority, dayId, regular, ...repetition }
       : { text, priority, dayId };
 
-    apiClient.post("/tasks/", payload)
+    apiClient.post("/tasks/create", payload)
       .then(({ data }) => {
         onSuccess?.(data);
       })
@@ -70,7 +70,7 @@ export default function TaskCreation({
       onClick={(e) => e.stopPropagation()}
     >
       <X
-        className="w-[18px] h-[18px] absolute top-4 right-4 cursor-pointer"
+        className="w-4.5 h-4.5 absolute top-4 right-4 cursor-pointer"
         onClick={() => onClose?.()}
       />
       <h3 className="text-[20px] font-medium mb-4">Create a task for {day}</h3>
@@ -90,7 +90,7 @@ export default function TaskCreation({
         value={priority}
         placeholder="Select task priority"
         onChange={(value) => setPriority(value)}
-        className="mt-2 relative z-[60]"
+        className="mt-2 relative z-60"
       />
 
       <Checkbox

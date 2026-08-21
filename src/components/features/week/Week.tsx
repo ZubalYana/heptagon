@@ -21,7 +21,7 @@ export default function Week({ week, animationDirection }: WeekProps) {
 
     Promise.all(
       week.days.map((day) =>
-        apiClient.get(`/tasks/dayTasks/${day._id}`).then(({ data }) => ({
+        apiClient.get(`/tasks/${day._id}`).then(({ data }) => ({
           dayId: day._id,
           tasks: data as Task[],
         }))
