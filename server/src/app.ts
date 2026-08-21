@@ -12,9 +12,9 @@ import taskRouter from './features/tasks/taskRoutes';
 import daysRouter from './features/days/daysRoutes';
 import weeksRouter from "./features/weeks/weeksRoutes";
 import feedbackRouter from './features/feedback/feedbackRoutes';
+import adminRouter from './features/admin/adminRoutes';
 
 import calendarRouter from "./routes/calendar";
-import adminRouter from './routes/admin'
 import cors from "cors";
 
 const app = express();
