@@ -22,3 +22,16 @@ export default interface Task{
     subtasks: Subtask[];
     repetition?: Repetition | null;
 }
+
+export interface CreateTaskInput {
+  userId: string;
+  text: string;
+  priority: Priority;
+  regular: boolean;
+  frequency?: string;
+  interval?: number;
+  daysOfWeek?: number[];
+  startDate?: string;
+  endDate?: string;
+  dayId?: string;
+}
