@@ -21,5 +21,12 @@ export const daysRepository = {
             { $push: { tasks: taskId } },
             {returnDocument: "after"}
         )
+    },
+
+    async findById(
+        userId: string,
+        dayId: string
+    ){
+        return await Day.findOne({_id: dayId, userId}).populate("tasks")
     }
 }

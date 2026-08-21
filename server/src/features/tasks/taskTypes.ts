@@ -35,3 +35,11 @@ export interface CreateTaskInput {
   endDate?: string;
   dayId?: string;
 }
+
+export interface EditTaskInput {
+    userId: string,
+    taskId: string,
+    text: string,
+    priority: Priority,
+    repetition: Repetition
+}

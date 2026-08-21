@@ -4,6 +4,7 @@ import type { Priority, Repetition } from "./taskTypes";
 import type TaskType from "./taskTypes";
 import occursOn from "../../utils/occursOn";
 import toDateString from "../../utils/toDateString";
+import { daysRepository } from "../days/daysRepository";
 
 export const taskRepository = {
   async create(
@@ -18,7 +19,7 @@ export const taskRepository = {
   },
 
   async getByDay(userId: string, dayId: string) {
-    const day = await Day.findOne({ _id: dayId, userId }).populate("tasks");
+    const day = await daysRepository.findById(dayId, userId);
     if (!day) throw new Error("Day not found in database records.");
 
     const allRegularTasks = await Task.find({
