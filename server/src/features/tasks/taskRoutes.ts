@@ -109,6 +109,28 @@ router.patch(
   }
 );
 
+router.patch(
+  "/toggle-subtask/:taskId/:subtaskId",
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id as string;
+      const taskId = req.params.taskId as string;
+      const subtaskId = req.params.subtaskId as string;
+      const {date} = req.body;
+      const task = await taskService.toggleSubtask(
+        userId,
+        taskId,
+        subtaskId,
+        date
+      );
+      return res.status(200).json(task);
+    } catch (err) {
+      const errorResult = formErrorMessage(err);
+      res.status(errorResult.status).json({ error: errorResult.message });
+    }
+  }
+);
+
 router.delete("/subtask/:taskId/:subtaskId", async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id as string;
@@ -121,3 +143,5 @@ router.delete("/subtask/:taskId/:subtaskId", async (req: Request, res: Response)
     res.status(errorResult.status).json({ error: errorResult.message });
   }
 });
+
+export default router;

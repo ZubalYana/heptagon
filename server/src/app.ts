@@ -8,7 +8,10 @@ import mongoose from "mongoose";
 import authRouter from "./routes/auth";
 import weeksRouter from "./routes/weeks";
 import daysRouter from "./routes/days";
-import taskRouter from "./routes/tasks";
+
+//properly architectured
+import taskRouter from './features/tasks/taskRoutes';
+
 import calendarRouter from "./routes/calendar";
 import adminRouter from './routes/admin'
 import feedbackRouter from './routes/feedback'
