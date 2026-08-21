@@ -19,7 +19,8 @@ export const taskRepository = {
   },
 
   async getByDay(userId: string, dayId: string) {
-    const day = await daysRepository.findById(dayId, userId);
+    const day = await daysRepository.findById(userId, dayId);
+    console.log("getByDay result:", day);
     if (!day) throw new Error("Day not found in database records.");
 
     const allRegularTasks = await Task.find({

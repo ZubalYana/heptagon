@@ -2,14 +2,16 @@ import Router from "express";
 import type { Request, Response } from "express";
 import { taskService } from "./taskService";
 import { formErrorMessage } from "../../helpers/formErrorMessage";
+import { authMiddleware } from "../../middleware/auth";
 
 const router = Router();
+router.use(authMiddleware);  
 
 router.post("/create", async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id as string;
-    const { text, priority, regular, dayId } = req.body;
-    const data = { userId, text, priority, regular, dayId };
+    const { text, priority, regular, dayId, frequency, interval, daysOfWeek, startDate, endDate } = req.body;
+    const data = { userId, text, priority, regular, dayId, frequency, interval, daysOfWeek, startDate, endDate };
     const task = await taskService.create(data);
     res.status(201).json(task);
   } catch (err) {
