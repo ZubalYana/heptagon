@@ -10,4 +10,14 @@ export const userRepository = {
     await user.save();
     return user;
   },
+
+  async findById(userId: string) {
+    return await User.findById(userId);
+  },
+
+  async clearGoogleTokens(userId: string) {
+    return await User.findByIdAndUpdate(userId, {
+      $unset: { googleTokens: "" },
+    });
+  },
 };
