@@ -150,7 +150,7 @@ export default function DayTasksController({
       .patch(`/tasks/add-subtask/${id}`, { subtaskText: text, taskDate: toDateString(day.date) })
       .then(({ data }) => {
         setLocalTasks((prev) =>
-          prev.map((task) => (task._id === id ? data.task : task))
+          prev.map((task) => (task._id === id ? data : task))
         );
         setAlert({ shown: true, type: "success", text: "Subtask added!" });
       })

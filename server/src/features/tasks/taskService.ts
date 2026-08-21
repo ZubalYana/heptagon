@@ -50,7 +50,8 @@ export const taskService = {
 
   async edit(data: EditTaskInput) {
     const { userId, taskId, text, priority, repetition } = data;
-    if (!userId || !taskId || !text || !priority || !repetition)
+    console.log('Edit task service data:', data)
+    if (!userId || !taskId || !text || !priority)
       throw new Error("Lacking credentials");
     if (
       repetition &&

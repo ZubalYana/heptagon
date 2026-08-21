@@ -70,7 +70,7 @@ export default function TaskEditing({
         priority: newTaskPriority,
         repetition: regular ? repetition : null,
       })
-      .then(({ data }) => onSuccess?.(data.task))
+      .then(({ data }) => onSuccess?.(data))
       .catch(() => showAlert("error", "Failed to edit task"));
   }
 
