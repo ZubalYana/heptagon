@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/PrimaryButton";
 import Select from "../ui/Select";
@@ -39,24 +39,44 @@ export default function TaskCreation({
     type: "success" | "info" | "error";
     text: string;
   }>({ shown: false, type: "info", text: "" });
+  const [isCreating, setIsCreating] = useState(false);
+  const creationInProgress = useRef(false);
 
   function createTask() {
-    if (!text || !priority) {
-      setAlert({ shown: true, type: "info", text: "Text and priority are required." });
+    if (creationInProgress.current || !text || !priority) {
+      if (!text || !priority) {
+        setAlert({
+          shown: true,
+          type: "info",
+          text: "Text and priority are required.",
+        });
+      }
       return;
     }
+
+    creationInProgress.current = true;
+    setIsCreating(true);
 
     const payload = regular
       ? { text, priority, dayId, regular, ...repetition }
       : { text, priority, dayId };
 
-    apiClient.post("/tasks/create", payload)
+    apiClient
+      .post("/tasks/create", payload)
       .then(({ data }) => {
         onSuccess?.(data);
       })
       .catch((err) => {
         console.error("Error creating task:", err);
-        setAlert({ shown: true, type: "error", text: err.response?.data?.message || "Error creating task" });
+        setAlert({
+          shown: true,
+          type: "error",
+          text: err.response?.data?.message || "Error creating task",
+        });
+      })
+      .finally(() => {
+        creationInProgress.current = false;
+        setIsCreating(false);
       });
   }
 
@@ -109,11 +129,11 @@ export default function TaskCreation({
       </AnimatePresence>
 
       <Button
-        onClick={() => createTask()}
+        onClick={createTask}
         className="mt-4"
-        disabled={!text || !priority}
+        disabled={isCreating || !text || !priority}
       >
-        Create task
+        {isCreating ? "Creating..." : "Create task"}
       </Button>
 
       <AnimatePresence>
