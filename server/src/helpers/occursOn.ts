@@ -1,40 +1,44 @@
 import type Task from "../features/tasks/taskTypes";
+import {
+  calendarDaysBetween,
+  mondayBasedWeekday,
+  toCalendarDate,
+} from "./calendarDate";
 
-function isSameDay(d1: Date, d2: Date) {
-  return d1.getUTCFullYear() === d2.getUTCFullYear() &&
-         d1.getUTCMonth() === d2.getUTCMonth() &&
-         d1.getUTCDate() === d2.getUTCDate();
-}
-
-export default function occursOn(task: Task, date: Date): boolean {
-  const msPerDay = 24 * 60 * 60 * 1000;
+export default function occursOn(task: Task, date: Date | string): boolean {
+  const day = toCalendarDate(date);
 
   if (!task.repetition) {
     if (!task.date) return false;
-    return isSameDay(task.date, date);
+    return toCalendarDate(task.date) === day;
   }
 
-  const { startDate, endDate, frequency, interval, daysOfWeek } = task.repetition;
+  const { startDate, endDate, frequency, interval, daysOfWeek } =
+    task.repetition;
+  const start = toCalendarDate(startDate);
 
-  if (startDate > date) return false;
-  if (endDate && endDate < date) return false;
+  if (start > day) return false;
+  if (endDate && toCalendarDate(endDate) < day) return false;
 
-  const span = Math.round((Number(date) - Number(startDate)) / msPerDay);
+  const span = calendarDaysBetween(start, day);
 
-  if (frequency === 'daily') {
+  if (frequency === "daily") {
     return span % interval === 0;
   }
 
-  if (frequency === 'weekly') {
+  if (frequency === "weekly") {
     const weeksElapsed = Math.floor(span / 7);
-    return daysOfWeek.includes(date.getUTCDay()) && weeksElapsed % interval === 0;
+    return (
+      daysOfWeek.includes(mondayBasedWeekday(day)) &&
+      weeksElapsed % interval === 0
+    );
   }
 
-  if (frequency === 'monthly') {
+  if (frequency === "monthly") {
     return span % interval === 0;
   }
 
-  if (frequency === 'yearly') {
+  if (frequency === "yearly") {
     return span % interval === 0;
   }
 

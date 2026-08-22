@@ -3,6 +3,7 @@ import { daysRepository } from "../days/daysRepository";
 import type { Repetition } from "./taskTypes";
 import type { CreateTaskInput } from "./taskTypes";
 import type { EditTaskInput } from "./taskTypes";
+import { toCalendarDate } from "../../helpers/calendarDate";
 
 export const taskService = {
   async create(data: CreateTaskInput) {
@@ -17,8 +18,8 @@ export const taskService = {
           frequency: data.frequency!,
           interval: data.interval!,
           daysOfWeek: data.daysOfWeek!,
-          startDate: new Date(data.startDate!),
-          endDate: data.endDate ? new Date(data.endDate) : null,
+          startDate: toCalendarDate(data.startDate!),
+          endDate: data.endDate ? toCalendarDate(data.endDate) : null,
         }
       : null;
 
@@ -49,10 +50,20 @@ export const taskService = {
   },
 
   async edit(data: EditTaskInput) {
-    const { userId, taskId, text, priority, repetition } = data;
-    console.log('Edit task service data:', data)
+    const { userId, taskId, text, priority } = data;
     if (!userId || !taskId || !text || !priority)
       throw new Error("Lacking credentials");
+
+    const repetition = data.repetition
+      ? {
+          ...data.repetition,
+          startDate: toCalendarDate(data.repetition.startDate),
+          endDate: data.repetition.endDate
+            ? toCalendarDate(data.repetition.endDate)
+            : null,
+        }
+      : data.repetition;
+
     if (
       repetition &&
       repetition.endDate &&

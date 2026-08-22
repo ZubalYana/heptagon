@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Input from "../../ui/Input";
 import Select from "../../ui/Select";
 import type { Repetition } from "../../../interfaces/Task";
+import { toCalendarDate, todayCalendarDate } from "../../../helpers/calendarDate";
 
 const WEEKDAYS = [
   { label: "M", value: 0 },
@@ -17,7 +18,7 @@ const DEFAULT_REPETITION: Repetition = {
   frequency: "daily",
   interval: 1,
   daysOfWeek: [],
-  startDate: new Date(),
+  startDate: todayCalendarDate(),
   endDate: null,
 };
 
@@ -111,9 +112,9 @@ export default function RepetitionFields({ value, onChange }: RepetitionFieldsPr
           <label className="text-xs text-gray-400 mb-1 block">Start date</label>
           <Input
             type="date"
-            value={repetition.startDate ? new Date(repetition.startDate).toISOString().split("T")[0] : ""}
+            value={repetition.startDate ? toCalendarDate(repetition.startDate) : ""}
             onChange={(e) =>
-              update({ startDate: e.target.value ? new Date(e.target.value) : new Date() })
+              update({ startDate: e.target.value || todayCalendarDate() })
             }
           />
         </div>
@@ -122,9 +123,9 @@ export default function RepetitionFields({ value, onChange }: RepetitionFieldsPr
           <label className="text-xs text-gray-400 mb-1 block">End date</label>
           <Input
             type="date"
-            value={repetition.endDate ? new Date(repetition.endDate).toISOString().split("T")[0] : ""}
+            value={repetition.endDate ? toCalendarDate(repetition.endDate) : ""}
             onChange={(e) =>
-              update({ endDate: e.target.value ? new Date(e.target.value) : null })
+              update({ endDate: e.target.value || null })
             }
           />
         </div>

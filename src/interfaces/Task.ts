@@ -2,8 +2,8 @@ export interface Repetition{
     frequency: string,
     interval: number,
     daysOfWeek: number[],
-    startDate: Date,
-    endDate?: Date | null,
+    startDate: string,
+    endDate?: string | null,
 }
 
 export default interface Task{

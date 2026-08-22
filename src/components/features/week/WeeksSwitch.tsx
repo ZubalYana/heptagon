@@ -4,8 +4,8 @@ import formatDate from "../../../helpers/fotmatDate";
 interface WeeksProps {
   weekNumber: number;
   year: number;
-  startDate: Date | string;
-  endDate: Date | string;
+  startDate: string;
+  endDate: string;
   onPrev: () => void;
   onNext: () => void;
 }

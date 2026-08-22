@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import EventBlock from "./EventBlock";
 import type { CalendarEvent } from "../../../interfaces/CalendarEvent";
 import apiClient from "../../../helpers/apiClient";
+import { toCalendarDate } from "../../../helpers/calendarDate";
 interface EventsViewWindowProps {
   day: Date | string;
 }
 
 export default function EventsViewWindow({ day }: EventsViewWindowProps) {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const dayStr = new Date(day).toLocaleDateString("en-CA");
+  const dayStr = toCalendarDate(day);
   useEffect(() => {
     apiClient.get("/calendar/events").then(({ data }) => {
       const dayEvents = data.events.filter((event: CalendarEvent) => {

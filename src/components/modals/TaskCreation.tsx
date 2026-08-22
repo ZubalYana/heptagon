@@ -10,6 +10,7 @@ import type Task from "../../interfaces/Task";
 import apiClient from "../../helpers/apiClient";
 import Checkbox from "../ui/Checkbox";
 import type { Repetition } from "../../interfaces/Task";
+import { todayCalendarDate } from "../../helpers/calendarDate";
 
 interface TaskCreationProps {
   day: string;
@@ -31,7 +32,7 @@ export default function TaskCreation({
     frequency: 'daily',
     interval: 1,
     daysOfWeek: [],
-    startDate: new Date(),
+    startDate: todayCalendarDate(),
     endDate: null
   });
   const [alert, setAlert] = useState<{

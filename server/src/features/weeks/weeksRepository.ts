@@ -12,8 +12,8 @@ export const weeksRepository = {
     userId: string,
     year: number,
     weekNumber: number,
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     dayIds: string[]
   ) {
     const week = await Week.create({

@@ -10,6 +10,7 @@ import type Task from "../../interfaces/Task";
 import type { Repetition } from "../../interfaces/Task";
 import apiClient from "../../helpers/apiClient";
 import Checkbox from "../ui/Checkbox";
+import { todayCalendarDate } from "../../helpers/calendarDate";
 
 interface TaskEditingProps {
   editingTask: Task;
@@ -22,7 +23,7 @@ const DEFAULT_REPETITION: Repetition = {
   frequency: "daily",
   interval: 1,
   daysOfWeek: [],
-  startDate: new Date(),
+  startDate: todayCalendarDate(),
   endDate: null,
 };
 

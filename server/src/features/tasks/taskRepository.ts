@@ -55,19 +55,20 @@ export const taskRepository = {
       const day = await Day.findById(dayId);
       if (!day) throw new Error("Day not found in database records.");
 
-      const isCompleted = task.completedDates.includes(toDateString(day.date));
+      const date = toDateString(day.date);
+      const isCompleted = task.completedDates.includes(date);
 
       const updateOperation = isCompleted
         ? {
             $pull: {
-              completedDates: day.date,
-              "subtasks.$[].completedDates": day.date,
+              completedDates: date,
+              "subtasks.$[].completedDates": date,
             },
           }
         : {
             $addToSet: {
-              completedDates: day.date,
-              "subtasks.$[].completedDates": day.date,
+              completedDates: date,
+              "subtasks.$[].completedDates": date,
             },
           };
 
@@ -87,7 +88,7 @@ export const taskRepository = {
     taskId: string,
     text: string,
     priority: Priority,
-    repetition: Repetition
+    repetition: Repetition | null
   ) {
     const updated = await Task.findOneAndUpdate(
       { _id: taskId, userId },

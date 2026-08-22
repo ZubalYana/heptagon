@@ -1,6 +1,7 @@
 import { weeksRepository } from "./weeksRepository";
 import { daysRepository } from "../days/daysRepository";
 import { getStartOfWeek } from "../../helpers/weekHelpers";
+import { addCalendarDays, toCalendarDate } from "../../helpers/calendarDate";
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -11,14 +12,12 @@ export const weeksService = {
     const existing = await weeksRepository.findByYearAndNumber(userId, year, weekNumber);
     if (existing) return existing;
 
-    const startDate = getStartOfWeek(year, weekNumber);
+    const startDate = toCalendarDate(getStartOfWeek(year, weekNumber));
 
     const days = await Promise.all(
-      DAY_NAMES.map((name, i) => {
-        const date = new Date(startDate);
-        date.setDate(startDate.getDate() + i);
-        return daysRepository.create(userId, name, date.toISOString());
-      })
+      DAY_NAMES.map((name, i) =>
+        daysRepository.create(userId, name, addCalendarDays(startDate, i))
+      )
     );
 
     return await weeksRepository.create(

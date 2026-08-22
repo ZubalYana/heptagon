@@ -9,14 +9,14 @@ export interface Repetition{
     frequency: string,
     interval: number,
     daysOfWeek: number[],
-    startDate: Date,
-    endDate?: Date | null,
+    startDate: string,
+    endDate?: string | null,
 }
 
 export default interface Task{
     text: string;
     priority: Priority;
-    date?: Date | null;
+    date?: string | null;
     completed: boolean;
     completedDates: string[];
     subtasks: Subtask[];
@@ -41,5 +41,5 @@ export interface EditTaskInput {
     taskId: string,
     text: string,
     priority: Priority,
-    repetition: Repetition
+    repetition: Repetition | null
 }

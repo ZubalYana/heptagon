@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
+import { toCalendarDate } from '../../helpers/calendarDate';
 
 const weekSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     weekNumber: Number,
     year: Number,
-    startDate: Date,
-    endDate: Date,
+    startDate: { type: String, set: (value: Date | string) => toCalendarDate(value) },
+    endDate: { type: String, set: (value: Date | string) => toCalendarDate(value) },
     days: [{type: mongoose.Schema.Types.ObjectId, ref: 'Day'}]
 });
 
