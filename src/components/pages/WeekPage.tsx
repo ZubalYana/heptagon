@@ -127,7 +127,7 @@ export default function WeekPage({ setUser }: WeekPageProps) {
               onPrev={handlePrev}
               onNext={handleNext}
             />
-            {currentWeekNumber !== getWeekNumber(new Date()).weekNumber - 1 &&
+            {currentWeekNumber !== getWeekNumber(new Date()).weekNumber &&
               currentYear == getWeekNumber(new Date()).year && (
                 <p
                   className="text-[#888] text-[10px] cursor-pointer uppercase mt-2 lg:mt-2 hover:text-white transition-colors duration-200"
