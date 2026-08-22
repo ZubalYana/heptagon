@@ -1,18 +1,23 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { userRepository } from "./userRepository";
+import { isValidEmail } from "../../helpers/isValidEmail";
 
 export const userService = {
   async register(name: string, email: string, password: string) {
     if (!name || !email || !password) {
       throw new Error("All fields are required");
     }
-    const existingUser = await userRepository.findByEmail(email);
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!isValidEmail(normalizedEmail)) {
+      throw new Error("Invalid email");
+    }
+    const existingUser = await userRepository.findByEmail(normalizedEmail);
     if (existingUser) {
       throw new Error("User already exists");
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await userRepository.create(name, email, hashedPassword);
+    const newUser = await userRepository.create(name.trim(), normalizedEmail, hashedPassword);
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET as string, {
       expiresIn: "24h",
     });
@@ -26,7 +31,11 @@ export const userService = {
     if (!email || !password) {
       throw new Error("All fields are required");
     }
-    const user = await userRepository.findByEmail(email);
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!isValidEmail(normalizedEmail)) {
+      throw new Error("Invalid email format");
+    }
+    const user = await userRepository.findByEmail(normalizedEmail);
     if (!user) {
       throw new Error("User not found");
     }

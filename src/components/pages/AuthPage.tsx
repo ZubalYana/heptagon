@@ -8,6 +8,7 @@ import type User from "../../interfaces/User";
 import PasswordStrengthIndicator, {
   getPasswordLevel,
 } from "../ui/PasswordStrengthIndicator";
+import { isValidEmail } from "../../helpers/isValidEmail";
 import apiClient from "../../helpers/apiClient";
 
 interface AuthPageProps {
@@ -36,8 +37,16 @@ export default function AuthPage({ setUser }: AuthPageProps) {
       setAlert({ shown: true, type: "error", text: "Password is too weak." });
       return;
     }
+    if (!isValidEmail(email)) {
+      setAlert({
+        shown: true,
+        type: "error",
+        text: "Enter a valid email address.",
+      });
+      return;
+    }
     apiClient
-      .post("/auth/register", { name, email, password })
+      .post("/auth/register", { name, email: email.trim(), password })
       .then(({ data }) => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
@@ -48,7 +57,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
         setAlert({
           shown: true,
           type: "error",
-          text: err.response?.data?.message || err.message,
+          text: err.response?.data?.error || err.response?.data?.message || err.message,
         });
       });
   };
@@ -70,7 +79,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
         setAlert({
           shown: true,
           type: "error",
-          text: err.response?.data?.message || err.message,
+          text: err.response?.data?.error || err.response?.data?.message || err.message,
         });
       });
   };
@@ -115,6 +124,11 @@ export default function AuthPage({ setUser }: AuthPageProps) {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                error={
+                  email.length > 0 && !isValidEmail(email)
+                    ? "Enter a valid email address"
+                    : undefined
+                }
               />
               <div className="mt-4 w-full">
                 <Input
@@ -128,7 +142,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
                 <PrimaryButton
                   className="w-full lg:w-[60%]"
                   onClick={login}
-                  disabled={!email || !password ? true : false}
+                  disabled={!email || !password ? true : false || !isValidEmail(email)}
                 >
                   Log in
                 </PrimaryButton>
@@ -157,8 +171,15 @@ export default function AuthPage({ setUser }: AuthPageProps) {
               <div className="mt-4 w-full">
                 <Input
                   placeholder="Email"
+                  type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  error={
+                    email.length > 0 && !isValidEmail(email)
+                      ? "Enter a valid email address"
+                      : undefined
+                  }
                 />
               </div>
               <div className="mt-4 w-full">
@@ -174,7 +195,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
                 <PrimaryButton
                   className="w-full lg:w-[60%]"
                   onClick={signup}
-                  disabled={!name || !email || !password ? true : false}
+                  disabled={!name || !isValidEmail(email) || !password}
                 >
                   Sign up
                 </PrimaryButton>
