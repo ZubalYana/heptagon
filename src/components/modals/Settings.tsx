@@ -10,6 +10,7 @@ import Button from "../ui/PrimaryButton";
 import AppConnection from "../ui/AppConnection";
 import apiClient from "../../helpers/apiClient";
 import Alert from "../ui/Alert";
+import { clearSession } from "../../helpers/session";
 
 interface SettingsProps {
   onClose?: () => void;
@@ -37,12 +38,10 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch(`${baseURL}/calendar/status`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => r.json())
-      .then((data) => setCalendarConnected(data.connected));
+    apiClient
+      .get("/calendar/status")
+      .then(({ data }) => setCalendarConnected(data.connected))
+      .catch(() => setCalendarConnected(false));
   }, []);
 
   useEffect(() => {
@@ -50,33 +49,23 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
   }, [optionalIncluded]);
 
   const logOut = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setLocalUser(null);
-    setUser(null);
+    const refreshToken = localStorage.getItem("refreshToken");
+    apiClient.post("/auth/logout", { refreshToken }).finally(() => {
+      clearSession();
+      setLocalUser(null);
+      setUser(null);
+    });
   };
 
-  const baseURL = import.meta.env.DEV
-    ? "http://localhost:5000"
-    : import.meta.env.VITE_API_URL;
-
   const connectCalendar = async () => {
-    const token = localStorage.getItem("token");
-
     if (calendarConnected) {
-      await fetch(`${baseURL}/calendar/disconnect`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await apiClient.delete("/calendar/disconnect");
       setCalendarConnected(false);
       return;
     }
 
-    const response = await fetch(`${baseURL}/calendar/auth-url`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const { url } = await response.json();
-    window.location.href = url;
+    const { data } = await apiClient.get("/calendar/auth-url");
+    window.location.href = data.url;
   };
 
   const sendFeedback = async () => {

@@ -10,6 +10,7 @@ import PasswordStrengthIndicator, {
 } from "../ui/PasswordStrengthIndicator";
 import { isValidEmail } from "../../helpers/isValidEmail";
 import apiClient from "../../helpers/apiClient";
+import { persistSession } from "../../helpers/session";
 
 interface AuthPageProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -48,8 +49,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
     apiClient
       .post("/auth/register", { name, email: email.trim(), password })
       .then(({ data }) => {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        persistSession(data.token, data.refreshToken, data.user);
         setUser(data.user);
         navigate("/app");
       })
@@ -70,8 +70,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
     apiClient
       .post("/auth/login", { email, password })
       .then(({ data }) => {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        persistSession(data.token, data.refreshToken, data.user);
         setUser(data.user);
         navigate("/app");
       })

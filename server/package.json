@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node dist/app.js",
     "dev": "tsx watch src/app.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "migrate:refresh-sessions": "tsx src/scripts/migrateRefreshSessions.ts"
   },
   "keywords": [],
   "author": "",

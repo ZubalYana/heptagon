@@ -27,4 +27,26 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/refresh", async (req: Request, res: Response) => {
+  try {
+    const { refreshToken } = req.body;
+    const result = await userService.refresh(refreshToken);
+    res.status(200).json(result);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
+router.post("/logout", async (req: Request, res: Response) => {
+  try {
+    const { refreshToken } = req.body;
+    await userService.logout(refreshToken);
+    res.status(200).json({ message: "Logged out" });
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
 export default router;

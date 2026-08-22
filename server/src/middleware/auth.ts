@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { verifyAccessToken } from "../helpers/authTokens";
 
 export const authMiddleware = (
   req: Request,
@@ -13,14 +14,12 @@ export const authMiddleware = (
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
-      id: string;
-    };
+    const decoded = verifyAccessToken(token);
     req.user = { id: decoded.id };
     next();
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
-      return res.status(401).json({ message: "Token expired" });
+      return res.status(401).json({ message: "Token expired", code: "TOKEN_EXPIRED" });
     }
     return res.status(401).json({ message: "Invalid token" });
   }
