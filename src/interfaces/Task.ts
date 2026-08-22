@@ -2,6 +2,8 @@ export interface Repetition{
     frequency: string,
     interval: number,
     daysOfWeek: number[],
+    dayOfMonth?: number | null,
+    monthOfYear?: number | null,
     startDate: string,
     endDate?: string | null,
 }

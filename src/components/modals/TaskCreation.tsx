@@ -32,6 +32,8 @@ export default function TaskCreation({
     frequency: 'daily',
     interval: 1,
     daysOfWeek: [],
+    dayOfMonth: null,
+    monthOfYear: null,
     startDate: todayCalendarDate(),
     endDate: null
   });
@@ -87,7 +89,7 @@ export default function TaskCreation({
 
   return (
     <div
-      className="w-[90%] lg:w-[40%] bg-[#1F1F1F] rounded-md p-4 flex flex-col items-center relative"
+      className="w-[90%] lg:w-[40%] max-h-[90vh] overflow-y-auto bg-[#1F1F1F] rounded-md p-4 flex flex-col items-center relative"
       onClick={(e) => e.stopPropagation()}
     >
       <X
@@ -111,7 +113,7 @@ export default function TaskCreation({
         value={priority}
         placeholder="Select task priority"
         onChange={(value) => setPriority(value)}
-        className="mt-2 relative z-60"
+        className="mt-2"
       />
 
       <Checkbox

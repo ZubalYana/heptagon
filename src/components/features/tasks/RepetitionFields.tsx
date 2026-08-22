@@ -2,7 +2,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import Input from "../../ui/Input";
 import Select from "../../ui/Select";
 import type { Repetition } from "../../../interfaces/Task";
-import { toCalendarDate, todayCalendarDate } from "../../../helpers/calendarDate";
+import {
+  calendarParts,
+  toCalendarDate,
+  todayCalendarDate,
+} from "../../../helpers/calendarDate";
 
 const WEEKDAYS = [
   { label: "M", value: 0 },
@@ -14,10 +18,32 @@ const WEEKDAYS = [
   { label: "S", value: 6 },
 ];
 
+const MONTHS = [
+  { value: "1", label: "January" },
+  { value: "2", label: "February" },
+  { value: "3", label: "March" },
+  { value: "4", label: "April" },
+  { value: "5", label: "May" },
+  { value: "6", label: "June" },
+  { value: "7", label: "July" },
+  { value: "8", label: "August" },
+  { value: "9", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
+const DAYS_OF_MONTH = Array.from({ length: 31 }, (_, i) => {
+  const day = String(i + 1);
+  return { value: day, label: day };
+});
+
 const DEFAULT_REPETITION: Repetition = {
   frequency: "daily",
   interval: 1,
   daysOfWeek: [],
+  dayOfMonth: null,
+  monthOfYear: null,
   startDate: todayCalendarDate(),
   endDate: null,
 };
@@ -29,9 +55,18 @@ interface RepetitionFieldsProps {
 
 export default function RepetitionFields({ value, onChange }: RepetitionFieldsProps) {
   const repetition = value ?? DEFAULT_REPETITION;
+  const startParts = calendarParts(repetition.startDate || todayCalendarDate());
 
   function update(patch: Partial<Repetition>) {
     onChange({ ...repetition, ...patch });
+  }
+
+  function setFrequency(frequency: Repetition["frequency"]) {
+    update({
+      frequency,
+      dayOfMonth: repetition.dayOfMonth ?? startParts.day,
+      monthOfYear: repetition.monthOfYear ?? startParts.month,
+    });
   }
 
   function toggleDayOfWeek(dayValue: number) {
@@ -41,9 +76,12 @@ export default function RepetitionFields({ value, onChange }: RepetitionFieldsPr
     update({ daysOfWeek });
   }
 
+  const dayOfMonth = repetition.dayOfMonth ?? startParts.day;
+  const monthOfYear = repetition.monthOfYear ?? startParts.month;
+
   return (
     <div className="w-full flex flex-col gap-3 mt-3">
-      <div className="grid grid-cols-4 gap-2 items-end relative z-50">
+      <div className="grid grid-cols-4 gap-2 items-end">
         <div className="col-span-3">
           <label className="text-xs text-gray-400 mb-1 block">Frequency</label>
           <Select
@@ -55,7 +93,7 @@ export default function RepetitionFields({ value, onChange }: RepetitionFieldsPr
             ]}
             value={repetition.frequency}
             placeholder="Frequency"
-            onChange={(freq) => update({ frequency: freq as Repetition["frequency"] })}
+            onChange={(freq) => setFrequency(freq as Repetition["frequency"])}
           />
         </div>
 
@@ -107,7 +145,58 @@ export default function RepetitionFields({ value, onChange }: RepetitionFieldsPr
         )}
       </AnimatePresence>
 
-      <div className="w-full grid grid-cols-2 gap-2 mt-1 relative z-30">
+      <AnimatePresence>
+        {repetition.frequency === "monthly" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeInOut" }}
+            className="relative"
+          >
+            <label className="text-xs text-gray-400 mb-1 block">Day of month</label>
+            <Select
+              options={DAYS_OF_MONTH}
+              value={String(dayOfMonth)}
+              placeholder="Day"
+              onChange={(day) => update({ dayOfMonth: Number(day) })}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {repetition.frequency === "yearly" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeInOut" }}
+            className="relative grid grid-cols-2 gap-2"
+          >
+            <div>
+              <label className="text-xs text-gray-400 mb-1 block">Month</label>
+              <Select
+                options={MONTHS}
+                value={String(monthOfYear)}
+                placeholder="Month"
+                onChange={(month) => update({ monthOfYear: Number(month) })}
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-400 mb-1 block">Day</label>
+              <Select
+                options={DAYS_OF_MONTH}
+                value={String(dayOfMonth)}
+                placeholder="Day"
+                onChange={(day) => update({ dayOfMonth: Number(day) })}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="w-full grid grid-cols-2 gap-2 mt-1">
         <div>
           <label className="text-xs text-gray-400 mb-1 block">Start date</label>
           <Input

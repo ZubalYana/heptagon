@@ -23,6 +23,8 @@ const DEFAULT_REPETITION: Repetition = {
   frequency: "daily",
   interval: 1,
   daysOfWeek: [],
+  dayOfMonth: null,
+  monthOfYear: null,
   startDate: todayCalendarDate(),
   endDate: null,
 };

@@ -41,6 +41,40 @@ export function todayCalendarDate(): string {
   return formatYmd(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
+export function calendarParts(date: string | Date): {
+  year: number;
+  month: number;
+  day: number;
+} {
+  const [year, month, day] = toCalendarDate(date).split("-").map(Number);
+  return { year, month, day };
+}
+
+export function daysInMonth(year: number, month: number): number {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate();
+}
+
+export function monthsBetween(start: string, end: string): number {
+  const from = calendarParts(start);
+  const to = calendarParts(end);
+  return (to.year - from.year) * 12 + (to.month - from.month);
+}
+
+export function calendarDaysBetween(start: string, end: string): number {
+  const [sy, sm, sd] = toCalendarDate(start).split("-").map(Number);
+  const [ey, em, ed] = toCalendarDate(end).split("-").map(Number);
+  const msPerDay = 24 * 60 * 60 * 1000;
+  return Math.round(
+    (Date.UTC(ey, em - 1, ed) - Date.UTC(sy, sm - 1, sd)) / msPerDay
+  );
+}
+
+export function mondayBasedWeekday(date: string): number {
+  const [year, month, day] = toCalendarDate(date).split("-").map(Number);
+  const utcDay = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+  return utcDay === 0 ? 6 : utcDay - 1;
+}
+
 export function calendarDateToLocalDate(value: Date | string): Date {
   const ymd = toCalendarDate(value);
   const [year, month, day] = ymd.split("-").map(Number);

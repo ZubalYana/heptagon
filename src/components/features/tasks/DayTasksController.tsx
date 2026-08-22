@@ -9,6 +9,7 @@ import { AnimatePresence } from "framer-motion";
 import TaskComponent from "./Task";
 import SecondaryButton from "../../ui/SecondaryButton";
 import toDateString from "../../../helpers/toDateString";
+import occursOn from "../../../helpers/occursOn";
 import { Plus } from "lucide-react";
 import apiClient from "../../../helpers/apiClient";
 
@@ -278,7 +279,9 @@ export default function DayTasksController({
             onClose={() => setTaskCreationMode(false)}
             onSuccess={(newTask) => {
               setTaskCreationMode(false);
-              setLocalTasks((prev) => [...prev, newTask]);
+              if (!newTask.repetition || occursOn(newTask, day.date)) {
+                setLocalTasks((prev) => [...prev, newTask]);
+              }
               setAlert({
                 shown: true,
                 type: "success",
@@ -304,9 +307,14 @@ export default function DayTasksController({
               );
             }}
             onSuccess={(updatedTask) => {
-              setLocalTasks((prev) =>
-                prev.map((t) => (t._id === updatedTask._id ? updatedTask : t))
-              );
+              setLocalTasks((prev) => {
+                if (updatedTask.repetition && !occursOn(updatedTask, day.date)) {
+                  return prev.filter((t) => t._id !== updatedTask._id);
+                }
+                return prev.map((t) =>
+                  t._id === updatedTask._id ? updatedTask : t
+                );
+              });
               setEditingTask(null);
               setAlert({ shown: true, type: "success", text: "Task updated!" });
             }}

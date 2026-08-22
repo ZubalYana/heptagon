@@ -15,7 +15,9 @@ const repetitionSchema = new mongoose.Schema(
       required: true,
     },
     interval: { type: Number, default: 1, min: 1 }, 
-    daysOfWeek: { type: [Number], default: [] },   
+    daysOfWeek: { type: [Number], default: [] },
+    dayOfMonth: { type: Number, min: 1, max: 31, default: null },
+    monthOfYear: { type: Number, min: 1, max: 12, default: null },
     startDate: {
       type: String,
       required: true,

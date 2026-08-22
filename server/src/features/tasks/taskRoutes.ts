@@ -10,8 +10,8 @@ router.use(authMiddleware);
 router.post("/create", async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id as string;
-    const { text, priority, regular, dayId, frequency, interval, daysOfWeek, startDate, endDate } = req.body;
-    const data = { userId, text, priority, regular, dayId, frequency, interval, daysOfWeek, startDate, endDate };
+    const { text, priority, regular, dayId, frequency, interval, daysOfWeek, dayOfMonth, monthOfYear, startDate, endDate } = req.body;
+    const data = { userId, text, priority, regular, dayId, frequency, interval, daysOfWeek, dayOfMonth, monthOfYear, startDate, endDate };
     const task = await taskService.create(data);
     res.status(201).json(task);
   } catch (err) {

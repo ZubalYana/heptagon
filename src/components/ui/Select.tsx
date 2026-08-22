@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown, Check } from "lucide-react";
 
 interface SelectOption {
@@ -26,22 +27,68 @@ export default function Select({
   className = "",
 }: CustomSelectProps) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [menuStyle, setMenuStyle] = useState<CSSProperties>({});
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const selected = options.find((o) => o.value === value);
 
+  function updateMenuPosition() {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+    const gap = 6;
+    const maxMenu = 240;
+    const spaceBelow = window.innerHeight - rect.bottom - gap;
+    const spaceAbove = rect.top - gap;
+    const openUp = spaceBelow < 160 && spaceAbove > spaceBelow;
+    const maxHeight = Math.min(
+      maxMenu,
+      Math.max(132, openUp ? spaceAbove : spaceBelow)
+    );
+
+    setMenuStyle({
+      position: "fixed",
+      left: rect.left,
+      width: rect.width,
+      zIndex: 10050,
+      maxHeight,
+      overflowY: "auto",
+      ...(openUp
+        ? { bottom: window.innerHeight - rect.top + gap, top: "auto" }
+        : { top: rect.bottom + gap, bottom: "auto" }),
+    });
+  }
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    updateMenuPosition();
+    const onWin = () => updateMenuPosition();
+    window.addEventListener("resize", onWin);
+    window.addEventListener("scroll", onWin, true);
+    return () => {
+      window.removeEventListener("resize", onWin);
+      window.removeEventListener("scroll", onWin, true);
+    };
+  }, [open, options.length]);
+
   useEffect(() => {
+    if (!open) return;
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
+      const target = e.target as Node;
+      if (rootRef.current?.contains(target) || menuRef.current?.contains(target)) {
+        return;
       }
+      setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [open]);
 
   return (
-    <div ref={ref} className={`flex flex-col gap-1.5 w-full font-sans group ${className}`}>
+    <div ref={rootRef} className={`flex flex-col gap-1.5 w-full font-sans group ${className}`}>
       {label && (
         <label
           className={`text-sm font-medium transition-colors duration-300 ${
@@ -58,6 +105,7 @@ export default function Select({
 
       <div className="relative w-full">
         <button
+          ref={buttonRef}
           type="button"
           onClick={() => setOpen((v) => !v)}
           className={`
@@ -81,9 +129,18 @@ export default function Select({
               ${open ? "rotate-180 text-[#00FF26]" : "text-[#555555]"}`}
           />
         </button>
+      </div>
 
-        {open && (
-          <div className="absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+      {open &&
+        createPortal(
+          <div
+            ref={menuRef}
+            style={menuStyle}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.45)] overscroll-contain"
+          >
             {options.map((option) => (
               <button
                 key={option.value}
@@ -104,9 +161,9 @@ export default function Select({
                 {value === option.value && <Check size={14} className="text-[#00FF26]" />}
               </button>
             ))}
-          </div>
+          </div>,
+          document.body
         )}
-      </div>
 
       {error && (
         <span className="text-xs text-red-500 transition-opacity duration-300">

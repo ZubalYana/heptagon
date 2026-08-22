@@ -47,6 +47,25 @@ export function addCalendarDays(date: string, days: number): string {
   return formatYmd(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate());
 }
 
+export function calendarParts(date: string | Date): {
+  year: number;
+  month: number;
+  day: number;
+} {
+  const [year, month, day] = toCalendarDate(date).split("-").map(Number);
+  return { year, month, day };
+}
+
+export function daysInMonth(year: number, month: number): number {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate();
+}
+
+export function monthsBetween(start: string, end: string): number {
+  const from = calendarParts(start);
+  const to = calendarParts(end);
+  return (to.year - from.year) * 12 + (to.month - from.month);
+}
+
 export function calendarDaysBetween(start: string, end: string): number {
   const [sy, sm, sd] = toCalendarDate(start).split("-").map(Number);
   const [ey, em, ed] = toCalendarDate(end).split("-").map(Number);

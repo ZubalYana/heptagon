@@ -3,7 +3,58 @@ import { daysRepository } from "../days/daysRepository";
 import type { Repetition } from "./taskTypes";
 import type { CreateTaskInput } from "./taskTypes";
 import type { EditTaskInput } from "./taskTypes";
-import { toCalendarDate } from "../../helpers/calendarDate";
+import { calendarParts, toCalendarDate } from "../../helpers/calendarDate";
+
+function fillRepetitionAnchors(repetition: Repetition): Repetition {
+  const start = calendarParts(repetition.startDate);
+  if (repetition.frequency === "monthly") {
+    return {
+      ...repetition,
+      dayOfMonth: repetition.dayOfMonth ?? start.day,
+      monthOfYear: null,
+    };
+  }
+  if (repetition.frequency === "yearly") {
+    return {
+      ...repetition,
+      dayOfMonth: repetition.dayOfMonth ?? start.day,
+      monthOfYear: repetition.monthOfYear ?? start.month,
+    };
+  }
+  return {
+    ...repetition,
+    dayOfMonth: null,
+    monthOfYear: null,
+  };
+}
+
+function assertCalendarRepetition(repetition: Repetition) {
+  if (repetition.frequency === "monthly") {
+    if (
+      repetition.dayOfMonth == null ||
+      repetition.dayOfMonth < 1 ||
+      repetition.dayOfMonth > 31
+    ) {
+      throw new Error("Day of month is required for monthly tasks");
+    }
+  }
+  if (repetition.frequency === "yearly") {
+    if (
+      repetition.monthOfYear == null ||
+      repetition.monthOfYear < 1 ||
+      repetition.monthOfYear > 12
+    ) {
+      throw new Error("Month is required for yearly tasks");
+    }
+    if (
+      repetition.dayOfMonth == null ||
+      repetition.dayOfMonth < 1 ||
+      repetition.dayOfMonth > 31
+    ) {
+      throw new Error("Day of month is required for yearly tasks");
+    }
+  }
+}
 
 export const taskService = {
   async create(data: CreateTaskInput) {
@@ -17,17 +68,24 @@ export const taskService = {
       ? {
           frequency: data.frequency!,
           interval: data.interval!,
-          daysOfWeek: data.daysOfWeek!,
+          daysOfWeek: data.daysOfWeek ?? [],
+          dayOfMonth: data.dayOfMonth ?? null,
+          monthOfYear: data.monthOfYear ?? null,
           startDate: toCalendarDate(data.startDate!),
           endDate: data.endDate ? toCalendarDate(data.endDate) : null,
         }
       : null;
 
+    const savedRepetition = repetition
+      ? fillRepetitionAnchors(repetition)
+      : null;
+    if (savedRepetition) assertCalendarRepetition(savedRepetition);
+
     const task = await taskRepository.create(
       userId,
       text,
       priority,
-      repetition
+      savedRepetition
     );
 
     if (!regular) {
@@ -55,14 +113,16 @@ export const taskService = {
       throw new Error("Lacking credentials");
 
     const repetition = data.repetition
-      ? {
+      ? fillRepetitionAnchors({
           ...data.repetition,
           startDate: toCalendarDate(data.repetition.startDate),
           endDate: data.repetition.endDate
             ? toCalendarDate(data.repetition.endDate)
             : null,
-        }
+        })
       : data.repetition;
+
+    if (repetition) assertCalendarRepetition(repetition);
 
     if (
       repetition &&

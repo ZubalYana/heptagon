@@ -1,4 +1,4 @@
-import type Task from "../features/tasks/taskTypes";
+import type Task from "../interfaces/Task";
 import {
   calendarDaysBetween,
   calendarParts,
@@ -15,13 +15,9 @@ function matchesDayOfMonth(date: string, dayOfMonth: number): boolean {
 }
 
 export default function occursOn(task: Task, date: Date | string): boolean {
+  if (!task.repetition) return true;
+
   const day = toCalendarDate(date);
-
-  if (!task.repetition) {
-    if (!task.date) return false;
-    return toCalendarDate(task.date) === day;
-  }
-
   const {
     startDate,
     endDate,
