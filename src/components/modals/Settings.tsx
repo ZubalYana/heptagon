@@ -96,7 +96,24 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
     setAlert({ shown: false, text: "", type: "success" });
   };
 
-  function deleteAccount(){}
+  function deleteAccount(){
+    try{
+      console.log(user)
+      apiClient.delete(`/auth/delete/${user?.id}`).then(() => {
+        clearSession();
+        setLocalUser(null);
+        setUser(null);
+        window.location.reload();
+      });
+    }catch(err){
+      setAlert({
+        shown: true,
+        text: "Error deleting account. Please try again.",
+        type: "error",
+      });
+      console.log("Error deleting account:", err);
+    }
+  }
 
   return (
     <div

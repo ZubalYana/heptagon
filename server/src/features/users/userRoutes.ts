@@ -49,9 +49,9 @@ router.post("/logout", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/delete", async (req: Request, res: Response) => {
+router.delete("/delete/:userId", async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
+    const userId = req.params.userId as string;
     await userService.deleteAccount(userId);
     res.status(200).json({ message: "Account deleted successfully" });
   } catch (err) {
