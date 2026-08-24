@@ -153,16 +153,27 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
               Email: <span className="font-semibold">{user?.email}</span>
             </p>
             <div className="mt-4 flex gap-x-4 items-center">
-              <DangerButton variant="filled" onClick={() => {
+              <DangerButton onClick={() => {
                 setConfirmDeleteAccount(true);
               }}>
                 <Trash2 size={18} />
                 Delete Account
               </DangerButton>
-              <DangerButton onClick={() => logOut()}>
+              <button 
+                      className={[
+          "flex justify-center items-center gap-2",
+          "px-4 py-2 rounded-lg",
+          "font-medium text-[14px]",
+          "bg-transparent border transition-all duration-200 ease-in-out",
+          "border-gray-500/30 text-gray-500 cursor-pointer",
+          "hover:bg-gray-500/10 hover:border-gray-500 hover:-translate-y-px",
+          "focus:outline-none focus:ring-2 focus:ring-gray-500/40 focus:bg-red-gray/10",
+          "active:scale-[0.98] active:translate-y-0",
+        ].join(" ")}
+        onClick={() => logOut()}>
                 <LogOut size={18} />
                 Log Out
-              </DangerButton>
+              </button>
             </div>
           </div>
         )}
