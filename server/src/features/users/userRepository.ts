@@ -82,4 +82,8 @@ export const userRepository = {
       $unset: { googleTokens: "" },
     });
   },
+
+  async deleteUser(userId: string) {
+    return await User.findByIdAndDelete(userId);
+  },
 };

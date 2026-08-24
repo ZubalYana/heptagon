@@ -138,4 +138,11 @@ export const userService = {
       return;
     }
   },
+
+  async deleteAccount(userId: string) {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+    return await userRepository.deleteUser(userId);
+  }
 };
