@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
 import { SettingsNav } from "../features/settings/SettingsNav";
 import type { SettingSection } from "../features/settings/SettingsNav";
 import SettingSwitch from "../features/settings/SettingsSwitch";
 import type User from "../../interfaces/User";
-import { LogOut, Send } from "lucide-react";
+import { LogOut, Send, X, Trash2 } from "lucide-react";
 import TextArea from "../ui/TextArea";
 import Button from "../ui/PrimaryButton";
+import DangerButton from "../ui/DangerButton";
 import AppConnection from "../ui/AppConnection";
 import apiClient from "../../helpers/apiClient";
 import Alert from "../ui/Alert";
 import { clearSession } from "../../helpers/session";
+import ActionConfirmation from "./ActionConfirmation"
 
 interface SettingsProps {
   onClose?: () => void;
@@ -19,10 +20,11 @@ interface SettingsProps {
 
 export default function Settings({ onClose, setUser }: SettingsProps) {
   const [activeSection, setActiveSection] = useState<SettingSection>("General");
+  const [confirmDeleteAccount, setConfirmDeleteAccount] = useState<boolean>(false);
   const [optionalIncluded, setOptionalIncluded] = useState<boolean>(() => {
-  const saved = localStorage.getItem("optionalIncluded");
-  return saved !== null ? saved === "true" : false;
-});
+    const saved = localStorage.getItem("optionalIncluded");
+    return saved !== null ? saved === "true" : false;
+  });
   const [calendarConnected, setCalendarConnected] = useState<boolean>(false);
   const [user, setLocalUser] = useState<User | null>(null);
   const [feedbackText, setFeedbackText] = useState<string>("");
@@ -94,6 +96,8 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
     setAlert({ shown: false, text: "", type: "success" });
   };
 
+  function deleteAccount(){}
+
   return (
     <div
       className="w-[90%] md:w-[60%] lg:w-[40%] bg-[#1F1F1F] rounded-xl p-5 flex flex-col relative shadow-2xl"
@@ -131,22 +135,18 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
             <p className="text-[14px] text-white mb-2">
               Email: <span className="font-semibold">{user?.email}</span>
             </p>
-            <button
-              className={[
-                "flex justify-center items-center gap-2 mt-4",
-                "px-4 py-2 rounded-lg",
-                "font-medium text-[14px]",
-                "bg-transparent border transition-all duration-200 ease-in-out",
-                "border-red-500/30 text-red-500 cursor-pointer",
-                "hover:bg-red-500/10 hover:border-red-500 hover:shadow-[0_0_12px_rgba(239,68,68,0.15)] hover:-translate-y-px",
-                "focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:bg-red-500/10",
-                "active:scale-[0.98] active:translate-y-0",
-              ].join(" ")}
-              onClick={() => logOut()}
-            >
-              <LogOut size={18} />
-              Log Out
-            </button>
+            <div className="mt-4 flex gap-x-4 items-center">
+              <DangerButton variant="filled" onClick={() => {
+                setConfirmDeleteAccount(true);
+              }}>
+                <Trash2 size={18} />
+                Delete Account
+              </DangerButton>
+              <DangerButton onClick={() => logOut()}>
+                <LogOut size={18} />
+                Log Out
+              </DangerButton>
+            </div>
           </div>
         )}
         {activeSection == "Help" && (
@@ -162,7 +162,7 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
               }}
             />
             <Button
-              className="mt-6"
+              className="mt-6 w-[60%]"
               onClick={() => {
                 sendFeedback();
               }}
@@ -177,6 +177,19 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
 
       {alert.shown && (
         <Alert type={alert.type} text={alert.text} onClose={onAlertClose} />
+      )}
+      {confirmDeleteAccount && (
+        <div 
+                  className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
+          onClick={() => setConfirmDeleteAccount(false)}
+        >
+        <ActionConfirmation
+          buttonText="Delete Account"
+          confirmationText="Are you sure you want to delete your account? This action cannot be undone."
+          onConfirm={deleteAccount}
+          onClose={() => setConfirmDeleteAccount(false)}
+        />
+        </div>
       )}
     </div>
   );
