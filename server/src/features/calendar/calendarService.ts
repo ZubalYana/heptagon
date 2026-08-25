@@ -5,6 +5,8 @@ import {
   exchangeCodeForToken,
 } from "../../middleware/googleAuth";
 import { userRepository } from "../users/userRepository";
+import { getContrastText } from "../../helpers/colorContrast";
+import type { CalendarWithLabels, EventWithLabel, EventLabel } from "../../types/googleCalendarExtensions";
 
 export const calendarService = {
   async getAuthUrl(userId: string) {
@@ -21,23 +23,68 @@ export const calendarService = {
     return !!user?.googleTokens?.access_token;
   },
 
+  // async getEvents(userId: string) {
+  //   const auth = await getAuthClient(userId);
+  //   if (!auth) return { events: [], connected: false };
+
+  //   const calendar = google.calendar({ version: "v3", auth });
+  //   const result = await calendar.events.list({
+  //     calendarId: "primary",
+  //     timeMin: new Date().toISOString(),
+  //     maxResults: 50,
+  //     singleEvents: true,
+  //     orderBy: "startTime",
+  //   });
+
+  //   return { events: result.data.items, connected: true };
+  // },
+
+  async disconnect(userId: string) {
+    await userRepository.clearGoogleTokens(userId);
+  },
+
   async getEvents(userId: string) {
     const auth = await getAuthClient(userId);
     if (!auth) return { events: [], connected: false };
 
     const calendar = google.calendar({ version: "v3", auth });
-    const result = await calendar.events.list({
-      calendarId: "primary",
-      timeMin: new Date().toISOString(),
-      maxResults: 50,
-      singleEvents: true,
-      orderBy: "startTime",
+
+    const [eventsRes, colorsRes, calendarRes] = await Promise.all([
+      calendar.events.list({
+        calendarId: "primary",
+        timeMin: new Date().toISOString(),
+        maxResults: 50,
+        singleEvents: true,
+        orderBy: "startTime",
+      }),
+      calendar.colors.get(),
+      calendar.calendars.get({ calendarId: "primary" }),
+    ]);
+
+    const colorIdMap = colorsRes.data.event ?? {};
+
+    const calendarData = calendarRes.data as CalendarWithLabels;
+    const labelMap = new Map(
+      (calendarData.labelProperties?.eventLabels ?? [])
+        .filter((l): l is EventLabel & { id: string } => !!l.id)
+        .map((l) => [l.id, l])
+    );
+
+    const rawEvents = (eventsRes.data.items ?? []) as EventWithLabel[];
+    const events = rawEvents.map((event) => {
+      let resolvedColor = { bg: "#0f2a1e", text: "#00FF26" };
+
+      if (event.eventLabelId && labelMap.has(event.eventLabelId)) {
+        const bg = labelMap.get(event.eventLabelId)!.backgroundColor!;
+        resolvedColor = { bg, text: getContrastText(bg) };
+      } else if (event.colorId && colorIdMap[event.colorId]) {
+        const c = colorIdMap[event.colorId];
+        resolvedColor = { bg: c.background!, text: c.foreground! };
+      }
+
+      return { ...event, resolvedColor };
     });
 
-    return { events: result.data.items, connected: true };
-  },
-
-  async disconnect(userId: string) {
-    await userRepository.clearGoogleTokens(userId);
-  },
+    return { events, connected: true };
+  }
 };

@@ -12,7 +12,8 @@ export default function EventsViewWindow({ day }: EventsViewWindowProps) {
   const dayStr = toCalendarDate(day);
   useEffect(() => {
     apiClient.get("/calendar/events").then(({ data }) => {
-      const dayEvents = data.events.filter((event: CalendarEvent) => {
+      console.log("Fetched events:", data.events); // Debugging line
+      const dayEvents = data.events?.filter((event: CalendarEvent) => {
         const eventDate = event.start.dateTime
           ? event.start.dateTime.slice(0, 10)
           : event.start.date;
@@ -34,12 +35,12 @@ export default function EventsViewWindow({ day }: EventsViewWindowProps) {
         ) : (
           events.map((event: CalendarEvent) => (
             <EventBlock
-              key={event.id}
-              summary={event.summary}
-              colorId={event.colorId}
-              startTime={event.start}
-              endTime={event.end}
-            />
+  key={event.id}
+  summary={event.summary}
+  resolvedColor={event.resolvedColor}
+  startTime={event.start}
+  endTime={event.end}
+/>
           ))
         )}
       </div>

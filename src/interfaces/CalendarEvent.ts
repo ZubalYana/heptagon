@@ -28,7 +28,8 @@ export interface CalendarEvent {
   created: string;
   updated: string;
   summary: string;
-  colorId?: string;
+  eventLabelId?: string;
+  resolvedColor?: { bg: string; text: string };
   creator: EventPerson;
   organizer: EventPerson;
   start: EventDateTime;

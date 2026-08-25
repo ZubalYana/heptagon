@@ -44,6 +44,7 @@ router.get("/events", authMiddleware, async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id as string;
     const result = await calendarService.getEvents(userId);
+    console.log("Events fetched successfully:", result); // Debugging line
     res.status(200).json(result);
   } catch (err) {
     console.error("Calendar error:", err);
