@@ -37,7 +37,7 @@ export default function EventsViewWindow({ day }: EventsViewWindowProps) {
             <EventBlock
   key={event.id}
   summary={event.summary}
-  resolvedColor={event.resolvedColor}
+  colorHex={event.colorHex}
   startTime={event.start}
   endTime={event.end}
 />

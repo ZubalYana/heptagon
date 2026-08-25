@@ -72,19 +72,17 @@ export const calendarService = {
 
     const rawEvents = (eventsRes.data.items ?? []) as EventWithLabel[];
     const events = rawEvents.map((event) => {
-      let resolvedColor = { bg: "#0f2a1e", text: "#00FF26" };
+  let colorHex: string | undefined;
 
-      if (event.eventLabelId && labelMap.has(event.eventLabelId)) {
-        const bg = labelMap.get(event.eventLabelId)!.backgroundColor!;
-        resolvedColor = { bg, text: getContrastText(bg) };
-      } else if (event.colorId && colorIdMap[event.colorId]) {
-        const c = colorIdMap[event.colorId];
-        resolvedColor = { bg: c.background!, text: c.foreground! };
-      }
+  if (event.eventLabelId && labelMap.has(event.eventLabelId)) {
+    colorHex = labelMap.get(event.eventLabelId)!.backgroundColor ?? undefined;
+  } else if (event.colorId && colorIdMap[event.colorId]) {
+    colorHex = colorIdMap[event.colorId].background ?? undefined;
+  }
 
-      return { ...event, resolvedColor };
-    });
+  return { ...event, colorHex };
+});
 
-    return { events, connected: true };
+return { events, connected: true };
   }
 };

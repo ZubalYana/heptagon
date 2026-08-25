@@ -29,7 +29,7 @@ export interface CalendarEvent {
   updated: string;
   summary: string;
   eventLabelId?: string;
-  resolvedColor?: { bg: string; text: string };
+  colorHex?: string;
   creator: EventPerson;
   organizer: EventPerson;
   start: EventDateTime;
