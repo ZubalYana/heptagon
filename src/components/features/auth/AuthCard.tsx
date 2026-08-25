@@ -34,12 +34,6 @@ export default function AuthCard({ mode, onSwitchMode, onLogin, onSignup }: Auth
             <SignupForm onSubmit={onSignup} onSwitchToLogin={() => onSwitchMode("login")} />
           </motion.div>
         )}
-        <a
-          href="/privacy"
-          className="text-[10px] text-gray-500 hover:text-gray-400 w-full flex justify-center mt-4"
-        >
-          Privacy Policy
-        </a>
       </AnimatePresence>
     </div>
   );

@@ -82,6 +82,12 @@ export default function AuthPage({ setUser }: AuthPageProps) {
         Heptagon - set up your week from all 7 perspectives.
       </p>
       <AuthCard mode={mode} onSwitchMode={setMode} onLogin={handleLogin} onSignup={handleSignup} />
+      <a
+        href="/privacy"
+        className="text-[10px] z-10 text-gray-500 hover:text-gray-400 w-full flex justify-center absolute bottom-[20px]"
+      >
+        Privacy Policy
+      </a>
     </div>
   );
 }
