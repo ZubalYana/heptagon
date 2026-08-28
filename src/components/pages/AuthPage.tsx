@@ -78,7 +78,7 @@ export default function AuthPage({ setUser }: AuthPageProps) {
       <h1 className="relative z-10 text-[24px] font-medium lg:text-[32px]">
         Strike the 100% every day.
       </h1>
-      <p className="relative z-10 text-[14px] font-light lg:text-[16px] text-gray-400 mt-2 text-center">
+      <p className="relative z-10 text-[14px] font-light lg:text-[16px] text-gray-400 text-center">
         Heptagon - set up your week from all 7 perspectives.
       </p>
       <AuthCard mode={mode} onSwitchMode={setMode} onLogin={handleLogin} onSignup={handleSignup} />

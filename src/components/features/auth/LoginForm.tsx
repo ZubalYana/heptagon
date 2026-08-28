@@ -24,7 +24,7 @@ export default function LoginForm({ onSubmit, onSwitchToSignup }: LoginFormProps
             : undefined
         }
       />
-      <div className="mt-4 w-full">
+      <div className="mt-3 w-full">
         <Input
           placeholder="Password"
           isSecret={true}
@@ -32,16 +32,16 @@ export default function LoginForm({ onSubmit, onSwitchToSignup }: LoginFormProps
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="w-full mt-8 flex flex-col items-center gap-3">
+      <div className="w-full mt-5 flex flex-col items-center gap-3">
         <PrimaryButton
-          className="w-full lg:w-[60%]"
+          className="w-full"
           onClick={() => onSubmit(email, password)}
           disabled={!email || !password || !isValidEmail(email)}
         >
           Log in
         </PrimaryButton>
         <p
-          className="text-[#707070] font-semibold text-[14px] cursor-pointer hover:text-white transition-all duration-300"
+          className="text-[#707070] text-[12px] cursor-pointer hover:text-white transition-all duration-300"
           onClick={onSwitchToSignup}
         >
           Sign up instead

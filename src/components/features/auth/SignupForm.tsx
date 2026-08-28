@@ -4,6 +4,7 @@ import PrimaryButton from "../../ui/PrimaryButton";
 import PasswordStrengthIndicator from "../../ui/PasswordStrengthIndicator";
 import { isValidEmail } from "../../../helpers/isValidEmail";
 
+
 interface SignupFormProps {
   onSubmit: (name: string, email: string, password: string) => void;
   onSwitchToLogin: () => void;
@@ -17,7 +18,7 @@ export default function SignupForm({ onSubmit, onSwitchToLogin }: SignupFormProp
   return (
     <div className="w-full flex flex-col items-center">
       <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-      <div className="mt-4 w-full">
+      <div className="mt-3 w-full">
         <Input
           placeholder="Email"
           type="email"
@@ -31,7 +32,7 @@ export default function SignupForm({ onSubmit, onSwitchToLogin }: SignupFormProp
           }
         />
       </div>
-      <div className="mt-4 w-full">
+      <div className="mt-3 w-full">
         <Input
           placeholder="Password"
           isSecret={true}
@@ -40,16 +41,16 @@ export default function SignupForm({ onSubmit, onSwitchToLogin }: SignupFormProp
         />
         <PasswordStrengthIndicator value={password} />
       </div>
-      <div className="w-full mt-8 flex flex-col items-center gap-3">
+      <div className="w-full mt-5 flex flex-col items-center gap-3">
         <PrimaryButton
-          className="w-full lg:w-[60%]"
+          className="w-full"
           onClick={() => onSubmit(name, email, password)}
           disabled={!name || !isValidEmail(email) || !password}
         >
           Sign up
         </PrimaryButton>
         <p
-          className="text-[#707070] font-semibold text-[14px] cursor-pointer hover:text-white transition-all duration-300"
+          className="text-[#707070] text-[12px] cursor-pointer hover:text-white transition-all duration-300"
           onClick={onSwitchToLogin}
         >
           Back to Log in
