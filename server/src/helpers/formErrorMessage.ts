@@ -5,6 +5,8 @@ export function formErrorMessage(err: unknown){
       : message.includes("already exists") ? 400
       : message.includes("required") ? 400
       : message.includes("Invalid email") ? 400
+      : message.includes("This account uses Google") ? 401
+      : message.includes("already registered") ? 409
       : message.includes("Invalid credentials") ? 401
       : message.includes("Invalid refresh token") ? 401
       : message.includes("Refresh token expired") ? 401

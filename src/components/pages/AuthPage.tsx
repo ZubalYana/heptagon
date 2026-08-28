@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import AuthBackground from "../features/auth/AuthBackground";
 import AuthCard from "../features/auth/AuthCard";
 import Alert from "../ui/Alert";
@@ -24,6 +24,14 @@ export default function AuthPage({ setUser }: AuthPageProps) {
 
   const closeAlert = () => setAlert((prev) => ({ ...prev, shown: false }));
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (!error) return;
+    setAlert({ shown: true, type: "error", text: error });
+    navigate("/auth", { replace: true });
+  }, [searchParams, navigate]);
 
   const handleAuthSuccess = (data: { token: string; refreshToken: string; user: User }) => {
     persistSession(data.token, data.refreshToken, data.user);

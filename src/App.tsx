@@ -13,6 +13,7 @@ import AdminAuth from "./components/pages/AdminAuth";
 import { setClearAdmin } from "./helpers/apiClient";
 import Loader from "./components/ui/Loader";
 import Landing from "./components/pages/landing/Landing";
+import GoogleAuthCallback from "./components/pages/GoogleAuthCallback";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -44,6 +45,10 @@ function App() {
   return (
     <div className="w-full min-h-dvh flex justify-center">
       <Routes>
+        <Route
+          path="/auth/callback"
+          element={<GoogleAuthCallback setUser={setUser} />}
+        />
         <Route
           path="/auth"
           element={

@@ -15,7 +15,7 @@ let refreshQueue: Array<{
 }> = [];
 
 const PUBLIC_401_ROUTES = ["/calendar/events", "/calendar/status"];
-const AUTH_SKIP_REFRESH = ["/auth/login", "/auth/register", "/auth/refresh"];
+const AUTH_SKIP_REFRESH = ["/auth/login", "/auth/register", "/auth/refresh", "/auth/google"];
 
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;

@@ -70,6 +70,9 @@ export const userService = {
     if (!user) {
       throw new Error("User not found");
     }
+    if (!user.password) {
+      throw new Error("This account uses Google sign-in");
+    }
     const passwordMatch = await bcrypt.compare(password, user.password as string);
     if (!passwordMatch) {
       throw new Error("Invalid credentials");
@@ -144,5 +147,68 @@ export const userService = {
       throw new Error("User ID is required");
     }
     return await userRepository.deleteUser(userId);
-  }
+  },
+
+  async loginWithGoogle(profile: {
+    googleId: string;
+    email: string;
+    name: string;
+  }) {
+    const email = profile.email.trim().toLowerCase();
+    if (!isValidEmail(email)) {
+      throw new Error("Invalid email");
+    }
+
+    const byGoogleId = await userRepository.findByGoogleId(profile.googleId);
+    if (byGoogleId) {
+      if (!byGoogleId.emailVerified) {
+        await userRepository.linkGoogleAccount(
+          String(byGoogleId._id),
+          profile.googleId
+        );
+      }
+      const { token, refreshToken } = await issueNewSession(String(byGoogleId._id));
+      return {
+        token,
+        refreshToken,
+        user: {
+          id: byGoogleId._id,
+          name: byGoogleId.name,
+          email: byGoogleId.email,
+        },
+      };
+    }
+
+    const existing = await userRepository.findByEmail(email);
+    if (existing) {
+      if (!existing.emailVerified) {
+        throw new Error(
+          "This email is already registered. Log in with your password. You can use Google after verifying your email."
+        );
+      }
+      const linked = await userRepository.linkGoogleAccount(
+        String(existing._id),
+        profile.googleId
+      );
+      const account = linked ?? existing;
+      const { token, refreshToken } = await issueNewSession(String(account._id));
+      return {
+        token,
+        refreshToken,
+        user: { id: account._id, name: account.name, email: account.email },
+      };
+    }
+
+    const created = await userRepository.createGoogleUser(
+      profile.name.trim(),
+      email,
+      profile.googleId
+    );
+    const { token, refreshToken } = await issueNewSession(String(created._id));
+    return {
+      token,
+      refreshToken,
+      user: { id: created._id, name: created.name, email: created.email },
+    };
+  },
 };

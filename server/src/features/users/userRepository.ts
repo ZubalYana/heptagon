@@ -14,9 +14,39 @@ export const userRepository = {
   },
 
   async create(name: string, email: string, hashedPassword: string) {
-    const user = new User({ name, email, password: hashedPassword, refreshSessions: [] });
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      emailVerified: false,
+      refreshSessions: [],
+    });
     await user.save();
     return user;
+  },
+
+  async createGoogleUser(name: string, email: string, googleId: string) {
+    const user = new User({
+      name,
+      email,
+      googleId,
+      emailVerified: true,
+      refreshSessions: [],
+    });
+    await user.save();
+    return user;
+  },
+
+  async findByGoogleId(googleId: string) {
+    return await User.findOne({ googleId });
+  },
+
+  async linkGoogleAccount(userId: string, googleId: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      { $set: { googleId, emailVerified: true } },
+      { returnDocument: "after" }
+    );
   },
 
   async findById(userId: string) {

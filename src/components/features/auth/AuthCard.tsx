@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
+import GoogleSignInButton from "./GoogleSignInButton";
 
 interface AuthCardProps {
   mode: "login" | "signup";
@@ -22,6 +23,7 @@ export default function AuthCard({ mode, onSwitchMode, onLogin, onSignup }: Auth
             transition={{ duration: 0.2 }}
           >
             <LoginForm onSubmit={onLogin} onSwitchToSignup={() => onSwitchMode("signup")} />
+            <GoogleSignInButton />
           </motion.div>
         ) : (
           <motion.div
@@ -32,6 +34,7 @@ export default function AuthCard({ mode, onSwitchMode, onLogin, onSignup }: Auth
             transition={{ duration: 0.2 }}
           >
             <SignupForm onSubmit={onSignup} onSwitchToLogin={() => onSwitchMode("login")} />
+            <GoogleSignInButton />
           </motion.div>
         )}
       </AnimatePresence>
