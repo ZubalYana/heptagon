@@ -2,20 +2,19 @@ import { useState, useEffect, useRef } from "react";
 import type InterfaceWeek from "../../interfaces/Week";
 import Week from "../features/week/Week";
 import WeeksSwitch from "../features/week/WeeksSwitch";
-import { Settings } from "lucide-react";
+import { Settings, UserCircle } from "lucide-react";
 import apiClient from "../../helpers/apiClient";
 import { getWeekNumber } from "../../helpers/getWeekNumber";
 import SettingsPopup from "../modals/Settings";
 import type User from "../../interfaces/User";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 const SWIPE_THRESHOLD = 50;
 
 interface WeekPageProps {
   user: User;
-  setUser: (user: User | null) => void;
 }
 
-export default function WeekPage({ user, setUser }: WeekPageProps) {
+export default function WeekPage({ user }: WeekPageProps) {
   const [week, setWeek] = useState<InterfaceWeek | null>(null);
   const [animationDirection, setAnimationDirection] = useState(1);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
@@ -24,6 +23,7 @@ export default function WeekPage({ user, setUser }: WeekPageProps) {
   );
   const [settingsOpened, setSettingsOpened] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const dragStartX = useRef<number | null>(null);
   const isDragging = useRef(false);
 
@@ -108,7 +108,14 @@ export default function WeekPage({ user, setUser }: WeekPageProps) {
           />
           <h2 className="text-[20px] font-medium">Heptagon</h2>
         </div>
-        <div className="flex gap-x-4">
+        <div className="flex gap-x-4 items-center">
+          <UserCircle
+            className="cursor-pointer"
+            onClick={() => {
+              const qs = searchParams.toString();
+              navigate(qs ? `/profile?${qs}` : "/profile");
+            }}
+          />
           <Settings
             className="cursor-pointer"
             onClick={() => setSettingsOpened(true)}
@@ -127,7 +134,8 @@ export default function WeekPage({ user, setUser }: WeekPageProps) {
             className="text-[#00FF26] hover:underline cursor-pointer shrink-0 text-left"
             onClick={() => {
               apiClient.post("/auth/resend-verification").catch(() => {
-                setSettingsOpened(true);
+                const qs = searchParams.toString();
+                navigate(qs ? `/profile?${qs}` : "/profile");
               });
             }}
           >
@@ -176,10 +184,7 @@ export default function WeekPage({ user, setUser }: WeekPageProps) {
           className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
           onClick={() => setSettingsOpened(false)}
         >
-          <SettingsPopup
-            onClose={() => setSettingsOpened(false)}
-            setUser={setUser}
-          />
+          <SettingsPopup onClose={() => setSettingsOpened(false)} />
         </div>
       )}
 

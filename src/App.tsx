@@ -15,6 +15,7 @@ import Loader from "./components/ui/Loader";
 import Landing from "./components/pages/landing/Landing";
 import GoogleAuthCallback from "./components/pages/GoogleAuthCallback";
 import VerifyEmailPage from "./components/pages/VerifyEmailPage";
+import ProfilePage from "./components/pages/ProfilePage";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -63,7 +64,17 @@ function App() {
         <Route
           path="/app"
           element={
-            user ? <WeekPage user={user} setUser={setUser} /> : <Navigate to="/auth" />
+            user ? <WeekPage user={user} /> : <Navigate to="/auth" />
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            user ? (
+              <ProfilePage user={user} setUser={setUser} />
+            ) : (
+              <Navigate to="/auth" />
+            )
           }
         />
         <Route

@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
-import { Settings2, UserCircle, Headset } from "lucide-react";
+import { Settings2, Headset } from "lucide-react";
 
 const settingsSections = [
   { icon: <Settings2 size={16} />, text: "General" },
-  { icon: <UserCircle size={16} />, text: "Profile" },
   { icon: <Headset size={16} />, text: "Help" },
 ] as const;
 
