@@ -11,10 +11,11 @@ import { useSearchParams } from "react-router-dom";
 const SWIPE_THRESHOLD = 50;
 
 interface WeekPageProps {
+  user: User;
   setUser: (user: User | null) => void;
 }
 
-export default function WeekPage({ setUser }: WeekPageProps) {
+export default function WeekPage({ user, setUser }: WeekPageProps) {
   const [week, setWeek] = useState<InterfaceWeek | null>(null);
   const [animationDirection, setAnimationDirection] = useState(1);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
@@ -114,6 +115,26 @@ export default function WeekPage({ setUser }: WeekPageProps) {
           />
         </div>
       </div>
+
+      {user.emailVerified === false && (
+        <div className="w-full mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-[#2a2a2a] bg-[#1B1B1B] px-4 py-3 text-[13px] text-[#ccc]">
+          <p>
+            Confirm <span className="text-white">{user.email}</span> via the link we sent.
+            Check spam if you do not see it.
+          </p>
+          <button
+            type="button"
+            className="text-[#00FF26] hover:underline cursor-pointer shrink-0 text-left"
+            onClick={() => {
+              apiClient.post("/auth/resend-verification").catch(() => {
+                setSettingsOpened(true);
+              });
+            }}
+          >
+            Resend email
+          </button>
+        </div>
+      )}
 
       <div className="w-full flex-1 flex flex-col justify-center items-center">
         <Week week={week} animationDirection={animationDirection} />

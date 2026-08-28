@@ -10,6 +10,9 @@ export function formErrorMessage(err: unknown){
       : message.includes("Invalid credentials") ? 401
       : message.includes("Invalid refresh token") ? 401
       : message.includes("Refresh token expired") ? 401
+      : message.includes("invalid or expired") ? 400
+      : message.includes("already verified") ? 400
+      : message.includes("Please wait") ? 429
       : 500;
     return { status, message }
 }

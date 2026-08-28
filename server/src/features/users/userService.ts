@@ -1,7 +1,9 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { userRepository } from "./userRepository";
 import { isValidEmail } from "../../helpers/isValidEmail";
+import { sendVerificationEmail } from "../../helpers/mailer";
 import {
   hashesMatch,
   hashToken,
@@ -11,6 +13,43 @@ import {
   signRefreshToken,
   verifyRefreshToken,
 } from "../../helpers/authTokens";
+
+const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
+const RESEND_COOLDOWN_MS = 60 * 1000;
+
+function publicUser(user: {
+  _id: unknown;
+  name?: string | null;
+  email?: string | null;
+  emailVerified?: boolean | null;
+}) {
+  return {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    emailVerified: Boolean(user.emailVerified),
+  };
+}
+
+function verificationLink(rawToken: string) {
+  const frontend = process.env.FRONTEND_URL || "http://localhost:5173";
+  return `${frontend}/verify-email?token=${encodeURIComponent(rawToken)}`;
+}
+
+async function createAndSendVerification(userId: string, email: string) {
+  const rawToken = crypto.randomBytes(32).toString("base64url");
+  await userRepository.setEmailVerification(
+    userId,
+    hashToken(rawToken),
+    new Date(Date.now() + VERIFY_TTL_MS),
+    new Date()
+  );
+  try {
+    await sendVerificationEmail(email, verificationLink(rawToken));
+  } catch (err) {
+    console.error("Failed to send verification email:", err);
+  }
+}
 
 function sessionPair(userId: string, familyId: string) {
   const token = signAccessToken(userId);
@@ -51,10 +90,11 @@ export const userService = {
     );
     const userId = String(newUser._id);
     const { token, refreshToken } = await issueNewSession(userId);
+    await createAndSendVerification(userId, normalizedEmail);
     return {
       token,
       refreshToken,
-      user: { id: newUser._id, name: newUser.name, email: newUser.email },
+      user: publicUser(newUser),
     };
   },
 
@@ -81,7 +121,7 @@ export const userService = {
     return {
       token,
       refreshToken,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: publicUser(user),
     };
   },
 
@@ -171,11 +211,7 @@ export const userService = {
       return {
         token,
         refreshToken,
-        user: {
-          id: byGoogleId._id,
-          name: byGoogleId.name,
-          email: byGoogleId.email,
-        },
+        user: publicUser(byGoogleId),
       };
     }
 
@@ -195,7 +231,7 @@ export const userService = {
       return {
         token,
         refreshToken,
-        user: { id: account._id, name: account.name, email: account.email },
+        user: publicUser(account),
       };
     }
 
@@ -208,7 +244,38 @@ export const userService = {
     return {
       token,
       refreshToken,
-      user: { id: created._id, name: created.name, email: created.email },
+      user: publicUser(created),
     };
+  },
+
+  async verifyEmail(rawToken: string) {
+    if (!rawToken) {
+      throw new Error("Verification token is required");
+    }
+    const user = await userRepository.findByVerificationHash(hashToken(rawToken));
+    if (!user) {
+      throw new Error("Verification link is invalid or expired");
+    }
+    const updated = await userRepository.markEmailVerified(String(user._id));
+    return { user: publicUser(updated ?? user) };
+  },
+
+  async resendVerification(userId: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (user.emailVerified) {
+      throw new Error("Email is already verified");
+    }
+    if (!user.password) {
+      throw new Error("This account uses Google sign-in");
+    }
+    const sentAt = user.emailVerification?.sentAt;
+    if (sentAt && Date.now() - new Date(sentAt).getTime() < RESEND_COOLDOWN_MS) {
+      throw new Error("Please wait before requesting another verification email");
+    }
+    await createAndSendVerification(String(user._id), user.email as string);
+    return { message: "Verification email sent" };
   },
 };

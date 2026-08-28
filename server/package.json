@@ -24,6 +24,7 @@
     "googleapis": "^105.0.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.3.3",
+    "resend": "^6.24.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {

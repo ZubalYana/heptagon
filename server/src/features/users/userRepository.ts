@@ -53,6 +53,37 @@ export const userRepository = {
     return await User.findById(userId);
   },
 
+  async setEmailVerification(
+    userId: string,
+    tokenHash: string,
+    expiresAt: Date,
+    sentAt: Date
+  ) {
+    return await User.findByIdAndUpdate(userId, {
+      $set: {
+        emailVerification: { tokenHash, expiresAt, sentAt },
+      },
+    });
+  },
+
+  async findByVerificationHash(tokenHash: string) {
+    return await User.findOne({
+      "emailVerification.tokenHash": tokenHash,
+      "emailVerification.expiresAt": { $gt: new Date() },
+    });
+  },
+
+  async markEmailVerified(userId: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: { emailVerified: true },
+        $unset: { emailVerification: "" },
+      },
+      { returnDocument: "after" }
+    );
+  },
+
   async addRefreshSession(userId: string, session: RefreshSession) {
     await User.updateOne(
       { _id: userId },

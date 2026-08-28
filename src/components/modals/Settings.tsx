@@ -3,7 +3,7 @@ import { SettingsNav } from "../features/settings/SettingsNav";
 import type { SettingSection } from "../features/settings/SettingsNav";
 import SettingSwitch from "../features/settings/SettingsSwitch";
 import type User from "../../interfaces/User";
-import { LogOut, Send, X, Trash2 } from "lucide-react";
+import { LogOut, Send, X, Trash2, CircleCheck } from "lucide-react";
 import TextArea from "../ui/TextArea";
 import Button from "../ui/PrimaryButton";
 import DangerButton from "../ui/DangerButton";
@@ -152,6 +152,45 @@ export default function Settings({ onClose, setUser }: SettingsProps) {
             <p className="text-[14px] text-white mb-2">
               Email: <span className="font-semibold">{user?.email}</span>
             </p>
+            {user?.emailVerified === false && (
+              <div className="mb-4">
+                <p className="text-[13px] text-[#888] mb-2">
+                  This address is not verified yet. Check your inbox, or resend the link.
+                  If you cannot find it, look in spam or promotions.
+                </p>
+                <Button
+                  className="w-full sm:w-auto"
+                  onClick={() => {
+                    apiClient
+                      .post("/auth/resend-verification")
+                      .then(() =>
+                        setAlert({
+                          shown: true,
+                          type: "success",
+                          text: "Verification email sent.",
+                        })
+                      )
+                      .catch((err) =>
+                        setAlert({
+                          shown: true,
+                          type: "error",
+                          text:
+                            err.response?.data?.error ||
+                            "Could not send verification email.",
+                        })
+                      );
+                  }}
+                >
+                  Resend verification email
+                </Button>
+              </div>
+            )}
+            {user?.emailVerified === true && (
+              <p className="text-[13px] text-[#00FF26] mb-4 flex items-center gap-1.5">
+                <CircleCheck size={16} strokeWidth={2.25} />
+                Email verified
+              </p>
+            )}
             <div className="mt-4 flex gap-x-4 items-center">
               <DangerButton onClick={() => {
                 setConfirmDeleteAccount(true);

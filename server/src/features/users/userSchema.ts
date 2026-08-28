@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
   emailVerified: { type: Boolean, default: false },
   googleId: { type: String, unique: true, sparse: true },
   password: String,
+  emailVerification: {
+    tokenHash: String,
+    expiresAt: Date,
+    sentAt: Date,
+  },
   refreshSessions: {
     type: [
       {

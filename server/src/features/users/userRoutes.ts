@@ -2,6 +2,7 @@ import Router from "express";
 import type { Request, Response } from "express";
 import { userService } from "./userService";
 import { formErrorMessage } from "../../helpers/formErrorMessage";
+import { authMiddleware } from "../../middleware/auth";
 import {
   getGoogleLoginUrl,
   getGoogleProfile,
@@ -74,6 +75,28 @@ router.post("/refresh", async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.body;
     const result = await userService.refresh(refreshToken);
+    res.status(200).json(result);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
+router.post("/verify-email", async (req: Request, res: Response) => {
+  try {
+    const { token } = req.body;
+    const result = await userService.verifyEmail(token);
+    res.status(200).json(result);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
+router.post("/resend-verification", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id as string;
+    const result = await userService.resendVerification(userId);
     res.status(200).json(result);
   } catch (err) {
     const errorResult = formErrorMessage(err);

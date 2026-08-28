@@ -14,6 +14,7 @@ import { setClearAdmin } from "./helpers/apiClient";
 import Loader from "./components/ui/Loader";
 import Landing from "./components/pages/landing/Landing";
 import GoogleAuthCallback from "./components/pages/GoogleAuthCallback";
+import VerifyEmailPage from "./components/pages/VerifyEmailPage";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -46,6 +47,10 @@ function App() {
     <div className="w-full min-h-dvh flex justify-center">
       <Routes>
         <Route
+          path="/verify-email"
+          element={<VerifyEmailPage user={user} setUser={setUser} />}
+        />
+        <Route
           path="/auth/callback"
           element={<GoogleAuthCallback setUser={setUser} />}
         />
@@ -58,7 +63,7 @@ function App() {
         <Route
           path="/app"
           element={
-            user ? <WeekPage setUser={setUser} /> : <Navigate to="/auth" />
+            user ? <WeekPage user={user} setUser={setUser} /> : <Navigate to="/auth" />
           }
         />
         <Route
