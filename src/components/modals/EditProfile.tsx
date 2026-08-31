@@ -150,7 +150,7 @@ export default function EditProfile({ user, setUser, onClose }: EditProfileProps
         onChange={(e) => setName(e.target.value)}
       />
       <Button
-        className="mt-3 w-full sm:w-auto"
+        className="mt-3 w-full sm:w-auto shrink-0 min-h-11 leading-none"
         loading={savingName}
         disabled={!name.trim() || name.trim() === user.name}
         onClick={() => saveName()}
