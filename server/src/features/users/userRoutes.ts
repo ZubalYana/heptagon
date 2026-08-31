@@ -1,8 +1,10 @@
 import Router from "express";
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { userService } from "./userService";
 import { formErrorMessage } from "../../helpers/formErrorMessage";
 import { authMiddleware } from "../../middleware/auth";
+import { avatarUpload } from "../../middleware/avatarUpload";
+import { MulterError } from "multer";
 import {
   getGoogleLoginUrl,
   getGoogleProfile,
@@ -124,6 +126,64 @@ router.post("/confirm-password-change", async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
     const result = await userService.confirmPasswordChange(token);
+    res.status(200).json(result);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
+router.patch("/profile", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id as string;
+    const result = await userService.updateProfile(userId, req.body.name);
+    res.status(200).json(result);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
+router.post(
+  "/avatar",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) => {
+    avatarUpload.single("avatar")(req, res, (err) => {
+      if (!err) {
+        next();
+        return;
+      }
+      const message =
+        err instanceof MulterError && err.code === "LIMIT_FILE_SIZE"
+          ? "Image must be 2 MB or smaller"
+          : err instanceof Error
+            ? err.message
+            : "Could not upload image";
+      const errorResult = formErrorMessage(new Error(message));
+      res.status(errorResult.status).json({ error: errorResult.message });
+    });
+  },
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id as string;
+      const file = req.file;
+      if (!file) {
+        throw new Error("Image is required");
+      }
+      const result = await userService.uploadAvatar(userId, file);
+      res.status(200).json(result);
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+      const errorResult = formErrorMessage(err);
+      res.status(errorResult.status).json({ error: errorResult.message });
+    }
+  }
+);
+
+router.delete("/avatar", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id as string;
+    const result = await userService.removeAvatar(userId);
     res.status(200).json(result);
   } catch (err) {
     const errorResult = formErrorMessage(err);

@@ -25,13 +25,20 @@ export const userRepository = {
     return user;
   },
 
-  async createGoogleUser(name: string, email: string, googleId: string) {
+  async createGoogleUser(
+    name: string,
+    email: string,
+    googleId: string,
+    picture?: string
+  ) {
     const user = new User({
       name,
       email,
       googleId,
       emailVerified: true,
       refreshSessions: [],
+      googlePictureUrl: picture,
+      avatarUrl: picture,
     });
     await user.save();
     return user;
@@ -172,6 +179,47 @@ export const userRepository = {
         $set: { password: passwordHash, refreshSessions: [] },
         $unset: { pendingPasswordChange: "" },
       },
+      { returnDocument: "after" }
+    );
+  },
+
+  async updateName(userId: string, name: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      { $set: { name } },
+      { returnDocument: "after" }
+    );
+  },
+
+  async syncGooglePicture(userId: string, picture: string) {
+    const user = await User.findById(userId).select("avatarPublicId");
+    const update: Record<string, string> = { googlePictureUrl: picture };
+    if (!user?.avatarPublicId) {
+      update.avatarUrl = picture;
+    }
+    return await User.findByIdAndUpdate(
+      userId,
+      { $set: update },
+      { returnDocument: "after" }
+    );
+  },
+
+  async setUploadedAvatar(userId: string, avatarUrl: string, avatarPublicId: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      { $set: { avatarUrl, avatarPublicId } },
+      { returnDocument: "after" }
+    );
+  },
+
+  async clearUploadedAvatar(userId: string) {
+    const user = await User.findById(userId).select("googlePictureUrl");
+    const avatarUrl = user?.googlePictureUrl || "";
+    return await User.findByIdAndUpdate(
+      userId,
+      avatarUrl
+        ? { $set: { avatarUrl }, $unset: { avatarPublicId: "" } }
+        : { $unset: { avatarUrl: "", avatarPublicId: "" } },
       { returnDocument: "after" }
     );
   },

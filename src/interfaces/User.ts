@@ -4,4 +4,5 @@ export default interface User {
   email: string;
   emailVerified?: boolean;
   hasPassword?: boolean;
+  avatarUrl?: string;
 }

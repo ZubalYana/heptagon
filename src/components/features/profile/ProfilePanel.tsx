@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import type User from "../../../interfaces/User";
-import { LogOut, Trash2, CircleCheck } from "lucide-react";
+import { LogOut, Trash2, CircleCheck, Pencil } from "lucide-react";
 import Button from "../../ui/PrimaryButton";
 import DangerButton from "../../ui/DangerButton";
 import apiClient from "../../../helpers/apiClient";
 import Alert from "../../ui/Alert";
 import { clearSession } from "../../../helpers/session";
 import ActionConfirmation from "../../modals/ActionConfirmation";
-import ChangePasswordForm from "./ChangePasswordForm";
+import EditProfile from "../../modals/EditProfile";
+import UserAvatar from "./UserAvatar";
 
 interface ProfilePanelProps {
   user: User;
@@ -16,6 +17,7 @@ interface ProfilePanelProps {
 
 export default function ProfilePanel({ user, setUser }: ProfilePanelProps) {
   const [confirmDeleteAccount, setConfirmDeleteAccount] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [localUser, setLocalUser] = useState<User>(user);
   const [alert, setAlert] = useState<{
     shown: boolean;
@@ -52,19 +54,35 @@ export default function ProfilePanel({ user, setUser }: ProfilePanelProps) {
   }
 
   return (
-    <div className="w-full max-w-xl rounded-xl bg-[#1B1B1B] border border-[#2a2a2a] p-5 lg:p-6 shadow-lg">
-      <div className="flex flex-col gap-y-4">
-        <div className="flex flex-col gap-y-1 pb-4 border-b border-white/5">
-          <p className="text-[11px] uppercase tracking-wide text-[#00FF26]/70">
-            Name
+    <div className="w-full max-w-xl rounded-xl bg-[#1B1B1B] border border-[#2a2a2a] p-5 lg:p-6 shadow-lg relative">
+      <button
+        type="button"
+        aria-label="Edit profile"
+        className="absolute top-5 right-5 text-[#888] hover:text-[#00FF26] transition-colors cursor-pointer"
+        onClick={() => setEditOpen(true)}
+      >
+        <Pencil size={18} strokeWidth={1.75} />
+      </button>
+
+      <div className="flex items-center gap-4 pr-8">
+        <UserAvatar
+          name={localUser.name}
+          avatarUrl={localUser.avatarUrl}
+          size={80}
+        />
+        <div className="min-w-0 flex-1">
+          <p className="text-[18px] font-medium text-[#F5F5F5] truncate">
+            {localUser.name}
           </p>
-          <p className="text-[15px] text-[#F5F5F5]">{localUser.name}</p>
-        </div>
-        <div className="flex flex-col gap-y-1">
-          <p className="text-[11px] uppercase tracking-wide text-[#00FF26]/70">
-            Email
+          <p className="text-[14px] text-[#888] truncate mt-0.5">
+            {localUser.email}
           </p>
-          <p className="text-[15px] text-[#F5F5F5]">{localUser.email}</p>
+          {localUser.emailVerified === true && (
+            <p className="text-[13px] text-[#00FF26]/80 mt-2 flex items-center gap-1.5">
+              <CircleCheck size={16} strokeWidth={2} />
+              Email verified
+            </p>
+          )}
         </div>
       </div>
 
@@ -101,18 +119,6 @@ export default function ProfilePanel({ user, setUser }: ProfilePanelProps) {
           </Button>
         </div>
       )}
-      {localUser.emailVerified === true && (
-        <p className="mt-5 pt-5 border-t border-white/5 text-[13px] text-[#00FF26]/80 flex items-center gap-1.5">
-          <CircleCheck size={16} strokeWidth={2} />
-          Email verified
-        </p>
-      )}
-
-      {localUser.hasPassword !== false && (
-        <ChangePasswordForm
-          onAlert={(next) => setAlert(next)}
-        />
-      )}
 
       <div className="mt-6 pt-5 border-t border-white/5 flex flex-wrap gap-3 items-center">
         <DangerButton onClick={() => setConfirmDeleteAccount(true)}>
@@ -144,6 +150,18 @@ export default function ProfilePanel({ user, setUser }: ProfilePanelProps) {
           text={alert.text}
           onClose={() => setAlert({ shown: false, text: "", type: "success" })}
         />
+      )}
+      {editOpen && (
+        <div
+          className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
+          onClick={() => setEditOpen(false)}
+        >
+          <EditProfile
+            user={localUser}
+            setUser={setUser}
+            onClose={() => setEditOpen(false)}
+          />
+        </div>
       )}
       {confirmDeleteAccount && (
         <div

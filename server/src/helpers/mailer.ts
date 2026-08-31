@@ -38,7 +38,7 @@ export async function sendVerificationEmail(to: string, verifyUrl: string) {
       <div style="font-family:sans-serif;background:#151515;color:#eee;padding:24px">
         <h2 style="color:#00FF26">Verify your email</h2>
         <p>Click the link below to confirm this address for your Heptagon account.</p>
-        <p><a href="${verifyUrl}" style="color:#00FF26">Verify email</a></p>
+        <p><a href="${verifyUrl}" target="_blank" rel="noopener noreferrer" style="color:#00FF26">Verify email</a></p>
         <p style="color:#888;font-size:12px">This link expires in 24 hours. If you did not create an account, you can ignore this email.</p>
       </div>
     `
@@ -59,7 +59,7 @@ export async function sendPasswordChangeEmail(to: string, confirmUrl: string) {
       <div style="font-family:sans-serif;background:#151515;color:#eee;padding:24px">
         <h2 style="color:#00FF26">Confirm password change</h2>
         <p>Someone requested a new password for your Heptagon account. Click the link below to apply it.</p>
-        <p><a href="${confirmUrl}" style="color:#00FF26">Confirm password change</a></p>
+        <p><a href="${confirmUrl}" target="_blank" rel="noopener noreferrer" style="color:#00FF26">Confirm password change</a></p>
         <p style="color:#888;font-size:12px">This link expires in 1 hour. If you did not request this, you can ignore this email — your current password stays the same.</p>
       </div>
     `

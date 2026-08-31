@@ -5,6 +5,7 @@ import { userRepository } from "./userRepository";
 import { isValidEmail } from "../../helpers/isValidEmail";
 import { sendPasswordChangeEmail, sendVerificationEmail } from "../../helpers/mailer";
 import { isPasswordStrongEnough } from "../../helpers/passwordStrength";
+import { destroyAvatar, uploadAvatarBuffer } from "../../helpers/cloudinary";
 import {
   hashesMatch,
   hashToken,
@@ -25,6 +26,7 @@ export function toPublicUser(user: {
   email?: string | null;
   emailVerified?: boolean | null;
   password?: string | null;
+  avatarUrl?: string | null;
 }) {
   return {
     id: String(user._id),
@@ -32,6 +34,7 @@ export function toPublicUser(user: {
     email: user.email,
     emailVerified: Boolean(user.emailVerified),
     hasPassword: Boolean(user.password),
+    avatarUrl: user.avatarUrl || undefined,
   };
 }
 
@@ -190,6 +193,10 @@ export const userService = {
     if (!userId) {
       throw new Error("User ID is required");
     }
+    const user = await userRepository.findById(userId);
+    if (user?.avatarPublicId) {
+      await destroyAvatar(user.avatarPublicId as string);
+    }
     return await userRepository.deleteUser(userId);
   },
 
@@ -197,6 +204,7 @@ export const userService = {
     googleId: string;
     email: string;
     name: string;
+    picture?: string;
   }) {
     const email = profile.email.trim().toLowerCase();
     if (!isValidEmail(email)) {
@@ -211,11 +219,15 @@ export const userService = {
           profile.googleId
         );
       }
+      if (profile.picture) {
+        await userRepository.syncGooglePicture(String(byGoogleId._id), profile.picture);
+      }
+      const fresh = await userRepository.findById(String(byGoogleId._id));
       const { token, refreshToken } = await issueNewSession(String(byGoogleId._id));
       return {
         token,
         refreshToken,
-        user: toPublicUser(byGoogleId),
+        user: toPublicUser(fresh ?? byGoogleId),
       };
     }
 
@@ -231,18 +243,23 @@ export const userService = {
         profile.googleId
       );
       const account = linked ?? existing;
+      if (profile.picture) {
+        await userRepository.syncGooglePicture(String(account._id), profile.picture);
+      }
+      const fresh = await userRepository.findById(String(account._id));
       const { token, refreshToken } = await issueNewSession(String(account._id));
       return {
         token,
         refreshToken,
-        user: toPublicUser(account),
+        user: toPublicUser(fresh ?? account),
       };
     }
 
     const created = await userRepository.createGoogleUser(
       profile.name.trim(),
       email,
-      profile.googleId
+      profile.googleId,
+      profile.picture
     );
     const { token, refreshToken } = await issueNewSession(String(created._id));
     return {
@@ -355,5 +372,49 @@ export const userService = {
       user.pendingPasswordChange.passwordHash
     );
     return { message: "Password updated" };
+  },
+
+  async updateProfile(userId: string, name: string) {
+    const trimmed = name?.trim();
+    if (!trimmed) {
+      throw new Error("Name is required");
+    }
+    const updated = await userRepository.updateName(userId, trimmed);
+    if (!updated) {
+      throw new Error("User not found");
+    }
+    return { user: toPublicUser(updated) };
+  },
+
+  async uploadAvatar(userId: string, file: { buffer: Buffer; mimetype: string }) {
+    if (!file?.buffer) {
+      throw new Error("Image is required");
+    }
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const uploaded = await uploadAvatarBuffer(file.buffer, userId);
+    if (user.avatarPublicId && user.avatarPublicId !== uploaded.publicId) {
+      await destroyAvatar(user.avatarPublicId as string);
+    }
+    const updated = await userRepository.setUploadedAvatar(
+      userId,
+      uploaded.url,
+      uploaded.publicId
+    );
+    return { user: toPublicUser(updated ?? user) };
+  },
+
+  async removeAvatar(userId: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (user.avatarPublicId) {
+      await destroyAvatar(user.avatarPublicId as string);
+    }
+    const updated = await userRepository.clearUploadedAvatar(userId);
+    return { user: toPublicUser(updated ?? user) };
   },
 };

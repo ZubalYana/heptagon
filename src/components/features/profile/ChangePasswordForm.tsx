@@ -59,9 +59,9 @@ export default function ChangePasswordForm({ onAlert }: ChangePasswordFormProps)
   }
 
   return (
-    <div className="mt-5 pt-5 border-t border-white/5">
+    <div className="mt-6 pt-5 border-t border-white/5">
       <p className="text-[11px] uppercase tracking-wide text-[#00FF26]/70 mb-3">
-        Change password
+        Password
       </p>
       <p className="text-[14px] text-[#F5F5F5]/50 leading-relaxed mb-4">
         We will email a confirmation link. The new password is applied only after

@@ -9,6 +9,7 @@ export function normalizeUser(raw: unknown): User | null {
     email?: string;
     emailVerified?: boolean;
     hasPassword?: boolean;
+    avatarUrl?: string;
   };
   const id = u.id != null ? String(u.id) : u._id != null ? String(u._id) : "";
   if (!id || !u.name || !u.email) return null;
@@ -18,7 +19,13 @@ export function normalizeUser(raw: unknown): User | null {
     email: u.email,
     emailVerified: u.emailVerified,
     hasPassword: u.hasPassword,
+    avatarUrl: u.avatarUrl,
   };
+}
+
+export function persistUser(user: User) {
+  const next = normalizeUser(user);
+  if (next) localStorage.setItem("user", JSON.stringify(next));
 }
 
 export function persistSession(
@@ -28,10 +35,7 @@ export function persistSession(
 ) {
   localStorage.setItem("token", token);
   localStorage.setItem("refreshToken", refreshToken);
-  if (user) {
-    const next = normalizeUser(user);
-    if (next) localStorage.setItem("user", JSON.stringify(next));
-  }
+  if (user) persistUser(user);
 }
 
 export function clearSession() {

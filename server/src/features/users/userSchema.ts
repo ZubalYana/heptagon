@@ -33,6 +33,9 @@ const userSchema = new mongoose.Schema({
     expiresAt: Date,
     sentAt: Date,
   },
+  avatarUrl: String,
+  avatarPublicId: String,
+  googlePictureUrl: String,
 },);
 
 const User = mongoose.model("User", userSchema);
