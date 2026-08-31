@@ -8,6 +8,9 @@ export const MAX_REFRESH_SESSIONS = 10;
 
 export type AccessPayload = { id: string; type: "access" };
 export type RefreshPayload = { id: string; familyId: string; type: "refresh" };
+export type AdminPayload = { role: "admin"; type: "admin" };
+
+const ADMIN_TTL = "2h";
 
 function accessSecret(): string {
   const secret = process.env.JWT_SECRET;
@@ -17,6 +20,10 @@ function accessSecret(): string {
 
 function refreshSecret(): string {
   return process.env.JWT_REFRESH_SECRET || accessSecret();
+}
+
+function adminSecret(): string {
+  return process.env.JWT_ADMIN_SECRET || accessSecret();
 }
 
 export function hashToken(token: string): string {
@@ -66,4 +73,20 @@ export function verifyRefreshToken(token: string): RefreshPayload {
 
 export function refreshExpiryDate(): Date {
   return new Date(Date.now() + REFRESH_TTL_MS);
+}
+
+export function signAdminToken(): string {
+  return jwt.sign(
+    { role: "admin", type: "admin" } satisfies AdminPayload,
+    adminSecret(),
+    { expiresIn: ADMIN_TTL }
+  );
+}
+
+export function verifyAdminToken(token: string): AdminPayload {
+  const decoded = jwt.verify(token, adminSecret()) as AdminPayload;
+  if (decoded.type !== "admin" || decoded.role !== "admin") {
+    throw new jwt.JsonWebTokenError("Invalid admin token");
+  }
+  return decoded;
 }

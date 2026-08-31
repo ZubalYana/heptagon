@@ -15,7 +15,14 @@ let refreshQueue: Array<{
 }> = [];
 
 const PUBLIC_401_ROUTES = ["/calendar/events", "/calendar/status"];
-const AUTH_SKIP_REFRESH = ["/auth/login", "/auth/register", "/auth/refresh", "/auth/google", "/auth/verify-email"];
+const AUTH_SKIP_REFRESH = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/refresh",
+  "/auth/google",
+  "/auth/verify-email",
+  "/admin/login",
+];
 
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;
@@ -46,6 +53,31 @@ function isSkipRefresh(url?: string) {
 function isPublic401(url?: string) {
   if (!url) return false;
   return PUBLIC_401_ROUTES.some((route) => url.includes(route));
+}
+
+function isAdminLoginRequest(url?: string) {
+  if (!url) return false;
+  return url.includes("admin/login");
+}
+
+function isAdminApiRequest(url?: string) {
+  if (!url || isAdminLoginRequest(url)) return false;
+  return url.includes("/admin") || url.includes("admin/") || url.includes("feedback/all");
+}
+
+function forceAdminLogout() {
+  if (isRedirecting) return;
+  isRedirecting = true;
+  localStorage.removeItem("adminToken");
+  clearAdmin?.();
+  if (navigatorReady && navigator) {
+    setTimeout(() => {
+      isRedirecting = false;
+    }, 500);
+    navigator("/admin-auth", { replace: true });
+  } else {
+    window.location.replace("/admin-auth");
+  }
 }
 
 function forceLogout() {
@@ -88,6 +120,17 @@ async function refreshAccessToken(): Promise<string> {
 }
 
 apiClient.interceptors.request.use((config) => {
+  const url = config.url;
+  if (isAdminApiRequest(url)) {
+    const adminToken = localStorage.getItem("adminToken");
+    if (adminToken) {
+      config.headers.Authorization = `Bearer ${adminToken}`;
+    } else {
+      delete config.headers.Authorization;
+    }
+    return config;
+  }
+
   const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -112,7 +155,9 @@ apiClient.interceptors.response.use(
       expired &&
       originalRequest &&
       !originalRequest._retry &&
-      !isSkipRefresh(url)
+      !isSkipRefresh(url) &&
+      !isAdminApiRequest(url) &&
+      !isAdminLoginRequest(url)
     ) {
       if (isRefreshing) {
         return new Promise<string>((resolve, reject) => {
@@ -142,25 +187,20 @@ apiClient.interceptors.response.use(
       }
     }
 
+    if (
+      (status === 401 || status === 403) &&
+      (isAdminApiRequest(url) || isAdminLoginRequest(url))
+    ) {
+      if (isAdminApiRequest(url) && !isRedirecting) {
+        forceAdminLogout();
+        return new Promise(() => {});
+      }
+      return Promise.reject(error);
+    }
+
     const is401 = status === 401;
     if (is401 && !isPublic401(url) && !isSkipRefresh(url) && !isRedirecting) {
       forceLogout();
-      return new Promise(() => {});
-    }
-
-    if (
-      error.response?.status === 403 &&
-      !isRedirecting &&
-      clearAdmin &&
-      error.config?.url?.includes("/admin")
-    ) {
-      isRedirecting = true;
-      localStorage.removeItem("adminToken");
-      clearAdmin?.();
-      navigator("/admin-auth", { replace: true });
-      setTimeout(() => {
-        isRedirecting = false;
-      }, 500);
       return new Promise(() => {});
     }
 

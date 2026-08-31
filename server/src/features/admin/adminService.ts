@@ -1,18 +1,23 @@
-import jwt from "jsonwebtoken";
 import { adminRepository } from "./adminRepository";
 import { toPublicUser } from "../users/userService";
+import { hashToken, hashesMatch, signAdminToken } from "../../helpers/authTokens";
+
+function secretMatches(provided: string, expected: string | undefined): boolean {
+  if (!expected) return false;
+  return hashesMatch(hashToken(provided), hashToken(expected));
+}
 
 export const adminService = {
   login(email: string, password: string) {
     if (!email || !password) {
       throw new Error("All fields are required");
     }
-    if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
+    const emailOk = secretMatches(email, process.env.ADMIN_EMAIL);
+    const passwordOk = secretMatches(password, process.env.ADMIN_PASSWORD);
+    if (!emailOk || !passwordOk) {
       throw new Error("Invalid credentials");
     }
-    return jwt.sign({ role: "admin" }, process.env.JWT_SECRET as string, {
-      expiresIn: "2h",
-    });
+    return signAdminToken();
   },
 
   async getAllUsers() {

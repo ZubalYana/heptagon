@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { verifyAdminToken } from "../helpers/authTokens";
 
 export function verifyAdmin(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers.authorization;
-  const token = authHeader?.split(" ")[1];
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     res.status(401).json({ message: "No token provided." });
@@ -11,10 +11,16 @@ export function verifyAdmin(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    
+    verifyAdminToken(token);
     next();
-  } catch {
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      res.status(401).json({
+        message: "Admin token expired.",
+        code: "ADMIN_TOKEN_EXPIRED",
+      });
+      return;
+    }
     res.status(403).json({ message: "Invalid or expired token." });
   }
 }

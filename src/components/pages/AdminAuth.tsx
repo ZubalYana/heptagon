@@ -4,6 +4,8 @@ import Input from "../ui/Input";
 import PrimaryButton from "../ui/PrimaryButton";
 import Alert from "../ui/Alert";
 import { useNavigate } from "react-router-dom";
+import type { AxiosError } from "axios";
+import apiClient from "../../helpers/apiClient";
 
 interface AdminAuthProps {
   setIsAdmin: (value: boolean) => void;
@@ -17,38 +19,23 @@ export default function AuthPage({setIsAdmin}: AdminAuthProps) {
     type: "success" | "info" | "error";
     text: string;
   }>({ shown: false, type: "info", text: "" });
-  const baseBackendURL = import.meta.env.DEV
-    ? "http://localhost:5000"
-    : import.meta.env.VITE_API_URL;
-
   const closeAlert = () => setAlert((prev) => ({ ...prev, shown: false }));
   const navigate = useNavigate();
 
   async function logAdminIn() {
     try {
-      const res = await fetch(`${baseBackendURL}/admin/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setAlert({
-          shown: true,
-          type: "error",
-          text: data.message ?? "Login failed.",
-        });
-        return;
-      }
-
+      const { data } = await apiClient.post("/admin/login", { email, password });
       localStorage.setItem("adminToken", data.adminToken);
       setIsAdmin(true);
       navigate("/admin");
     } catch (err) {
-      console.error("Failed to log admin in:", err);
-      setAlert({ shown: true, type: "error", text: "Something went wrong." });
+      const data = (err as AxiosError<{ error?: string; message?: string }>)
+        .response?.data;
+      setAlert({
+        shown: true,
+        type: "error",
+        text: data?.error || data?.message || "Login failed.",
+      });
     }
   }
 

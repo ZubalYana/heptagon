@@ -2,11 +2,12 @@ import Router from "express";
 import type { Request, Response } from "express";
 import { adminService } from "./adminService";
 import { verifyAdmin } from "../../middleware/verifyAdmin";
+import { rateLimitAdminLogin } from "../../middleware/rateLimitAdminLogin";
 import { formErrorMessage } from "../../helpers/formErrorMessage";
 
 const router = Router();
 
-router.post("/login", (req: Request, res: Response) => {
+router.post("/login", rateLimitAdminLogin, (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const adminToken = adminService.login(email, password);
