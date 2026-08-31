@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../ui/Loader";
 import type User from "../../interfaces/User";
@@ -14,6 +14,9 @@ export default function VerifyEmailPage({ user, setUser }: VerifyEmailPageProps)
   const navigate = useNavigate();
   const [status, setStatus] = useState<"working" | "ok" | "error">("working");
   const [message, setMessage] = useState("Verifying your email...");
+  const userRef = useRef(user);
+  userRef.current = user;
+  const ran = useRef(false);
 
   useEffect(() => {
     const token = params.get("token");
@@ -22,20 +25,36 @@ export default function VerifyEmailPage({ user, setUser }: VerifyEmailPageProps)
       setMessage("This verification link is missing a token.");
       return;
     }
+    if (ran.current) return;
+    ran.current = true;
 
     apiClient
       .post("/auth/verify-email", { token })
       .then(({ data }) => {
-        if (user && data.user) {
-          const next = { ...user, emailVerified: true };
+        const current = userRef.current;
+        if (current && data.user) {
+          const next = { ...current, emailVerified: true };
           localStorage.setItem("user", JSON.stringify(next));
           setUser(next);
         }
         setStatus("ok");
-        setMessage("Email verified. You can use Google sign-in with this address now.");
-        setTimeout(() => navigate(user ? "/app" : "/auth", { replace: true }), 1500);
+        setMessage(
+          data.alreadyVerified
+            ? "This email is already verified."
+            : "Email verified. You can use Google sign-in with this address now."
+        );
+        setTimeout(
+          () => navigate(userRef.current ? "/app" : "/auth", { replace: true }),
+          1500
+        );
       })
       .catch((err) => {
+        if (userRef.current?.emailVerified) {
+          setStatus("ok");
+          setMessage("This email is already verified.");
+          setTimeout(() => navigate("/app", { replace: true }), 1500);
+          return;
+        }
         setStatus("error");
         setMessage(
           err.response?.data?.error ||
@@ -43,7 +62,7 @@ export default function VerifyEmailPage({ user, setUser }: VerifyEmailPageProps)
             "This verification link is invalid or expired."
         );
       });
-  }, [params, user, setUser, navigate]);
+  }, [params, setUser, navigate]);
 
   return (
     <div className="w-full min-h-dvh flex flex-col items-center justify-center p-6 text-center">

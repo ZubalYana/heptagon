@@ -76,7 +76,6 @@ export const userRepository = {
   async findByVerificationHash(tokenHash: string) {
     return await User.findOne({
       "emailVerification.tokenHash": tokenHash,
-      "emailVerification.expiresAt": { $gt: new Date() },
     });
   },
 
@@ -85,7 +84,6 @@ export const userRepository = {
       userId,
       {
         $set: { emailVerified: true },
-        $unset: { emailVerification: "" },
       },
       { returnDocument: "after" }
     );

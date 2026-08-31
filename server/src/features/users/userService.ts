@@ -277,8 +277,15 @@ export const userService = {
     if (!user) {
       throw new Error("Verification link is invalid or expired");
     }
+    if (user.emailVerified) {
+      return { user: toPublicUser(user), alreadyVerified: true };
+    }
+    const expiresAt = user.emailVerification?.expiresAt;
+    if (!expiresAt || new Date(expiresAt).getTime() <= Date.now()) {
+      throw new Error("Verification link is invalid or expired");
+    }
     const updated = await userRepository.markEmailVerified(String(user._id));
-    return { user: toPublicUser(updated ?? user) };
+    return { user: toPublicUser(updated ?? user), alreadyVerified: false };
   },
 
   async resendVerification(userId: string) {
