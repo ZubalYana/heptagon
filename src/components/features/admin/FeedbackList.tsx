@@ -44,7 +44,7 @@ export default function FeedbacksList({ feedbacks }: FeedbacksListProps) {
             {String(feedback.feedbackText)}
           </p>
           <p className="w-[90px] text-[11px] text-[#444] font-mono text-right pt-0.5 shrink-0">
-            {new Date(feedback.submittionDate).toLocaleDateString("en-GB", {
+            {new Date(feedback.submitionDate).toLocaleDateString("en-GB", {
               day: "2-digit",
               month: "short",
               year: "numeric",
