@@ -28,4 +28,14 @@ router.get("/all", verifyAdmin, async (req: Request, res: Response) => {
   }
 });
 
+router.delete("/delete/:id", verifyAdmin, async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string;
+    const feedback = await feedbackService.delete(id);
+    res.status(200).json(feedback);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
 export default router;

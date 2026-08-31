@@ -8,4 +8,8 @@ export const feedbackRepository = {
   async findAll() {
     return await Feedback.find();
   },
+
+  async delete(id: string) {
+    return await Feedback.findByIdAndDelete(id);
+  },
 };

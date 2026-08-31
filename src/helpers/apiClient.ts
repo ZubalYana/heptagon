@@ -62,7 +62,7 @@ function isAdminLoginRequest(url?: string) {
 
 function isAdminApiRequest(url?: string) {
   if (!url || isAdminLoginRequest(url)) return false;
-  return url.includes("/admin") || url.includes("admin/") || url.includes("feedback/all");
+  return url.includes("/admin") || url.includes("admin/") || url.includes("feedback/all") || url.includes("feedback/delete");
 }
 
 function forceAdminLogout() {

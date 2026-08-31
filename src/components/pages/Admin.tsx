@@ -57,7 +57,12 @@ export default function Admin() {
         </div>
         <div className="w-full lg:w-[65%]">
           <h3 className="mb-4">Received Feedback:</h3>
-          <FeedbacksList feedbacks={feedbacks}/>
+          <FeedbacksList
+            feedbacks={feedbacks}
+            onFeedbackDeleted={(id) =>
+              setFeedbacks((prev) => prev?.filter((f) => f._id != id) ?? null)
+            }
+          />
         </div>
       </div>
     </div>

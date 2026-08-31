@@ -11,4 +11,11 @@ export const feedbackService = {
   async getAll() {
     return await feedbackRepository.findAll();
   },
+
+  async delete(id: string) {
+    if (!id) throw new Error("Lacking credentials");
+    const deleted = await feedbackRepository.delete(id);
+    if (!deleted) throw new Error("Feedback not found");
+    return deleted;
+  },
 };
