@@ -7,6 +7,7 @@ import apiClient from "../../../helpers/apiClient";
 import Alert from "../../ui/Alert";
 import { clearSession } from "../../../helpers/session";
 import ActionConfirmation from "../../modals/ActionConfirmation";
+import ChangePasswordForm from "./ChangePasswordForm";
 
 interface ProfilePanelProps {
   user: User;
@@ -105,6 +106,12 @@ export default function ProfilePanel({ user, setUser }: ProfilePanelProps) {
           <CircleCheck size={16} strokeWidth={2} />
           Email verified
         </p>
+      )}
+
+      {localUser.hasPassword !== false && (
+        <ChangePasswordForm
+          onAlert={(next) => setAlert(next)}
+        />
       )}
 
       <div className="mt-6 pt-5 border-t border-white/5 flex flex-wrap gap-3 items-center">

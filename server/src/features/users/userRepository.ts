@@ -144,6 +144,38 @@ export const userRepository = {
     });
   },
 
+  async setPendingPasswordChange(
+    userId: string,
+    tokenHash: string,
+    passwordHash: string,
+    expiresAt: Date,
+    sentAt: Date
+  ) {
+    return await User.findByIdAndUpdate(userId, {
+      $set: {
+        pendingPasswordChange: { tokenHash, passwordHash, expiresAt, sentAt },
+      },
+    });
+  },
+
+  async findByPasswordChangeHash(tokenHash: string) {
+    return await User.findOne({
+      "pendingPasswordChange.tokenHash": tokenHash,
+      "pendingPasswordChange.expiresAt": { $gt: new Date() },
+    });
+  },
+
+  async applyPasswordChange(userId: string, passwordHash: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: { password: passwordHash, refreshSessions: [] },
+        $unset: { pendingPasswordChange: "" },
+      },
+      { returnDocument: "after" }
+    );
+  },
+
   async deleteUser(userId: string) {
     return await User.findByIdAndDelete(userId);
   },

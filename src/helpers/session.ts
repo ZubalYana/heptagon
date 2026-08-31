@@ -8,6 +8,7 @@ export function normalizeUser(raw: unknown): User | null {
     name?: string;
     email?: string;
     emailVerified?: boolean;
+    hasPassword?: boolean;
   };
   const id = u.id != null ? String(u.id) : u._id != null ? String(u._id) : "";
   if (!id || !u.name || !u.email) return null;
@@ -16,6 +17,7 @@ export function normalizeUser(raw: unknown): User | null {
     name: u.name,
     email: u.email,
     emailVerified: u.emailVerified,
+    hasPassword: u.hasPassword,
   };
 }
 

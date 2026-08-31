@@ -104,6 +104,33 @@ router.post("/resend-verification", authMiddleware, async (req: Request, res: Re
   }
 });
 
+router.post("/change-password", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id as string;
+    const { currentPassword, newPassword } = req.body;
+    const result = await userService.requestPasswordChange(
+      userId,
+      currentPassword,
+      newPassword
+    );
+    res.status(200).json(result);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
+router.post("/confirm-password-change", async (req: Request, res: Response) => {
+  try {
+    const { token } = req.body;
+    const result = await userService.confirmPasswordChange(token);
+    res.status(200).json(result);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
+  }
+});
+
 router.post("/logout", async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.body;

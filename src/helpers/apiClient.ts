@@ -21,6 +21,7 @@ const AUTH_SKIP_REFRESH = [
   "/auth/refresh",
   "/auth/google",
   "/auth/verify-email",
+  "/auth/confirm-password-change",
   "/admin/login",
 ];
 

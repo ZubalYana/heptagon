@@ -17,6 +17,7 @@ import Landing from "./components/pages/landing/Landing";
 import GoogleAuthCallback from "./components/pages/GoogleAuthCallback";
 import VerifyEmailPage from "./components/pages/VerifyEmailPage";
 import ProfilePage from "./components/pages/ProfilePage";
+import ConfirmPasswordPage from "./components/pages/ConfirmPasswordPage";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -52,6 +53,10 @@ function App() {
   return (
     <div className="w-full min-h-dvh flex justify-center">
       <Routes>
+        <Route
+          path="/confirm-password"
+          element={<ConfirmPasswordPage setUser={setUser} />}
+        />
         <Route
           path="/verify-email"
           element={<VerifyEmailPage user={user} setUser={setUser} />}

@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema({
     refresh_token: String,
     expiry_date: Number,
   },
+  pendingPasswordChange: {
+    tokenHash: String,
+    passwordHash: String,
+    expiresAt: Date,
+    sentAt: Date,
+  },
 },);
 
 const User = mongoose.model("User", userSchema);

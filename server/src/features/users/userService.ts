@@ -3,7 +3,8 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { userRepository } from "./userRepository";
 import { isValidEmail } from "../../helpers/isValidEmail";
-import { sendVerificationEmail } from "../../helpers/mailer";
+import { sendPasswordChangeEmail, sendVerificationEmail } from "../../helpers/mailer";
+import { isPasswordStrongEnough } from "../../helpers/passwordStrength";
 import {
   hashesMatch,
   hashToken,
@@ -15,6 +16,7 @@ import {
 } from "../../helpers/authTokens";
 
 const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
+const PASSWORD_CHANGE_TTL_MS = 60 * 60 * 1000;
 const RESEND_COOLDOWN_MS = 60 * 1000;
 
 export function toPublicUser(user: {
@@ -22,12 +24,14 @@ export function toPublicUser(user: {
   name?: string | null;
   email?: string | null;
   emailVerified?: boolean | null;
+  password?: string | null;
 }) {
   return {
     id: String(user._id),
     name: user.name,
     email: user.email,
     emailVerified: Boolean(user.emailVerified),
+    hasPassword: Boolean(user.password),
   };
 }
 
@@ -277,5 +281,79 @@ export const userService = {
     }
     await createAndSendVerification(String(user._id), user.email as string);
     return { message: "Verification email sent" };
+  },
+
+  async requestPasswordChange(
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ) {
+    if (!currentPassword || !newPassword) {
+      throw new Error("All fields are required");
+    }
+    if (!isPasswordStrongEnough(newPassword)) {
+      throw new Error("Password is too weak");
+    }
+
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (!user.password) {
+      throw new Error("This account uses Google sign-in");
+    }
+
+    const currentMatch = await bcrypt.compare(
+      currentPassword,
+      user.password as string
+    );
+    if (!currentMatch) {
+      throw new Error("Current password is incorrect");
+    }
+
+    const sameAsOld = await bcrypt.compare(newPassword, user.password as string);
+    if (sameAsOld) {
+      throw new Error("New password must be different");
+    }
+
+    const sentAt = user.pendingPasswordChange?.sentAt;
+    if (sentAt && Date.now() - new Date(sentAt).getTime() < RESEND_COOLDOWN_MS) {
+      throw new Error("Please wait before requesting another password change email");
+    }
+
+    const rawToken = crypto.randomBytes(32).toString("base64url");
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await userRepository.setPendingPasswordChange(
+      userId,
+      hashToken(rawToken),
+      passwordHash,
+      new Date(Date.now() + PASSWORD_CHANGE_TTL_MS),
+      new Date()
+    );
+
+    const frontend = process.env.FRONTEND_URL || "http://localhost:5173";
+    const confirmUrl = `${frontend}/confirm-password?token=${encodeURIComponent(rawToken)}`;
+    try {
+      await sendPasswordChangeEmail(user.email as string, confirmUrl);
+    } catch (err) {
+      console.error("Failed to send password change email:", err);
+    }
+
+    return { message: "Confirmation email sent" };
+  },
+
+  async confirmPasswordChange(rawToken: string) {
+    if (!rawToken) {
+      throw new Error("Password change token is required");
+    }
+    const user = await userRepository.findByPasswordChangeHash(hashToken(rawToken));
+    if (!user || !user.pendingPasswordChange?.passwordHash) {
+      throw new Error("Password change link is invalid or expired");
+    }
+    await userRepository.applyPasswordChange(
+      String(user._id),
+      user.pendingPasswordChange.passwordHash
+    );
+    return { message: "Password updated" };
   },
 };

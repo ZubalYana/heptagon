@@ -44,3 +44,24 @@ export async function sendVerificationEmail(to: string, verifyUrl: string) {
     `
   );
 }
+
+export async function sendPasswordChangeEmail(to: string, confirmUrl: string) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn(`[mail] Password change link for ${to}: ${confirmUrl}`);
+    return;
+  }
+
+  await sendMail(
+    to,
+    "Confirm your Heptagon password change",
+    `
+      <div style="font-family:sans-serif;background:#151515;color:#eee;padding:24px">
+        <h2 style="color:#00FF26">Confirm password change</h2>
+        <p>Someone requested a new password for your Heptagon account. Click the link below to apply it.</p>
+        <p><a href="${confirmUrl}" style="color:#00FF26">Confirm password change</a></p>
+        <p style="color:#888;font-size:12px">This link expires in 1 hour. If you did not request this, you can ignore this email — your current password stays the same.</p>
+      </div>
+    `
+  );
+}
