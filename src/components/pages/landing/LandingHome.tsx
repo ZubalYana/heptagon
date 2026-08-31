@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import PrimaryButton from "../../ui/PrimaryButton";
-import { UserRoundPlus, Search, Menu, X } from "lucide-react";
+import { UserRoundPlus, Search, Menu, X, LayoutGrid } from "lucide-react";
 import OutlineButton from "../../ui/OutlineButton";
 import { AnimatePresence, motion } from "framer-motion";
 import scrollToSection from "../../../helpers/scroll";
@@ -48,26 +49,43 @@ export default function LandingHome() {
           <h2 className="text-[20px] font-medium">Heptagon</h2>
         </div>
 
-        <div className="hidden lg:flex gap-x-6">
-          {nav.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => handleNavClick(item.id)}
-              className="cursor-pointer text-[13px] uppercase tracking-wide text-white/60 hover:text-[#00FF26] transition-colors duration-200"
-            >
-              {item.title}
-            </button>
-          ))}
+        <div className="flex items-center gap-x-3 lg:gap-x-6">
+          <div className="hidden lg:flex gap-x-6 md:mr-4">
+            {nav.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => handleNavClick(item.id)}
+                className="cursor-pointer text-[13px] uppercase tracking-wide text-white/60 hover:text-[#00FF26] transition-colors duration-200"
+              >
+                {item.title}
+              </button>
+            ))}
+          </div>
+          <Link
+            to="/app"
+            className="
+              flex items-center gap-x-1.5
+              px-3 py-1.5 rounded-lg
+              font-semibold text-[11px] uppercase tracking-wide
+              border border-[#00FF26] text-[#00FF26] bg-[#1B1B1B]
+              hover:bg-[#00FF26] hover:text-[#151515]
+              hover:shadow-[0_0_16px_rgba(0,255,38,0.4)]
+              transition-all duration-300 ease-in-out
+              active:scale-95
+            "
+          >
+            <LayoutGrid size={14} strokeWidth={2} />
+            App
+          </Link>
+          <button
+            onClick={() => setMenuOpen((prev) => !prev)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={menuOpen}
+            className="lg:hidden cursor-pointer text-white/70 hover:text-[#00FF26] transition-colors duration-200"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
-
-        <button
-          onClick={() => setMenuOpen((prev) => !prev)}
-          aria-label="Toggle navigation menu"
-          aria-expanded={menuOpen}
-          className="lg:hidden cursor-pointer text-white/70 hover:text-[#00FF26] transition-colors duration-200"
-        >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
       </div>
 
       <AnimatePresence>
