@@ -17,14 +17,14 @@ import {
 const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
 const RESEND_COOLDOWN_MS = 60 * 1000;
 
-function publicUser(user: {
+export function toPublicUser(user: {
   _id: unknown;
   name?: string | null;
   email?: string | null;
   emailVerified?: boolean | null;
 }) {
   return {
-    id: user._id,
+    id: String(user._id),
     name: user.name,
     email: user.email,
     emailVerified: Boolean(user.emailVerified),
@@ -94,7 +94,7 @@ export const userService = {
     return {
       token,
       refreshToken,
-      user: publicUser(newUser),
+      user: toPublicUser(newUser),
     };
   },
 
@@ -121,7 +121,7 @@ export const userService = {
     return {
       token,
       refreshToken,
-      user: publicUser(user),
+      user: toPublicUser(user),
     };
   },
 
@@ -211,7 +211,7 @@ export const userService = {
       return {
         token,
         refreshToken,
-        user: publicUser(byGoogleId),
+        user: toPublicUser(byGoogleId),
       };
     }
 
@@ -231,7 +231,7 @@ export const userService = {
       return {
         token,
         refreshToken,
-        user: publicUser(account),
+        user: toPublicUser(account),
       };
     }
 
@@ -244,7 +244,7 @@ export const userService = {
     return {
       token,
       refreshToken,
-      user: publicUser(created),
+      user: toPublicUser(created),
     };
   },
 
@@ -257,7 +257,7 @@ export const userService = {
       throw new Error("Verification link is invalid or expired");
     }
     const updated = await userRepository.markEmailVerified(String(user._id));
-    return { user: publicUser(updated ?? user) };
+    return { user: toPublicUser(updated ?? user) };
   },
 
   async resendVerification(userId: string) {

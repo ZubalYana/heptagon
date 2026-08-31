@@ -74,7 +74,7 @@ export default function UsersList({ users, onUserDeleted }: UsersListProps) {
 
       {users.map((user, index) => (
         <div
-          key={user._id}
+          key={user.id}
           className="w-full px-4 py-3 flex items-center gap-4 rounded-lg border border-[#2a2a2a] bg-[#1B1B1B] hover:border-[#39FF14]/40 hover:bg-[#1f1f1f] transition-all duration-200 group"
         >
           <span className="text-[12px] text-[#333] w-6 font-mono group-hover:text-[#39FF14]/50 transition-colors duration-200">
@@ -96,8 +96,7 @@ export default function UsersList({ users, onUserDeleted }: UsersListProps) {
             strokeWidth={1.5}
             onClick={() => {
               setDeletingUserEmail(user.email);
-              setUserId(user._id);
-              console.log(user._id);
+              setUserId(user.id);
               setIsConfirmationOpen(true);
             }}
           />

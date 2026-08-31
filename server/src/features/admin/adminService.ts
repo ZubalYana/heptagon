@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { adminRepository } from "./adminRepository";
+import { toPublicUser } from "../users/userService";
 
 export const adminService = {
   login(email: string, password: string) {
@@ -15,7 +16,8 @@ export const adminService = {
   },
 
   async getAllUsers() {
-    return await adminRepository.findAllUsers();
+    const users = await adminRepository.findAllUsers();
+    return users.map(toPublicUser);
   },
 
   async deleteUser(userId: string) {

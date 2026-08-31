@@ -6,6 +6,7 @@ import DayFullPage from "./components/pages/DayFullPage";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import type User from "./interfaces/User";
 import { setNavigator, setClearUser } from "./helpers/apiClient";
+import { normalizeUser } from "./helpers/session";
 import Privacy from "./components/pages/Privacy";
 import Terms from "./components/pages/Terms";
 import Admin from "./components/pages/Admin";
@@ -32,7 +33,11 @@ function App() {
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const next = normalizeUser(JSON.parse(savedUser));
+      if (next) {
+        localStorage.setItem("user", JSON.stringify(next));
+        setUser(next);
+      }
     }
     setLoading(false);
   }, []);
