@@ -39,7 +39,7 @@ export default function ProfilePanel({ user, setUser }: ProfilePanelProps) {
 
   function deleteAccount() {
     apiClient
-      .delete(`/auth/delete/${localUser.id}`)
+      .delete("/auth/delete")
       .then(() => {
         clearSession();
         setUser(null);

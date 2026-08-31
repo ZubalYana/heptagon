@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import { calendarService } from "./calendarService";
 import { authMiddleware } from "../../middleware/auth";
 import { formErrorMessage } from "../../helpers/formErrorMessage";
+import { verifyCalendarOAuthState } from "../../middleware/googleAuth";
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.get("/auth-url", authMiddleware, async (req: Request, res: Response) => {
 router.get("/auth/callback", async (req: Request, res: Response) => {
   try {
     const code = req.query.code as string;
-    const userId = req.query.state as string;
+    const userId = verifyCalendarOAuthState(String(req.query.state || ""));
     await calendarService.handleCallback(code, userId);
     res.redirect(`${process.env.FRONTEND_URL}/settings?calendar=connected`);
   } catch (err) {

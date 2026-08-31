@@ -10,6 +10,10 @@ import {
   getGoogleProfile,
   verifyGoogleLoginState,
 } from "./googleLogin";
+import {
+  storeGoogleLoginResult,
+  takeGoogleLoginResult,
+} from "./googleLoginExchange";
 
 const router = Router();
 
@@ -36,18 +40,27 @@ router.get("/google/callback", async (req: Request, res: Response) => {
     verifyGoogleLoginState(state);
     const profile = await getGoogleProfile(code);
     const result = await userService.loginWithGoogle(profile);
-    const params = new URLSearchParams({
-      token: result.token,
-      refreshToken: result.refreshToken,
-      user: JSON.stringify(result.user),
-    });
-    res.redirect(`${frontend}/auth/callback?${params.toString()}`);
+    const loginCode = storeGoogleLoginResult(result);
+    res.redirect(
+      `${frontend}/auth/callback?code=${encodeURIComponent(loginCode)}`
+    );
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Google sign-in failed";
     res.redirect(
       `${frontend}/auth?error=${encodeURIComponent(message)}`
     );
+  }
+});
+
+router.post("/google/exchange", async (req: Request, res: Response) => {
+  try {
+    const { code } = req.body;
+    const result = takeGoogleLoginResult(code);
+    res.status(200).json(result);
+  } catch (err) {
+    const errorResult = formErrorMessage(err);
+    res.status(errorResult.status).json({ error: errorResult.message });
   }
 });
 
@@ -202,9 +215,9 @@ router.post("/logout", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/delete/:userId", async (req: Request, res: Response) => {
+router.delete("/delete", authMiddleware, async (req: Request, res: Response) => {
   try {
-    const userId = req.params.userId as string;
+    const userId = req.user?.id as string;
     await userService.deleteAccount(userId);
     res.status(200).json({ message: "Account deleted successfully" });
   } catch (err) {
