@@ -3,11 +3,16 @@ import type { Request, Response } from "express";
 import { feedbackService } from "./feedbackService";
 import { authMiddleware } from "../../middleware/auth";
 import { verifyAdmin } from "../../middleware/verifyAdmin";
+import { rateLimitFeedbackCreate } from "../../middleware/rateLimitFeedbackCreate";
 import { formErrorMessage } from "../../helpers/formErrorMessage";
 
 const router = Router();
 
-router.post("/create", authMiddleware, async (req: Request, res: Response) => {
+router.post(
+  "/create",
+  authMiddleware,
+  rateLimitFeedbackCreate,
+  async (req: Request, res: Response) => {
   try {
     const { userName, userEmail, feedbackText } = req.body;
     const feedback = await feedbackService.create(userName, userEmail, feedbackText);

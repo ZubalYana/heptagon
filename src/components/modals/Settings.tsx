@@ -70,9 +70,12 @@ export default function Settings({ onClose }: SettingsProps) {
       });
       setFeedbackText("");
     } catch (err) {
+      const text =
+        (err as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Error sending feedback. Please get in touch with us.";
       setAlert({
         shown: true,
-        text: "Error sending feedback. Please get in touch with us.",
+        text,
         type: "error",
       });
     }
