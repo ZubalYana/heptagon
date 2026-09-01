@@ -47,7 +47,7 @@ export default function FeedbacksList({
           type: "error",
           text: "Failed to delete feedback. See error in console.",
         });
-        console.log(err.message);
+        console.error(err.message);
       });
   }
 

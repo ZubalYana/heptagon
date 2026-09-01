@@ -54,7 +54,7 @@ export default function UsersList({ users, onUserDeleted }: UsersListProps) {
           type: "error",
           text: "Failed to delete user. See error in console.",
         });
-        console.log(err.message);
+        console.error(err.message);
       });
   }
 

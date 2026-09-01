@@ -43,7 +43,6 @@ export default function DayTasksController({
   }, [dayId])
 
   useEffect(() => {
-  console.log('Current tasks state:', localTasks);
 }, [localTasks]);
 
   function closeAlert() {
@@ -75,7 +74,6 @@ export default function DayTasksController({
     apiClient
       .patch(`/tasks/toggle/${dayId}/${id}`, { id, dayId })
       .then(({ data }) => {
-        console.log(data)
         setLocalTasks((prev) =>
           prev.map((task) =>
             task._id === id
@@ -88,7 +86,6 @@ export default function DayTasksController({
               : task
           )
         );
-        console.log('data.task:', data)
       })
       .catch(() => {
         setLocalTasks(previousTasks);

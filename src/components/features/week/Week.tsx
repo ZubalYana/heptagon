@@ -83,7 +83,6 @@ export default function Week({ week, animationDirection }: WeekProps) {
         <div className="w-full flex flex-wrap gap-x-2 justify-between items-center md:flex-row md:gap-x-0">
           {week.days.map((day) => {
             const dayTasks = tasksByDay[day._id] ?? [];
-            console.log(dayTasks);
 
             let crucial = 0;
             let important = 0;

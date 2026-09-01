@@ -12,7 +12,6 @@ export default function EventsViewWindow({ day }: EventsViewWindowProps) {
   const dayStr = toCalendarDate(day);
   useEffect(() => {
     apiClient.get("/calendar/events").then(({ data }) => {
-      console.log("Fetched events:", data.events); // Debugging line
       const dayEvents = data.events?.filter((event: CalendarEvent) => {
         const eventDate = event.start.dateTime
           ? event.start.dateTime.slice(0, 10)
