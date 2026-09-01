@@ -14,6 +14,12 @@ import {
   storeGoogleLoginResult,
   takeGoogleLoginResult,
 } from "./googleLoginExchange";
+import {
+  rateLimitAuthLogin,
+  rateLimitAuthPublic,
+  rateLimitAuthRefresh,
+  rateLimitAuthRegister,
+} from "../../middleware/rateLimitAuth";
 
 const router = Router();
 
@@ -53,7 +59,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/google/exchange", async (req: Request, res: Response) => {
+router.post("/google/exchange", rateLimitAuthPublic, async (req: Request, res: Response) => {
   try {
     const { code } = req.body;
     const result = takeGoogleLoginResult(code);
@@ -64,7 +70,7 @@ router.post("/google/exchange", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/register", rateLimitAuthRegister, async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
     const result = await userService.register(name, email, password);
@@ -75,7 +81,7 @@ router.post("/register", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/login", async (req: Request, res: Response) => {
+router.post("/login", rateLimitAuthLogin, async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const result = await userService.login(email, password);
@@ -86,7 +92,7 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/refresh", async (req: Request, res: Response) => {
+router.post("/refresh", rateLimitAuthRefresh, async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.body;
     const result = await userService.refresh(refreshToken);
@@ -97,7 +103,7 @@ router.post("/refresh", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/verify-email", async (req: Request, res: Response) => {
+router.post("/verify-email", rateLimitAuthPublic, async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
     const result = await userService.verifyEmail(token);
@@ -135,7 +141,7 @@ router.post("/change-password", authMiddleware, async (req: Request, res: Respon
   }
 });
 
-router.post("/confirm-password-change", async (req: Request, res: Response) => {
+router.post("/confirm-password-change", rateLimitAuthPublic, async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
     const result = await userService.confirmPasswordChange(token);

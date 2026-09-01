@@ -19,6 +19,9 @@ import {
 const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_CHANGE_TTL_MS = 60 * 60 * 1000;
 const RESEND_COOLDOWN_MS = 60 * 1000;
+const INVALID_CREDENTIALS = "Invalid credentials";
+const DUMMY_PASSWORD_HASH =
+  "$2b$10$phQEUfDGle1GFFXT.subrusTTyv/pAm7yIelo80imKpyKGLMyd21.";
 
 export function toPublicUser(user: {
   _id: unknown;
@@ -114,15 +117,10 @@ export const userService = {
       throw new Error("Invalid email format");
     }
     const user = await userRepository.findByEmail(normalizedEmail);
-    if (!user) {
-      throw new Error("User not found");
-    }
-    if (!user.password) {
-      throw new Error("This account uses Google sign-in");
-    }
-    const passwordMatch = await bcrypt.compare(password, user.password as string);
-    if (!passwordMatch) {
-      throw new Error("Invalid credentials");
+    const hash = user?.password || DUMMY_PASSWORD_HASH;
+    const passwordMatch = await bcrypt.compare(password, hash);
+    if (!user || !user.password || !passwordMatch) {
+      throw new Error(INVALID_CREDENTIALS);
     }
     const { token, refreshToken } = await issueNewSession(String(user._id));
     return {

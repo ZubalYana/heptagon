@@ -15,10 +15,22 @@ import userRouter from './features/users/userRoutes';
 import calendarRouter from "./features/calendar/calendarRoutes";
 
 import cors from "cors";
+import { isAllowedOrigin } from "./helpers/corsAllowlist";
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (isAllowedOrigin(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    },
+  })
+);
 
 app.use("/auth", userRouter);
 app.use("/weeks", weeksRouter);
