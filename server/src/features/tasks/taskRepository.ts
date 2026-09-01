@@ -105,6 +105,10 @@ export const taskRepository = {
     return "Deleted successfully";
   },
 
+  async deleteAllForUser(userId: string) {
+    await Task.deleteMany({ userId });
+  },
+
   async addSubtask(
     userId: string,
     taskId: string,

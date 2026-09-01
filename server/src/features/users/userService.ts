@@ -15,6 +15,11 @@ import {
   signRefreshToken,
   verifyRefreshToken,
 } from "../../helpers/authTokens";
+import { calendarService } from "../calendar/calendarService";
+import { taskRepository } from "../tasks/taskRepository";
+import { daysRepository } from "../days/daysRepository";
+import { weeksRepository } from "../weeks/weeksRepository";
+import { feedbackRepository } from "../feedback/feedbackRepository";
 
 const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_CHANGE_TTL_MS = 60 * 60 * 1000;
@@ -192,9 +197,19 @@ export const userService = {
       throw new Error("User ID is required");
     }
     const user = await userRepository.findById(userId);
-    if (user?.avatarPublicId) {
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (user.avatarPublicId) {
       await destroyAvatar(user.avatarPublicId as string);
     }
+    await calendarService.disconnect(userId);
+    await Promise.all([
+      taskRepository.deleteAllForUser(userId),
+      daysRepository.deleteAllForUser(userId),
+      weeksRepository.deleteAllForUser(userId),
+      feedbackRepository.deleteAllForUser(userId, user.email as string),
+    ]);
     return await userRepository.deleteUser(userId);
   },
 

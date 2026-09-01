@@ -22,4 +22,8 @@ export const daysRepository = {
   async findById(userId: string, dayId: string) {
     return await Day.findOne({ _id: dayId, userId }).populate("tasks");
   },
+
+  async deleteAllForUser(userId: string) {
+    await Day.deleteMany({ userId });
+  },
 };

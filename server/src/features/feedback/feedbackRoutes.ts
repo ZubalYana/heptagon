@@ -14,8 +14,9 @@ router.post(
   rateLimitFeedbackCreate,
   async (req: Request, res: Response) => {
   try {
-    const { userName, userEmail, feedbackText } = req.body;
-    const feedback = await feedbackService.create(userName, userEmail, feedbackText);
+    const userId = req.user?.id as string;
+    const { feedbackText } = req.body;
+    const feedback = await feedbackService.create(userId, feedbackText);
     res.status(201).json({ feedback });
   } catch (err) {
     const errorResult = formErrorMessage(err);

@@ -26,4 +26,8 @@ export const weeksRepository = {
     });
     return week.populate({ path: "days", populate: { path: "tasks" } });
   },
+
+  async deleteAllForUser(userId: string) {
+    await Week.deleteMany({ userId });
+  },
 };

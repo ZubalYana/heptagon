@@ -40,6 +40,21 @@ export const calendarService = {
   // },
 
   async disconnect(userId: string) {
+    const user = await userRepository.findById(userId);
+    const token =
+      user?.googleTokens?.access_token || user?.googleTokens?.refresh_token;
+    if (token) {
+      try {
+        const oAuth2Client = new google.auth.OAuth2(
+          process.env.GOOGLE_CLIENT_ID,
+          process.env.GOOGLE_CLIENT_SECRET,
+          process.env.GOOGLE_REDIRECT_URI
+        );
+        await oAuth2Client.revokeToken(token);
+      } catch (err) {
+        console.error("Failed to revoke Google Calendar token:", err);
+      }
+    }
     await userRepository.clearGoogleTokens(userId);
   },
 

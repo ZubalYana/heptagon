@@ -1,11 +1,21 @@
 import { feedbackRepository } from "./feedbackRepository";
+import { userRepository } from "../users/userRepository";
 
 export const feedbackService = {
-  async create(userName: string, userEmail: string, feedbackText: string) {
-    if (!userName || !userEmail || !feedbackText) {
-      throw new Error("Missing credentials");
+  async create(userId: string, feedbackText: string) {
+    if (!feedbackText?.trim()) {
+      throw new Error("Feedback text is required");
     }
-    return await feedbackRepository.create(userName, userEmail, feedbackText);
+    const user = await userRepository.findById(userId);
+    if (!user?.email) {
+      throw new Error("User not found");
+    }
+    return await feedbackRepository.create(
+      userId,
+      user.name || "User",
+      user.email,
+      feedbackText.trim()
+    );
   },
 
   async getAll() {

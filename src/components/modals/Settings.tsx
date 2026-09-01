@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { SettingsNav } from "../features/settings/SettingsNav";
 import type { SettingSection } from "../features/settings/SettingsNav";
 import SettingSwitch from "../features/settings/SettingsSwitch";
-import type User from "../../interfaces/User";
 import { Send, X } from "lucide-react";
 import TextArea from "../ui/TextArea";
 import Button from "../ui/PrimaryButton";
@@ -21,18 +20,12 @@ export default function Settings({ onClose }: SettingsProps) {
     return saved !== null ? saved === "true" : false;
   });
   const [calendarConnected, setCalendarConnected] = useState<boolean>(false);
-  const [user, setLocalUser] = useState<User | null>(null);
   const [feedbackText, setFeedbackText] = useState<string>("");
   const [alert, setAlert] = useState<{
     shown: boolean;
     text: string;
     type: "success" | "info" | "error";
   }>({ shown: false, text: "", type: "success" });
-
-  useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) setLocalUser(JSON.parse(stored));
-  }, []);
 
   useEffect(() => {
     apiClient
@@ -59,8 +52,6 @@ export default function Settings({ onClose }: SettingsProps) {
   const sendFeedback = async () => {
     try {
       await apiClient.post("/feedback/create", {
-        userName: user?.name,
-        userEmail: user?.email,
         feedbackText: feedbackText,
       });
       setAlert({
