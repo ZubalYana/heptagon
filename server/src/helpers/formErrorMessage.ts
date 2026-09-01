@@ -13,6 +13,7 @@ export function formErrorMessage(err: unknown){
     const status = message.includes("not found") ? 404
       : message.includes("Lacking credentials") ? 400
       : message.includes("already exists") ? 400
+      : message.includes("Could not create account") ? 400
       : message.includes("required") ? 400
       : message.includes("Invalid email") ? 400
       : message.includes("Google sign-in") ? 401

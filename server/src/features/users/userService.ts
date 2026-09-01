@@ -95,22 +95,35 @@ export const userService = {
     }
     const existingUser = await userRepository.findByEmail(normalizedEmail);
     if (existingUser) {
-      throw new Error("User already exists");
+      await bcrypt.hash(password, 10);
+      throw new Error("Could not create account");
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await userRepository.create(
-      name.trim(),
-      normalizedEmail,
-      hashedPassword
-    );
-    const userId = String(newUser._id);
-    const { token, refreshToken } = await issueNewSession(userId);
-    await createAndSendVerification(userId, normalizedEmail);
-    return {
-      token,
-      refreshToken,
-      user: toPublicUser(newUser),
-    };
+    try {
+      const newUser = await userRepository.create(
+        name.trim(),
+        normalizedEmail,
+        hashedPassword
+      );
+      const userId = String(newUser._id);
+      const { token, refreshToken } = await issueNewSession(userId);
+      await createAndSendVerification(userId, normalizedEmail);
+      return {
+        token,
+        refreshToken,
+        user: toPublicUser(newUser),
+      };
+    } catch (err) {
+      if (
+        err &&
+        typeof err === "object" &&
+        "code" in err &&
+        (err as { code: number }).code === 11000
+      ) {
+        throw new Error("Could not create account");
+      }
+      throw err;
+    }
   },
 
   async login(email: string, password: string) {

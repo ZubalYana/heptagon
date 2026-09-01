@@ -12,18 +12,33 @@ export type AdminPayload = { role: "admin"; type: "admin" };
 
 const ADMIN_TTL = "2h";
 
-function accessSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error("JWT_SECRET is required");
+function envSecret(name: string): string {
+  const secret = process.env[name];
+  if (!secret) throw new Error(`${name} is required`);
   return secret;
 }
 
+function accessSecret(): string {
+  return envSecret("JWT_SECRET");
+}
+
 function refreshSecret(): string {
-  return process.env.JWT_REFRESH_SECRET || accessSecret();
+  return envSecret("JWT_REFRESH_SECRET");
 }
 
 function adminSecret(): string {
-  return process.env.JWT_ADMIN_SECRET || accessSecret();
+  return envSecret("JWT_ADMIN_SECRET");
+}
+
+export function assertJwtSecrets(): void {
+  const access = accessSecret();
+  const refresh = refreshSecret();
+  const admin = adminSecret();
+  if (new Set([access, refresh, admin]).size !== 3) {
+    throw new Error(
+      "JWT_SECRET, JWT_REFRESH_SECRET, and JWT_ADMIN_SECRET must all be different"
+    );
+  }
 }
 
 export function hashToken(token: string): string {
