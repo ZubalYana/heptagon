@@ -13,9 +13,13 @@
   "type": "commonjs",
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.0",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
+    "@types/multer": "^2.0.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.6",
@@ -27,13 +31,10 @@
     "mongoose": "^9.3.3",
     "multer": "^2.0.2",
     "resend": "^6.24.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3"
   },
   "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/cors": "^2.8.19",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/multer": "^2.0.0",
     "tsx": "^4.23.0"
   }
 }
