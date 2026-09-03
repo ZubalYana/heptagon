@@ -1,5 +1,5 @@
 import { useState, type InputHTMLAttributes } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye, EyeOff } from "lucide-react";
 
 interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -14,15 +14,39 @@ export default function Input({
   placeholder = "Type here...",
   id,
   isSecret = false,
+  type,
+  value,
+  min,
+  max,
+  step,
+  onChange,
+  disabled,
   ...props
 }: CustomInputProps) {
   const [showSecret, setShowSecret] = useState(false);
+  const isNumber = type === "number";
 
   const inputType = isSecret
     ? showSecret
       ? "text"
       : "password"
-    : props.type || "text";
+    : type || "text";
+
+  function emit(next: number) {
+    onChange?.({
+      target: { value: String(next) },
+    } as React.ChangeEvent<HTMLInputElement>);
+  }
+
+  function nudge(direction: 1 | -1) {
+    const stepVal = step != null && step !== "" ? Number(step) : 1;
+    const current = Number(value ?? 0);
+    const base = Number.isFinite(current) ? current : 0;
+    let next = base + direction * (Number.isFinite(stepVal) ? stepVal : 1);
+    if (min != null && min !== "" && next < Number(min)) next = Number(min);
+    if (max != null && max !== "" && next > Number(max)) next = Number(max);
+    emit(next);
+  }
 
   return (
     <div className="flex flex-col gap-1.5 w-full font-sans group">
@@ -44,6 +68,12 @@ export default function Input({
           id={id}
           type={inputType}
           placeholder={placeholder}
+          value={value}
+          min={min}
+          max={max}
+          step={step}
+          onChange={onChange}
+          disabled={disabled}
           className={`
             w-full px-4 py-2.5 rounded-lg
             bg-[#1a1a1a] text-white 
@@ -53,8 +83,8 @@ export default function Input({
             hover:border-gray-500
             focus:bg-[#151515] focus:border-[#00FF26] focus:ring-1 focus:ring-[#00FF26] focus:shadow-[0_0_12px_rgba(0,255,38,0.15)]
             disabled:opacity-50 disabled:cursor-not-allowed
+            ${isNumber ? "pr-10 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" : ""}
             
-            /* --- AUTOFILL OVERRIDES --- */
             [&:-webkit-autofill]:shadow-[0_0_0_1000px_#1a1a1a_inset]
             [&:-webkit-autofill]:[-webkit-text-fill-color:white]
             [&:-webkit-autofill]:focus:shadow-[0_0_0_1000px_#151515_inset,0_0_12px_rgba(0,255,38,0.15)]
@@ -68,6 +98,31 @@ export default function Input({
           `}
           {...props}
         />
+
+        {isNumber && (
+          <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex flex-col">
+            <button
+              type="button"
+              tabIndex={-1}
+              disabled={disabled}
+              onClick={() => nudge(1)}
+              className="h-[14px] w-7 flex items-center justify-center text-[#555555] hover:text-[#00FF26] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors duration-200 outline-none"
+              aria-label="Increase"
+            >
+              <ChevronUp size={14} strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              tabIndex={-1}
+              disabled={disabled}
+              onClick={() => nudge(-1)}
+              className="h-[14px] w-7 flex items-center justify-center text-[#555555] hover:text-[#00FF26] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors duration-200 outline-none"
+              aria-label="Decrease"
+            >
+              <ChevronDown size={14} strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
 
         {isSecret && (
           <button

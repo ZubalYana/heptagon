@@ -2,9 +2,11 @@ import { useState } from "react";
 import Input from "../../ui/Input";
 import Select from "../../ui/Select";
 import Button from "../../ui/PrimaryButton";
+import { X } from "lucide-react";
 import type { WeeklyPriority } from "../../../interfaces/WeeklyTask";
 
 interface WeekTaskCreateFormProps {
+  onClose: () => void;
   onCreate: (data: {
     title: string;
     priority: WeeklyPriority;
@@ -13,65 +15,83 @@ interface WeekTaskCreateFormProps {
 }
 
 export default function WeekTaskCreateForm({
+  onClose,
   onCreate,
 }: WeekTaskCreateFormProps) {
   const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState<WeeklyPriority>("important");
+  const [priority, setPriority] = useState<string>("");
   const [targetCount, setTargetCount] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function createTask() {
     const trimmed = title.trim();
-    if (!trimmed) return;
-    setLoading(true);
+    if (isCreating || !trimmed || !priority) return;
+    setIsCreating(true);
     try {
       await onCreate({
         title: trimmed,
-        priority,
+        priority: priority as WeeklyPriority,
         targetCount: Math.max(1, Math.floor(targetCount) || 1),
       });
-      setTitle("");
-      setTargetCount(1);
+      onClose();
     } finally {
-      setLoading(false);
+      setIsCreating(false);
     }
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full mt-4 flex flex-col gap-3 lg:flex-row lg:items-end"
+    <div
+      className="w-[90%] lg:w-[40%] max-h-[90vh] overflow-y-auto bg-[#1F1F1F] rounded-md p-4 flex flex-col items-center relative"
+      onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
+      <X
+        className="w-4.5 h-4.5 absolute top-4 right-4 cursor-pointer"
+        onClick={onClose}
+      />
+      <h3 className="text-[20px] font-medium mb-4">Create a weekly task</h3>
+
       <Input
-        label="Title"
-        value={title}
+        placeholder="Task title"
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Weekly task"
+        value={title}
       />
+
       <Select
-        label="Priority"
-        value={priority}
-        onChange={(value) => setPriority(value as WeeklyPriority)}
         options={[
-          { label: "Crucial", value: "crucial" },
-          { label: "Important", value: "important" },
-          { label: "Optional", value: "optional" },
+          { value: "crucial", label: "Crucial" },
+          { value: "important", label: "Important" },
+          { value: "optional", label: "Optional" },
         ]}
-        className="lg:max-w-[200px]"
+        value={priority}
+        placeholder="Select task priority"
+        onChange={(value) => setPriority(value)}
+        className="mt-2"
       />
-      <Input
-        label="Target"
-        type="number"
-        min={1}
-        value={targetCount}
-        onChange={(e) => setTargetCount(Number(e.target.value))}
-        className="lg:max-w-[120px]"
-      />
-      <Button type="submit" loading={loading} disabled={!title.trim()}>
-        Add
+
+      <div className="w-full mt-3 flex flex-col gap-1.5 font-sans">
+        <label
+          htmlFor="weekly-task-target"
+          className="text-xs font-medium transition-colors duration-300 text-gray-400"
+        >
+          Target
+        </label>
+        <Input
+          id="weekly-task-target"
+          type="number"
+          min={1}
+          value={targetCount}
+          onChange={(e) => setTargetCount(Number(e.target.value))}
+        />
+      </div>
+
+      <Button
+        onClick={createTask}
+        className="mt-4"
+        disabled={isCreating || !title.trim() || !priority}
+      >
+        {isCreating ? "Creating..." : "Create task"}
       </Button>
-    </form>
+    </div>
   );
 }

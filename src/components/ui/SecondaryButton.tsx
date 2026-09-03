@@ -19,7 +19,7 @@ export default function GhostButton({
     <button
       disabled={isDisabled}
       className={[
-        "relative flex justify-center items-center gap-2",
+        "group relative flex justify-center items-center gap-2",
         "px-4 py-2 rounded-md",
         "text-[13px] font-medium tracking-wide uppercase",
         "transition-all duration-200 ease-in-out",
@@ -30,10 +30,7 @@ export default function GhostButton({
           ? "bg-transparent text-[#00FF26]/30 cursor-not-allowed"
           : [
               "bg-transparent text-[#00FF26]/70 cursor-pointer",
-              "after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2",
-              "after:h-[1px] after:w-0 after:bg-[#00FF26]/60",
-              "after:transition-all after:duration-200",
-              "hover:text-[#00FF26] hover:after:w-full",
+              "hover:text-[#00FF26]",
               "active:scale-95 active:text-[#00FF26]/50",
             ].join(' '),
         className,
@@ -43,7 +40,17 @@ export default function GhostButton({
       {loading && (
         <Loader2 size={14} className="animate-spin shrink-0 text-current" />
       )}
-      {children}
+      <span
+        className={[
+          "relative inline-flex items-center gap-2",
+          !isDisabled &&
+            "after:absolute after:left-0 after:-bottom-[5px] after:h-[1px] after:w-0 after:bg-[#00FF26]/60 after:transition-all after:duration-200 group-hover:after:w-full",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {children}
+      </span>
     </button>
   );
 }

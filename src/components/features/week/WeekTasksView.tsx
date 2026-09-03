@@ -6,6 +6,9 @@ import CircularProgressbar from "../../ui/CircularProgressbar";
 import WeekTaskRow from "./WeekTaskRow";
 import WeekTaskCreateForm from "./WeekTaskCreateForm";
 import Loader from "../../ui/Loader";
+import Button from "../../ui/PrimaryButton";
+import SecondaryButton from "../../ui/SecondaryButton";
+import { Plus } from "lucide-react";
 import { progressPercent, type WeekProgress } from "../../../helpers/weekProgress";
 
 interface WeekTasksViewProps {
@@ -29,6 +32,7 @@ export default function WeekTasksView({
 }: WeekTasksViewProps) {
   const [tasks, setTasks] = useState<WeeklyTask[]>([]);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -81,15 +85,27 @@ export default function WeekTasksView({
   const remaining = Math.max(0, progress.total - progress.completed);
 
   return (
+    <>
     <div
       className="w-full flex flex-col lg:flex-row lg:items-stretch gap-6"
       onMouseDown={(e) => e.stopPropagation()}
     >
-      <div className="w-full lg:flex-1 flex flex-col bg-[#121212] p-4 rounded-lg min-h-0">
+      <div className="w-full lg:flex-1 flex flex-col min-h-0">
+        <div className="flex gap-x-4 items-center mb-2">
+          <h2 className="text-[18px]">Your weekly tasks:</h2>
+          <SecondaryButton onClick={() => setCreating(true)}>
+            <Plus size={16} />
+            Create new task
+          </SecondaryButton>
+        </div>
+        <div className="w-full flex-1 flex flex-col bg-[#121212] p-4 rounded-lg min-h-0">
         {tasks.length === 0 ? (
-          <p className="text-center text-[#ccc] text-[16px] py-8">
-            No weekly tasks for this week.
-          </p>
+          <div className="flex-1 flex flex-col items-center justify-center py-8">
+            <p className="mb-4 text-[#ccc] text-[16px]">
+              No weekly tasks for this week.
+            </p>
+            <Button onClick={() => setCreating(true)}>Create the first!</Button>
+          </div>
         ) : (
           <div className="w-full flex flex-col md:flex-row md:gap-6 gap-4">
             {GROUPS.map((group) => (
@@ -111,7 +127,7 @@ export default function WeekTasksView({
             ))}
           </div>
         )}
-        <WeekTaskCreateForm onCreate={onCreate} />
+        </div>
       </div>
 
       <div className="w-full lg:w-[280px] shrink-0 flex flex-col items-center justify-center gap-4 bg-[#121212] rounded-lg p-6">
@@ -135,5 +151,17 @@ export default function WeekTasksView({
         </div>
       </div>
     </div>
+    {creating && (
+      <div
+        className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
+        onClick={() => setCreating(false)}
+      >
+        <WeekTaskCreateForm
+          onClose={() => setCreating(false)}
+          onCreate={onCreate}
+        />
+      </div>
+    )}
+    </>
   );
 }
