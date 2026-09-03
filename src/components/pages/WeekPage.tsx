@@ -2,12 +2,19 @@ import { useState, useEffect, useRef } from "react";
 import type InterfaceWeek from "../../interfaces/Week";
 import Week from "../features/week/Week";
 import WeeksSwitch from "../features/week/WeeksSwitch";
+import ViewToggle from "../features/week/ViewToggle";
+import WeekTasksView from "../features/week/WeekTasksView";
+import CircularProgressbar from "../ui/CircularProgressbar";
 import { Settings, UserCircle } from "lucide-react";
 import apiClient from "../../helpers/apiClient";
 import { getWeekNumber } from "../../helpers/getWeekNumber";
 import SettingsPopup from "../modals/Settings";
 import type User from "../../interfaces/User";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import {
+  progressPercent,
+  type WeekProgress,
+} from "../../helpers/weekProgress";
 const SWIPE_THRESHOLD = 50;
 
 interface WeekPageProps {
@@ -26,6 +33,31 @@ export default function WeekPage({ user }: WeekPageProps) {
   const navigate = useNavigate();
   const dragStartX = useRef<number | null>(null);
   const isDragging = useRef(false);
+  const [progress, setProgress] = useState<WeekProgress>({
+    completed: 0,
+    total: 0,
+  });
+
+  const view: "days" | "week" =
+    searchParams.get("view") === "week" ? "week" : "days";
+
+  function syncParams(year: number, weekNumber: number, nextView = view) {
+    setSearchParams(
+      {
+        year: String(year),
+        week: String(weekNumber),
+        view: nextView,
+      },
+      { replace: true }
+    );
+  }
+
+  function loadProgress(year: number, weekNumber: number) {
+    apiClient
+      .get(`/weeks/${year}/${weekNumber}/progress`)
+      .then(({ data }) => setProgress(data))
+      .catch(() => setProgress({ completed: 0, total: 0 }));
+  }
 
   useEffect(() => {
     const year = searchParams.get("year");
@@ -34,17 +66,14 @@ export default function WeekPage({ user }: WeekPageProps) {
   }, []);
 
   function fetchWeek(path: string) {
-  apiClient.get(`/weeks/${path}`)
-    .then(({ data }) => {
+    apiClient.get(`/weeks/${path}`).then(({ data }) => {
       setWeek(data);
       setCurrentYear(data.year);
       setCurrentWeekNumber(data.weekNumber);
-      setSearchParams(
-        { year: String(data.year), week: String(data.weekNumber) },
-        { replace: true }
-      );
+      syncParams(data.year, data.weekNumber);
+      loadProgress(data.year, data.weekNumber);
     });
-}
+  }
 
   function handlePrev() {
     let y = currentYear!;
@@ -69,7 +98,7 @@ export default function WeekPage({ user }: WeekPageProps) {
   }
 
   function onDragStart(x: number) {
-    if (settingsOpened) return;
+    if (settingsOpened || view === "week") return;
     dragStartX.current = x;
     isDragging.current = true;
   }
@@ -89,7 +118,7 @@ export default function WeekPage({ user }: WeekPageProps) {
 
   return (
     <div
-      className="w-full md:h-screen min-h-0 flex flex-col items-center p-[20px] lg:p-[40px]"
+      className="relative w-full min-h-dvh flex flex-col items-center p-[20px] lg:p-[40px]"
       onMouseDown={(e) => onDragStart(e.clientX)}
       onMouseUp={(e) => onDragEnd(e.clientX)}
       onMouseLeave={() => {
@@ -99,8 +128,8 @@ export default function WeekPage({ user }: WeekPageProps) {
       onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
       onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX)}
     >
-      <div className="w-full flex items-center justify-between mb-6 lg:mb-12">
-        <div className="flex gap-x-2 items-center">
+      <div className="w-full grid grid-cols-3 items-center mb-6 lg:mb-12">
+        <div className="flex gap-x-2 items-center justify-self-start">
           <img
             src="/heptagonLogo.svg"
             alt="Heptagon Logo"
@@ -108,18 +137,57 @@ export default function WeekPage({ user }: WeekPageProps) {
           />
           <h2 className="text-[20px] font-medium">Heptagon</h2>
         </div>
-        <div className="flex gap-x-4 items-center">
-          <UserCircle
-            className="cursor-pointer"
-            onClick={() => {
-              const qs = searchParams.toString();
-              navigate(qs ? `/profile?${qs}` : "/profile");
+        <div className="justify-self-center">
+          <ViewToggle
+            view={view}
+            onChange={(next) => {
+              if (currentYear != null && currentWeekNumber != null) {
+                syncParams(currentYear, currentWeekNumber, next);
+              } else {
+                setSearchParams(
+                  (prev) => {
+                    const nextParams = new URLSearchParams(prev);
+                    nextParams.set("view", next);
+                    return nextParams;
+                  },
+                  { replace: true }
+                );
+              }
             }}
           />
-          <Settings
-            className="cursor-pointer"
-            onClick={() => setSettingsOpened(true)}
-          />
+        </div>
+        <div className="flex items-center justify-self-end">
+          {view === "days" && (
+            <button
+              type="button"
+              className="mr-6 lg:mr-8 cursor-pointer shrink-0"
+              onClick={() => {
+                if (currentYear != null && currentWeekNumber != null) {
+                  syncParams(currentYear, currentWeekNumber, "week");
+                }
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              aria-label="Open week view"
+            >
+              <CircularProgressbar
+                percentage={progressPercent(progress)}
+                size="header"
+              />
+            </button>
+          )}
+          <div className="flex gap-x-4 items-center">
+            <UserCircle
+              className="cursor-pointer"
+              onClick={() => {
+                const qs = searchParams.toString();
+                navigate(qs ? `/profile?${qs}` : "/profile");
+              }}
+            />
+            <Settings
+              className="cursor-pointer"
+              onClick={() => setSettingsOpened(true)}
+            />
+          </div>
         </div>
       </div>
 
@@ -144,38 +212,44 @@ export default function WeekPage({ user }: WeekPageProps) {
         </div>
       )}
 
-      <div className="w-full flex-1 flex flex-col justify-center items-center">
-        <Week week={week} animationDirection={animationDirection} />
+      <div className="w-full flex-1 flex flex-col justify-center items-center min-h-0">
+        {view === "week" && currentYear != null && currentWeekNumber != null ? (
+          <WeekTasksView
+            year={currentYear}
+            week={currentWeekNumber}
+            progress={progress}
+            onProgressChange={() =>
+              loadProgress(currentYear, currentWeekNumber)
+            }
+          />
+        ) : (
+          <Week week={week} animationDirection={animationDirection} />
+        )}
         {week && (
-          <div className="w-full flex flex-col items-center">
-            <WeeksSwitch
-              weekNumber={week.weekNumber}
-              year={week.year}
-              startDate={week.startDate}
-              endDate={week.endDate}
-              onPrev={handlePrev}
-              onNext={handleNext}
-            />
-            {currentWeekNumber !== getWeekNumber(new Date()).weekNumber &&
-              currentYear == getWeekNumber(new Date()).year && (
-                <p
-                  className="text-[#888] text-[10px] cursor-pointer uppercase mt-2 lg:mt-2 hover:text-white transition-colors duration-200"
-                  onClick={() => {
+          <WeeksSwitch
+            weekNumber={week.weekNumber}
+            year={week.year}
+            startDate={week.startDate}
+            endDate={week.endDate}
+            onPrev={handlePrev}
+            onNext={handleNext}
+            onBackToCurrent={
+              currentWeekNumber !== getWeekNumber(new Date()).weekNumber &&
+              currentYear == getWeekNumber(new Date()).year
+                ? () => {
                     fetchWeek("current");
                     setAnimationDirection(0);
-                  }}
-                >
-                  Back to this week
-                </p>
-              )}
-          </div>
+                  }
+                : undefined
+            }
+          />
         )}
       </div>
 
-          <a
+      <a
         href="/privacy"
         target="_blank"
-        className="mt-6 lg:mt-4 text-xs text-gray-500 hover:text-gray-400"
+        className="mt-6 shrink-0 text-xs text-gray-500 hover:text-gray-400"
       >
         Privacy Policy
       </a>

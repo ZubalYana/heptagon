@@ -31,6 +31,9 @@ export function formErrorMessage(err: unknown){
       : message.includes("Cloudinary is not configured") ? 503
       : message.includes("incorrect") ? 401
       : message.includes("Please wait") ? 429
+      : message.includes("Invalid delta") ? 400
+      : message.includes("Invalid priority") ? 400
+      : message.includes("Invalid year") ? 400
       : 500;
     return { status, message }
 }
