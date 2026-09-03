@@ -25,7 +25,7 @@ export default function DayFullPage() {
   if (!day) return <div className="w-full h-full flex items-center justify-center absolute top-0 left-0"><Loader size="lg" label="Loading day..."/></div>;
 
   return (
-    <div className="w-full flex flex-col p-5 lg:p-10">
+    <div className="w-full min-h-dvh flex flex-col p-5 lg:p-10 2xl:px-14 2xl:py-12">
       <p
         className="flex items-center gap-x-1 text-[12px] text-[#888] cursor-pointer"
         onClick={() => navigate(`/app${location.search}`)}
@@ -33,11 +33,11 @@ export default function DayFullPage() {
         <ArrowLeft className="w-3.75 h-3.75" />
         Back
       </p>
-      <p className="lg:text-[32px] text-[24px] font-bold">{day.dayOfWeek}</p>
+      <p className="lg:text-[32px] 2xl:text-[36px] text-[24px] font-bold">{day.dayOfWeek}</p>
       <p className="lg:text-[16px] text-[14px] text-[#ccc] font-light lg:-mt-0.75">
         {formatDate(day.date, "long", "includingYear")}
       </p>
-     <div className="w-full flex-1 flex flex-col md:flex-row gap-x-6 mt-4">
+     <div className="w-full flex-1 flex flex-col md:flex-row gap-x-6 2xl:gap-x-10 mt-4 2xl:mt-6">
         <div className="flex-1 flex flex-col">
           <DayTasksController
             day={day}

@@ -26,7 +26,7 @@ export default function EventsViewWindow({ day }: EventsViewWindowProps) {
   if (events.length == 0) return <></>;
 
   return (
-    <div className="w-full mt-8 md:mt-0 md:w-[25%] flex-shrink-0">
+    <div className="w-full mt-8 md:mt-0 md:w-[25%] 2xl:w-[22%] 2xl:max-w-[380px] flex-shrink-0">
       <h2 className="text-[18px] lg:h-[38px]">Your events:</h2>
       <div className="w-full min-h-[20%] flex flex-col gap-2 bg-[#121212] mt-2 p-4 rounded-lg">
         {events.length === 0 ? (

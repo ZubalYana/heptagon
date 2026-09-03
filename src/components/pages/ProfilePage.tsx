@@ -16,7 +16,7 @@ export default function ProfilePage({ user, setUser }: ProfilePageProps) {
   return (
     <div className="relative w-full min-h-dvh flex flex-col overflow-hidden">
       <AuthBackground />
-      <div className="relative z-10 w-full flex flex-col p-[20px] lg:p-[40px]">
+      <div className="relative z-10 w-full flex flex-col p-[20px] lg:p-[40px] 2xl:px-14 2xl:py-12">
         <p
           className="flex items-center gap-x-1 text-[12px] text-[#888] hover:text-white transition-colors duration-200 cursor-pointer w-fit"
           onClick={() => navigate(`/app${location.search}`)}

@@ -170,7 +170,7 @@ export default function DayTasksController({
         </SecondaryButton>
       </div>
 
-      <div className="w-full flex flex-col flex-1 bg-[#121212] mt-2 p-4 rounded-lg">
+      <div className="w-full flex flex-col flex-1 bg-[#121212] mt-2 p-4 2xl:p-6 rounded-lg">
         {localTasks.length == 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center">
             <p className="mb-4 text-[#ccc] text-[16px]">

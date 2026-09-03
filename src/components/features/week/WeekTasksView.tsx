@@ -87,7 +87,7 @@ export default function WeekTasksView({
   return (
     <>
     <div
-      className="w-full flex flex-col lg:flex-row lg:items-stretch gap-6"
+      className="w-full h-full min-h-0 flex flex-col lg:flex-row lg:items-stretch gap-6"
       onMouseDown={(e) => e.stopPropagation()}
     >
       <div className="w-full lg:flex-1 flex flex-col min-h-0">
@@ -98,9 +98,9 @@ export default function WeekTasksView({
             Create new task
           </SecondaryButton>
         </div>
-        <div className="w-full flex-1 flex flex-col bg-[#121212] p-4 rounded-lg min-h-0">
+        <div className="w-full flex-1 flex flex-col bg-[#121212] p-4 rounded-lg min-h-0 overflow-y-auto">
         {tasks.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center py-8">
+          <div className="flex-1 flex flex-col items-center justify-center py-6">
             <p className="mb-4 text-[#ccc] text-[16px]">
               No weekly tasks for this week.
             </p>
@@ -130,7 +130,7 @@ export default function WeekTasksView({
         </div>
       </div>
 
-      <div className="w-full lg:w-[280px] shrink-0 flex flex-col items-center justify-center gap-4 bg-[#121212] rounded-lg p-6">
+      <div className="w-full lg:w-[280px] 2xl:w-[300px] shrink-0 flex flex-col items-center justify-center gap-4 bg-[#121212] rounded-lg p-6">
         <CircularProgressbar
           percentage={progressPercent(progress)}
           size="lg"

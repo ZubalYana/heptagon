@@ -39,29 +39,32 @@ export default function WeekDay({
 
   const location = useLocation();
   return (
-    <Link to={`/day/${day._id}${location.search}`}>
-      <div
-        className="
-          w-[160px] cursor-pointer
-          flex flex-col items-center
-          mb-10 md:mb-0
-          xs:w-[180px]
-          2xs:w-[140px]
-          sm:w-[170px]
-          lg:w-[140px]
-          "
-      >
+    <Link
+      to={`/day/${day._id}${location.search}`}
+      className="
+        block mb-10 md:mb-0
+        w-[160px]
+        xs:w-[180px]
+        2xs:w-[140px]
+        sm:w-[170px]
+        lg:w-[140px]
+        xl:w-[158px]
+        2xl:w-auto 2xl:flex-1 2xl:max-w-[220px]
+      "
+    >
+      <div className="w-full cursor-pointer flex flex-col items-center">
         <CircularProgressbar percentage={percentage} />
         <div
           className={`
-                lg:h-[110px] mt-4
-                w-full h-auto
+                mt-4 w-full h-auto lg:h-[110px]
+                2xl:h-auto 2xl:min-h-[124px]
                 bg-[#1B1B1B] rounded-md
-                p-4 flex flex-col items-center justify-center gap-y-[2px]
+                p-4 flex flex-col items-center justify-center
+                gap-y-[2px]
                 ${isToday ? "shadow-[0_0_12px_3px_rgba(0,255,38,0.3)]" : ""}
                 `}
         >
-          <p className="text-[12px] flex items-center gap-x-1">
+          <p className="text-[12px] 2xl:text-[13px] flex items-center gap-x-1">
             <span
               className={`${cruicalDone ? "text-gray-500" : "text-red-400"}`}
             >
@@ -78,7 +81,7 @@ export default function WeekDay({
             )}
           </p>
 
-          <p className="text-[12px] flex items-center gap-x-1">
+          <p className="text-[12px] 2xl:text-[13px] flex items-center gap-x-1">
             <span
               className={`${
                 importantDone ? "text-gray-500" : "text-orange-400"
@@ -97,7 +100,7 @@ export default function WeekDay({
             )}
           </p>
 
-          <p className="text-[12px] flex items-center gap-x-1">
+          <p className="text-[12px] 2xl:text-[13px] flex items-center gap-x-1">
             <span
               className={`${optionalDone ? "text-gray-500" : "text-blue-400"}`}
             >
@@ -115,14 +118,14 @@ export default function WeekDay({
           </p>
 
           <p
-            className={`text-[12px] ${
+            className={`text-[12px] 2xl:text-[13px] ${
               completedTasks === allTasks ? "text-gray-500" : ""
             }`}
           >
             Overall: {completedTasks}/{allTasks}
           </p>
         </div>
-        <h4 className="first-letter:uppercase mt-2 md:mt-3">
+        <h4 className="first-letter:uppercase mt-2 md:mt-3 2xl:text-[16px]">
           {day.dayOfWeek}
         </h4>
         <p className="text-[12px] font-light text-[#ccc] -mt-[4px]">

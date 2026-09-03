@@ -118,7 +118,7 @@ export default function WeekPage({ user }: WeekPageProps) {
 
   return (
     <div
-      className="relative w-full min-h-dvh flex flex-col items-center p-[20px] lg:p-[40px]"
+      className="relative w-full min-h-dvh 2xl:h-dvh 2xl:overflow-hidden flex flex-col items-center p-[20px] lg:p-[40px] 2xl:px-14 2xl:pt-12 2xl:pb-6"
       onMouseDown={(e) => onDragStart(e.clientX)}
       onMouseUp={(e) => onDragEnd(e.clientX)}
       onMouseLeave={() => {
@@ -128,14 +128,14 @@ export default function WeekPage({ user }: WeekPageProps) {
       onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
       onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX)}
     >
-      <div className="w-full grid grid-cols-3 items-center mb-6 lg:mb-12">
+      <div className="w-full grid grid-cols-3 items-center mb-6 lg:mb-12 2xl:mb-8">
         <div className="flex gap-x-2 items-center justify-self-start">
           <img
             src="/heptagonLogo.svg"
             alt="Heptagon Logo"
-            className="w-[35px] h-[35px]"
+            className="w-[35px] h-[35px] 2xl:w-10 2xl:h-10"
           />
-          <h2 className="text-[20px] font-medium">Heptagon</h2>
+          <h2 className="text-[20px] 2xl:text-[22px] font-medium">Heptagon</h2>
         </div>
         <div className="justify-self-center">
           <ViewToggle
@@ -177,14 +177,14 @@ export default function WeekPage({ user }: WeekPageProps) {
           )}
           <div className="flex gap-x-4 items-center">
             <UserCircle
-              className="cursor-pointer"
+              className="cursor-pointer 2xl:size-7"
               onClick={() => {
                 const qs = searchParams.toString();
                 navigate(qs ? `/profile?${qs}` : "/profile");
               }}
             />
             <Settings
-              className="cursor-pointer"
+              className="cursor-pointer 2xl:size-7"
               onClick={() => setSettingsOpened(true)}
             />
           </div>
@@ -212,19 +212,21 @@ export default function WeekPage({ user }: WeekPageProps) {
         </div>
       )}
 
-      <div className="w-full flex-1 flex flex-col justify-center items-center min-h-0">
-        {view === "week" && currentYear != null && currentWeekNumber != null ? (
-          <WeekTasksView
-            year={currentYear}
-            week={currentWeekNumber}
-            progress={progress}
-            onProgressChange={() =>
-              loadProgress(currentYear, currentWeekNumber)
-            }
-          />
-        ) : (
-          <Week week={week} animationDirection={animationDirection} />
-        )}
+      <div className="w-full flex-1 flex flex-col justify-center items-center min-h-0 2xl:justify-start">
+        <div className="w-full flex-1 flex flex-col justify-center min-h-0">
+          {view === "week" && currentYear != null && currentWeekNumber != null ? (
+            <WeekTasksView
+              year={currentYear}
+              week={currentWeekNumber}
+              progress={progress}
+              onProgressChange={() =>
+                loadProgress(currentYear, currentWeekNumber)
+              }
+            />
+          ) : (
+            <Week week={week} animationDirection={animationDirection} />
+          )}
+        </div>
         {week && (
           <WeeksSwitch
             weekNumber={week.weekNumber}
@@ -249,7 +251,7 @@ export default function WeekPage({ user }: WeekPageProps) {
       <a
         href="/privacy"
         target="_blank"
-        className="mt-6 shrink-0 text-xs text-gray-500 hover:text-gray-400"
+        className="mt-6 2xl:mt-4 shrink-0 text-xs text-gray-500 hover:text-gray-400"
       >
         Privacy Policy
       </a>

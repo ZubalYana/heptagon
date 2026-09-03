@@ -6,7 +6,7 @@ interface ViewToggleProps {
 export default function ViewToggle({ view, onChange }: ViewToggleProps) {
   return (
     <div
-      className="relative grid grid-cols-2 w-[168px] h-8 rounded-full bg-[#1B1B1B] border border-[#2a2a2a] p-[3px]"
+      className="relative grid grid-cols-2 w-[168px] 2xl:w-[196px] h-8 2xl:h-9 rounded-full bg-[#1B1B1B] border border-[#2a2a2a] p-[3px]"
       role="tablist"
       aria-label="View"
     >
@@ -19,7 +19,7 @@ export default function ViewToggle({ view, onChange }: ViewToggleProps) {
         type="button"
         role="tab"
         aria-selected={view === "days"}
-        className={`relative z-10 text-[12px] font-medium rounded-full cursor-pointer transition-colors duration-200 ${
+        className={`relative z-10 text-[12px] 2xl:text-[13px] font-medium rounded-full cursor-pointer transition-colors duration-200 ${
           view === "days" ? "text-[#151515]" : "text-[#888] hover:text-white"
         }`}
         onClick={() => onChange("days")}
@@ -30,7 +30,7 @@ export default function ViewToggle({ view, onChange }: ViewToggleProps) {
         type="button"
         role="tab"
         aria-selected={view === "week"}
-        className={`relative z-10 text-[12px] font-medium rounded-full cursor-pointer transition-colors duration-200 ${
+        className={`relative z-10 text-[12px] 2xl:text-[13px] font-medium rounded-full cursor-pointer transition-colors duration-200 ${
           view === "week" ? "text-[#151515]" : "text-[#888] hover:text-white"
         }`}
         onClick={() => onChange("week")}

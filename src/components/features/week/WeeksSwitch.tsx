@@ -18,17 +18,17 @@ export default function WeeksSwitch({
   onBackToCurrent,
 }: WeeksProps) {
   return (
-    <div className="mt-8 lg:mt-10 flex flex-col items-center select-none shrink-0">
-      <div className="flex items-center gap-x-2">
+    <div className="mt-8 lg:mt-10 2xl:mt-4 flex flex-col items-center select-none shrink-0">
+      <div className="flex items-center gap-x-2 2xl:gap-x-3">
         <button
           type="button"
           onClick={onPrev}
-          className="w-8 h-8 rounded-full flex items-center justify-center text-[#888] hover:text-white hover:bg-white/5 cursor-pointer transition-colors duration-200"
+          className="w-8 h-8 2xl:w-10 2xl:h-10 rounded-full flex items-center justify-center text-[#888] hover:text-white hover:bg-white/5 cursor-pointer transition-colors duration-200"
           aria-label="Previous week"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={20} className="2xl:size-6" />
         </button>
-        <h4 className="text-[16px] lg:text-[18px] font-medium text-white min-w-[11rem] text-center">
+        <h4 className="text-[16px] lg:text-[18px] 2xl:text-[20px] font-medium text-white min-w-[11rem] 2xl:min-w-[13rem] text-center">
           Week {weekNumber} of {year}
         </h4>
         {/* <p className="text-[14px] font-normal">
@@ -37,10 +37,10 @@ export default function WeeksSwitch({
         <button
           type="button"
           onClick={onNext}
-          className="w-8 h-8 rounded-full flex items-center justify-center text-[#888] hover:text-white hover:bg-white/5 cursor-pointer transition-colors duration-200"
+          className="w-8 h-8 2xl:w-10 2xl:h-10 rounded-full flex items-center justify-center text-[#888] hover:text-white hover:bg-white/5 cursor-pointer transition-colors duration-200"
           aria-label="Next week"
         >
-          <ChevronRight size={20} />
+          <ChevronRight size={20} className="2xl:size-6" />
         </button>
       </div>
       {onBackToCurrent && (
