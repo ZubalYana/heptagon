@@ -1,22 +1,22 @@
 export default function LandingUpdates() {
-  const upcomingUpdates = [
+    const upcomingUpdates = [
     {
       status: "In progress",
-      title: "Week progress bar",
+      title: "Extended stats & reports",
       description:
-        "Day progress bars are great, but I noticed a pattern: a single bad day tends to make people lose motivation for the rest of the week. That's why I'm building weekly scores next — they'll also let you compare how different weeks went against each other.",
+        "Week statistics will show what your most (and least) productive days were, and which tasks you completed the best versus which ones need more work. In your profile: daily, weekly, monthly, and possibly even yearly reports and detailed statistics.",
     },
     {
       status: "Next up",
-      title: "Recurring tasks",
+      title: "Custom widget",
       description:
-        'Let\'s be honest: most of our days look pretty similar. Manually adding tasks like "wash the dishes" or "walk the dog" every single day is tedious and unnecessary. The next update focuses on fixing exactly that, with recurring tasks done right.',
+        'For now on desktop, mobile down the line: see your tasks and events without even opening Heptagon, just by glancing at your screen. Completing and adding tasks right from the widget is planned too. We hope to add some variety of them.',
     },
     {
       status: "Long-term",
       title: "A note of competition",
       description:
-        "I love competing, especially with friends. The idea is to expand profiles with leaderboards and a way to share your productivity stats with people you know. It's a long-term feature though, so it'll take a bit longer to land — stay tuned.",
+        "We love competing, especially with friends. The idea is to expand profiles with leaderboards and a way to share your productivity stats with people you know. It's a long-term feature though, so it'll take a bit longer to land - stay tuned.",
     },
   ];
 
