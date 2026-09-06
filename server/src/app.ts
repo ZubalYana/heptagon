@@ -25,8 +25,25 @@ assertPublicRequestConfig();
 
 const app = express();
 app.set("trust proxy", 1);
+
+const corsOptions: cors.CorsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(null, false);
+  },
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 app.use(
   helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: false,
     hsts:
       process.env.NODE_ENV === "production"
         ? { maxAge: 15552000, includeSubDomains: true }
@@ -34,17 +51,6 @@ app.use(
   })
 );
 app.use(express.json({ limit: "32kb" }));
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (isAllowedOrigin(origin)) {
-        callback(null, true);
-        return;
-      }
-      callback(null, false);
-    },
-  })
-);
 app.use(enforcePublicRequest);
 
 app.use("/auth", userRouter);
