@@ -37,6 +37,7 @@ const corsOptions: cors.CorsOptions = {
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   optionsSuccessStatus: 204,
+  maxAge: 0,
 };
 
 app.use(cors(corsOptions));

@@ -123,6 +123,10 @@ async function refreshAccessToken(): Promise<string> {
 
 apiClient.interceptors.request.use((config) => {
   const url = config.url;
+  if (isSkipRefresh(url)) {
+    delete config.headers.Authorization;
+    return config;
+  }
   if (isAdminApiRequest(url)) {
     const adminToken = localStorage.getItem("adminToken");
     if (adminToken) {
