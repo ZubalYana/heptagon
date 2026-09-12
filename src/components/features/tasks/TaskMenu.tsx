@@ -55,15 +55,18 @@ export default function TaskMenu({ onAddSubtask, onEdit, onDelete }: TaskMenuPro
         `}
         role="menu"
       >
-        <MenuItem
-          icon={<Plus size={14} />}
-          label="Add subtask"
-          onClick={() => { onAddSubtask?.(); setOpen(false); }}
-          delay="delay-[40ms]"
-          visible={open}
-        />
-
-        <div className="h-px bg-[#282828] my-1" />
+        {onAddSubtask && (
+          <>
+            <MenuItem
+              icon={<Plus size={14} />}
+              label="Add subtask"
+              onClick={() => { onAddSubtask(); setOpen(false); }}
+              delay="delay-[40ms]"
+              visible={open}
+            />
+            <div className="h-px bg-[#282828] my-1" />
+          </>
+        )}
 
         <MenuItem
           icon={<Pencil size={14} />}
