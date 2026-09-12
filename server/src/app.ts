@@ -13,6 +13,7 @@ import feedbackRouter from './features/feedback/feedbackRoutes';
 import adminRouter from './features/admin/adminRoutes';
 import userRouter from './features/users/userRoutes';
 import calendarRouter from "./features/calendar/calendarRoutes";
+import goalRouter from "./features/goals/goalRoutes";
 
 import cors from "cors";
 import helmet from "helmet";
@@ -59,6 +60,7 @@ app.use("/weeks", weeksRouter);
 app.use("/days", daysRouter);
 app.use("/tasks", taskRouter);
 app.use("/calendar", calendarRouter);
+app.use("/goals", goalRouter);
 app.use("/admin", adminRouter)
 app.use("/feedback", feedbackRouter)
 

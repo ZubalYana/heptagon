@@ -32,6 +32,9 @@ export function formErrorMessage(err: unknown){
       : message.includes("incorrect") ? 401
       : message.includes("Please wait") ? 429
       : message.includes("Invalid delta") ? 400
+      : message.includes("Invalid deadline") ? 400
+      : message.includes("Invalid unit") ? 400
+      : message.includes("Invalid currentValue") ? 400
       : message.includes("Invalid priority") ? 400
       : message.includes("Invalid year") ? 400
       : 500;

@@ -21,6 +21,7 @@ import { daysRepository } from "../days/daysRepository";
 import { weeksRepository } from "../weeks/weeksRepository";
 import { feedbackRepository } from "../feedback/feedbackRepository";
 import { weekTaskRepository } from "../weekTask/weekTaskRepository";
+import { goalRepository } from "../goals/goalRepository";
 
 const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_CHANGE_TTL_MS = 60 * 60 * 1000;
@@ -223,6 +224,7 @@ export const userService = {
       daysRepository.deleteAllForUser(userId),
       weeksRepository.deleteAllForUser(userId),
       weekTaskRepository.deleteAllForUser(userId),
+      goalRepository.deleteAllForUser(userId),
       feedbackRepository.deleteAllForUser(userId, user.email as string),
     ]);
     return await userRepository.deleteUser(userId);

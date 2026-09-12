@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import type InterfaceWeek from "../../interfaces/Week";
 import Week from "../features/week/Week";
 import WeeksSwitch from "../features/week/WeeksSwitch";
-import ViewToggle from "../features/week/ViewToggle";
+import ViewToggle, { type AppView } from "../features/week/ViewToggle";
 import WeekTasksView from "../features/week/WeekTasksView";
+import GoalsView from "../features/goals/GoalsView";
 import CircularProgressbar from "../ui/CircularProgressbar";
 import { Settings, UserCircle } from "lucide-react";
 import apiClient from "../../helpers/apiClient";
@@ -38,8 +39,9 @@ export default function WeekPage({ user }: WeekPageProps) {
     total: 0,
   });
 
-  const view: "days" | "week" =
-    searchParams.get("view") === "week" ? "week" : "days";
+  const rawView = searchParams.get("view");
+  const view: AppView =
+    rawView === "week" || rawView === "goals" ? rawView : "days";
 
   function syncParams(year: number, weekNumber: number, nextView = view) {
     setSearchParams(
@@ -98,7 +100,7 @@ export default function WeekPage({ user }: WeekPageProps) {
   }
 
   function onDragStart(x: number) {
-    if (settingsOpened || view === "week") return;
+    if (settingsOpened || view !== "days") return;
     dragStartX.current = x;
     isDragging.current = true;
   }
@@ -214,7 +216,11 @@ export default function WeekPage({ user }: WeekPageProps) {
 
       <div className="w-full flex-1 flex flex-col justify-center items-center min-h-0 2xl:justify-start">
         <div className="w-full flex-1 flex flex-col justify-center min-h-0">
-          {view === "week" && currentYear != null && currentWeekNumber != null ? (
+          {view === "goals" ? (
+            <GoalsView />
+          ) : view === "week" &&
+            currentYear != null &&
+            currentWeekNumber != null ? (
             <WeekTasksView
               year={currentYear}
               week={currentWeekNumber}
@@ -227,7 +233,7 @@ export default function WeekPage({ user }: WeekPageProps) {
             <Week week={week} animationDirection={animationDirection} />
           )}
         </div>
-        {week && (
+        {week && view !== "goals" && (
           <WeeksSwitch
             weekNumber={week.weekNumber}
             year={week.year}
