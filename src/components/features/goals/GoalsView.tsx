@@ -65,7 +65,7 @@ export default function GoalsView() {
   return (
     <>
       <div
-        className="w-full h-full min-h-0 flex flex-col"
+        className="w-full flex flex-col"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="flex gap-x-4 items-center mb-2">
@@ -75,7 +75,7 @@ export default function GoalsView() {
             Create new goal
           </SecondaryButton>
         </div>
-        <div className="w-full flex-1 flex flex-col bg-[#121212] p-4 rounded-lg min-h-0 overflow-y-auto">
+        <div className="w-full flex flex-col bg-[#121212] p-4 rounded-lg">
           {goals.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center py-6">
               <p className="mb-4 text-[#ccc] text-[16px]">No goals yet.</p>
