@@ -5,6 +5,7 @@ import WeeksSwitch from "../features/week/WeeksSwitch";
 import ViewToggle, { type AppView } from "../features/week/ViewToggle";
 import WeekTasksView from "../features/week/WeekTasksView";
 import GoalsView from "../features/goals/GoalsView";
+import PendingWeekTasksPatch from "../features/week/PendingWeekTasksPatch";
 import CircularProgressbar from "../ui/CircularProgressbar";
 import { Settings, UserCircle } from "lucide-react";
 import apiClient from "../../helpers/apiClient";
@@ -261,6 +262,15 @@ export default function WeekPage({ user }: WeekPageProps) {
       >
         Privacy Policy
       </a>
+      {view === "days" && currentYear != null && currentWeekNumber != null && (
+        <PendingWeekTasksPatch
+          year={currentYear}
+          week={currentWeekNumber}
+          onOpenWeek={() =>
+            syncParams(currentYear, currentWeekNumber, "week")
+          }
+        />
+      )}
       {settingsOpened && (
         <div
           className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
