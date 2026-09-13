@@ -96,6 +96,98 @@ router.patch(
   }
 );
 
+router.post(
+  "/:year/:week/tasks/:id/subtasks",
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id as string;
+      const { year, week } = parseYearWeek(req);
+      const id = req.params.id as string;
+      const task = await weekTaskService.addSubtask(
+        userId,
+        id,
+        year,
+        week,
+        req.body.text
+      );
+      res.status(200).json(task);
+    } catch (err) {
+      const errorResult = formErrorMessage(err);
+      res.status(errorResult.status).json({ error: errorResult.message });
+    }
+  }
+);
+
+router.patch(
+  "/:year/:week/tasks/:id/subtasks/:subtaskId/toggle",
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id as string;
+      const { year, week } = parseYearWeek(req);
+      const id = req.params.id as string;
+      const subtaskId = req.params.subtaskId as string;
+      const task = await weekTaskService.toggleSubtask(
+        userId,
+        id,
+        subtaskId,
+        year,
+        week
+      );
+      res.status(200).json(task);
+    } catch (err) {
+      const errorResult = formErrorMessage(err);
+      res.status(errorResult.status).json({ error: errorResult.message });
+    }
+  }
+);
+
+router.patch(
+  "/:year/:week/tasks/:id/subtasks/:subtaskId",
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id as string;
+      const { year, week } = parseYearWeek(req);
+      const id = req.params.id as string;
+      const subtaskId = req.params.subtaskId as string;
+      const task = await weekTaskService.editSubtask(
+        userId,
+        id,
+        subtaskId,
+        year,
+        week,
+        req.body.text
+      );
+      res.status(200).json(task);
+    } catch (err) {
+      const errorResult = formErrorMessage(err);
+      res.status(errorResult.status).json({ error: errorResult.message });
+    }
+  }
+);
+
+router.delete(
+  "/:year/:week/tasks/:id/subtasks/:subtaskId",
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id as string;
+      const { year, week } = parseYearWeek(req);
+      const id = req.params.id as string;
+      const subtaskId = req.params.subtaskId as string;
+      const task = await weekTaskService.deleteSubtask(
+        userId,
+        id,
+        subtaskId,
+        year,
+        week
+      );
+      res.status(200).json(task);
+    } catch (err) {
+      const errorResult = formErrorMessage(err);
+      res.status(errorResult.status).json({ error: errorResult.message });
+    }
+  }
+);
+
 router.patch("/:year/:week/tasks/:id", async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id as string;

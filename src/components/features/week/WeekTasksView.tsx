@@ -33,6 +33,7 @@ export default function WeekTasksView({
   const [tasks, setTasks] = useState<WeeklyTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [editingTask, setEditingTask] = useState<WeeklyTask | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -44,6 +45,9 @@ export default function WeekTasksView({
 
   function replaceTask(updated: WeeklyTask) {
     setTasks((prev) => prev.map((t) => (t._id === updated._id ? updated : t)));
+    setEditingTask((prev) =>
+      prev && prev._id === updated._id ? updated : prev
+    );
     onProgressChange();
   }
 
@@ -72,6 +76,34 @@ export default function WeekTasksView({
     );
     setTasks((prev) => [...prev, data]);
     onProgressChange();
+  }
+
+  async function onEditSave(payload: {
+    title: string;
+    priority: WeeklyPriority;
+    targetCount: number;
+  }) {
+    if (!editingTask) return;
+    const { data } = await apiClient.patch(
+      `/weeks/${year}/${week}/tasks/${editingTask._id}`,
+      payload
+    );
+    replaceTask(data);
+  }
+
+  async function onAddSubtask(id: string, text: string) {
+    const { data } = await apiClient.post(
+      `/weeks/${year}/${week}/tasks/${id}/subtasks`,
+      { text }
+    );
+    replaceTask(data);
+  }
+
+  async function onToggleSubtask(id: string, subtaskId: string) {
+    const { data } = await apiClient.patch(
+      `/weeks/${year}/${week}/tasks/${id}/subtasks/${subtaskId}/toggle`
+    );
+    replaceTask(data);
   }
 
   if (loading) {
@@ -120,7 +152,12 @@ export default function WeekTasksView({
                       key={task._id}
                       task={task}
                       onDelta={(delta) => onDelta(task._id, delta)}
+                      onEdit={() => setEditingTask(task)}
                       onDelete={() => onDelete(task._id)}
+                      onAddSubtask={(text) => onAddSubtask(task._id, text)}
+                      onToggleSubtask={(subtaskId) =>
+                        onToggleSubtask(task._id, subtaskId)
+                      }
                     />
                   ))}
               </div>
@@ -157,8 +194,25 @@ export default function WeekTasksView({
         onClick={() => setCreating(false)}
       >
         <WeekTaskCreateForm
+          year={year}
+          week={week}
           onClose={() => setCreating(false)}
           onCreate={onCreate}
+        />
+      </div>
+    )}
+    {editingTask && (
+      <div
+        className="w-full h-full fixed inset-0 flex justify-center items-center backdrop-blur-lg z-[9999]"
+        onClick={() => setEditingTask(null)}
+      >
+        <WeekTaskCreateForm
+          year={year}
+          week={week}
+          task={editingTask}
+          onClose={() => setEditingTask(null)}
+          onSave={onEditSave}
+          onTaskChange={replaceTask}
         />
       </div>
     )}

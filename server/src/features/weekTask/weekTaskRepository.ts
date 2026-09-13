@@ -56,6 +56,53 @@ export const weekTaskRepository = {
     return task;
   },
 
+  async addSubtask(userId: string, id: string, text: string) {
+    const task = await WeeklyTask.findOne({ _id: id, userId });
+    if (!task) return null;
+    task.subtasks.push({ text, completed: false });
+    if (task.targetCount === 1 && task.completedCount >= 1) {
+      task.completedCount = 0;
+    }
+    await task.save();
+    return task;
+  },
+
+  async toggleSubtask(userId: string, id: string, subtaskId: string) {
+    const task = await WeeklyTask.findOne({ _id: id, userId });
+    if (!task) return null;
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) throw new Error("Subtask not found");
+    subtask.completed = !subtask.completed;
+    if (task.targetCount === 1 && task.subtasks.length > 0) {
+      task.completedCount = task.subtasks.every((s) => s.completed) ? 1 : 0;
+    }
+    await task.save();
+    return task;
+  },
+
+  async editSubtask(userId: string, id: string, subtaskId: string, text: string) {
+    const task = await WeeklyTask.findOne({ _id: id, userId });
+    if (!task) return null;
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) throw new Error("Subtask not found");
+    subtask.text = text;
+    await task.save();
+    return task;
+  },
+
+  async deleteSubtask(userId: string, id: string, subtaskId: string) {
+    const task = await WeeklyTask.findOne({ _id: id, userId });
+    if (!task) return null;
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) throw new Error("Subtask not found");
+    subtask.deleteOne();
+    if (task.targetCount === 1 && task.subtasks.length > 0) {
+      task.completedCount = task.subtasks.every((s) => s.completed) ? 1 : 0;
+    }
+    await task.save();
+    return task;
+  },
+
   async delete(userId: string, id: string) {
     return await WeeklyTask.findOneAndDelete({ _id: id, userId });
   },

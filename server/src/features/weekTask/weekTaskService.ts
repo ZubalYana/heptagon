@@ -122,4 +122,86 @@ export const weekTaskService = {
     await weekTaskRepository.delete(userId, id);
     return "Deleted successfully";
   },
+
+  async addSubtask(
+    userId: string,
+    id: string,
+    year: number,
+    week: number,
+    text: unknown
+  ) {
+    if (!userId || !id) throw new Error("Lacking credentials");
+    parseWeekParams(year, week);
+    const trimmed = typeof text === "string" ? text.trim() : "";
+    if (!trimmed) throw new Error("Subtask text is required");
+    await assertInWeek(userId, id, year, week);
+    const saved = await weekTaskRepository.addSubtask(userId, id, trimmed);
+    if (!saved) throw new Error("Weekly task not found");
+    return saved;
+  },
+
+  async toggleSubtask(
+    userId: string,
+    id: string,
+    subtaskId: string,
+    year: number,
+    week: number
+  ) {
+    if (!userId || !id || !subtaskId) throw new Error("Lacking credentials");
+    parseWeekParams(year, week);
+    await assertInWeek(userId, id, year, week);
+    const saved = await weekTaskRepository.toggleSubtask(userId, id, subtaskId);
+    if (!saved) throw new Error("Weekly task not found");
+    return saved;
+  },
+
+  async editSubtask(
+    userId: string,
+    id: string,
+    subtaskId: string,
+    year: number,
+    week: number,
+    text: unknown
+  ) {
+    if (!userId || !id || !subtaskId) throw new Error("Lacking credentials");
+    parseWeekParams(year, week);
+    const trimmed = typeof text === "string" ? text.trim() : "";
+    if (!trimmed) throw new Error("Subtask text is required");
+    await assertInWeek(userId, id, year, week);
+    const saved = await weekTaskRepository.editSubtask(
+      userId,
+      id,
+      subtaskId,
+      trimmed
+    );
+    if (!saved) throw new Error("Weekly task not found");
+    return saved;
+  },
+
+  async deleteSubtask(
+    userId: string,
+    id: string,
+    subtaskId: string,
+    year: number,
+    week: number
+  ) {
+    if (!userId || !id || !subtaskId) throw new Error("Lacking credentials");
+    parseWeekParams(year, week);
+    await assertInWeek(userId, id, year, week);
+    const saved = await weekTaskRepository.deleteSubtask(userId, id, subtaskId);
+    if (!saved) throw new Error("Weekly task not found");
+    return saved;
+  },
 };
+
+async function assertInWeek(
+  userId: string,
+  id: string,
+  year: number,
+  week: number
+) {
+  const existing = await weekTaskRepository.findById(userId, id);
+  if (!existing || existing.year !== year || existing.week !== week) {
+    throw new Error("Weekly task not found");
+  }
+}
