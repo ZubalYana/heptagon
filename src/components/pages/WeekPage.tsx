@@ -39,6 +39,8 @@ export default function WeekPage({ user }: WeekPageProps) {
     completed: 0,
     total: 0,
   });
+  const weekRequestId = useRef(0);
+  const progressRequestId = useRef(0);
 
   const rawView = searchParams.get("view");
   const view: AppView =
@@ -56,25 +58,47 @@ export default function WeekPage({ user }: WeekPageProps) {
   }
 
   function loadProgress(year: number, weekNumber: number) {
+    const requestId = ++progressRequestId.current;
     apiClient
       .get(`/weeks/${year}/${weekNumber}/progress`)
-      .then(({ data }) => setProgress(data))
-      .catch(() => setProgress({ completed: 0, total: 0 }));
+      .then(({ data }) => {
+        if (requestId !== progressRequestId.current) return;
+        setProgress(data);
+      })
+      .catch(() => {
+        if (requestId !== progressRequestId.current) return;
+        setProgress({ completed: 0, total: 0 });
+      });
   }
 
   useEffect(() => {
     const year = searchParams.get("year");
     const week = searchParams.get("week");
-    fetchWeek(year && week ? `${year}/${week}` : "current");
+    fetchWeek(
+      year && week ? `${year}/${week}` : "current",
+      year && week
+        ? { year: Number(year), week: Number(week) }
+        : undefined
+    );
   }, []);
 
-  function fetchWeek(path: string) {
+  function fetchWeek(
+    path: string,
+    progressFor?: { year: number; week: number }
+  ) {
+    const requestId = ++weekRequestId.current;
+    if (progressFor) {
+      loadProgress(progressFor.year, progressFor.week);
+    }
     apiClient.get(`/weeks/${path}`).then(({ data }) => {
+      if (requestId !== weekRequestId.current) return;
       setWeek(data);
       setCurrentYear(data.year);
       setCurrentWeekNumber(data.weekNumber);
       syncParams(data.year, data.weekNumber);
-      loadProgress(data.year, data.weekNumber);
+      if (!progressFor) {
+        loadProgress(data.year, data.weekNumber);
+      }
     });
   }
 
@@ -85,7 +109,7 @@ export default function WeekPage({ user }: WeekPageProps) {
       w = 52;
       y--;
     }
-    fetchWeek(`${y}/${w}`);
+    fetchWeek(`${y}/${w}`, { year: y, week: w });
     setAnimationDirection(-1);
   }
 
@@ -96,7 +120,7 @@ export default function WeekPage({ user }: WeekPageProps) {
       w = 1;
       y++;
     }
-    fetchWeek(`${y}/${w}`);
+    fetchWeek(`${y}/${w}`, { year: y, week: w });
     setAnimationDirection(1);
   }
 
@@ -246,7 +270,11 @@ export default function WeekPage({ user }: WeekPageProps) {
               currentWeekNumber !== getWeekNumber(new Date()).weekNumber &&
               currentYear == getWeekNumber(new Date()).year
                 ? () => {
-                    fetchWeek("current");
+                    const current = getWeekNumber(new Date());
+                    fetchWeek("current", {
+                      year: current.year,
+                      week: current.weekNumber,
+                    });
                     setAnimationDirection(0);
                   }
                 : undefined

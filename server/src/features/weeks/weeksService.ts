@@ -1,10 +1,12 @@
 import { weeksRepository } from "./weeksRepository";
 import { daysRepository } from "../days/daysRepository";
-import { taskService } from "../tasks/taskService";
 import { weekTaskRepository } from "../weekTask/weekTaskRepository";
+import { taskRepository } from "../tasks/taskRepository";
 import { getStartOfWeek } from "../../helpers/weekHelpers";
 import { addCalendarDays, toCalendarDate } from "../../helpers/calendarDate";
 import toDateString from "../../helpers/toDateString";
+import occursOn from "../../helpers/occursOn";
+import type Task from "../tasks/taskTypes";
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -35,16 +37,22 @@ export const weeksService = {
 
   async getWeekProgress(userId: string, year: number, week: number) {
     if (!userId) throw new Error("Lacking credentials");
-    const weekDoc = await this.getOrCreate(userId, year, week);
-    const days = weekDoc.days ?? [];
+
+    const [weekDoc, repeatingTasks, weeklyTasks] = await Promise.all([
+      this.getOrCreate(userId, year, week),
+      taskRepository.findRepeatingForUser(userId),
+      weekTaskRepository.findByWeek(userId, year, week),
+    ]);
 
     let completed = 0;
     let total = 0;
 
-    for (const day of days) {
-      const dayId = String(day._id);
-      const tasks = await taskService.getByDay(userId, dayId);
+    for (const day of weekDoc.days ?? []) {
       const dateStr = toDateString(day.date);
+      const occurring = repeatingTasks.filter((task) =>
+        occursOn(task as unknown as Task, day.date)
+      );
+      const tasks = [...(day.tasks ?? []), ...occurring];
       for (const task of tasks as Array<{
         repetition?: { frequency?: string } | null;
         completedDates?: string[];
@@ -58,7 +66,6 @@ export const weeksService = {
       }
     }
 
-    const weeklyTasks = await weekTaskRepository.findByWeek(userId, year, week);
     for (const task of weeklyTasks) {
       total += task.targetCount;
       completed += task.completedCount;

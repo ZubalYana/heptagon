@@ -22,15 +22,19 @@ export const taskRepository = {
     const day = await daysRepository.findById(userId, dayId);
     if (!day) throw new Error("Day not found in database records.");
 
-    const allRegularTasks = await Task.find({
-      userId,
-      repetition: { $ne: null },
-    });
+    const allRegularTasks = await this.findRepeatingForUser(userId);
     const occurringTasks = allRegularTasks.filter((task) =>
       occursOn(task, day.date)
     );
 
     return [...day.tasks, ...occurringTasks];
+  },
+
+  async findRepeatingForUser(userId: string) {
+    return await Task.find({
+      userId,
+      repetition: { $ne: null },
+    });
   },
 
   async toggle(userId: string, taskId: string, dayId: string) {
