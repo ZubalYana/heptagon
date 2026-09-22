@@ -258,7 +258,7 @@ export default function WeekPage({ user }: WeekPageProps) {
       <a
         href="/privacy"
         target="_blank"
-        className="mt-6 2xl:mt-4 shrink-0 text-xs text-gray-500 hover:text-gray-400"
+        className="mt-6 xl:mt-4 shrink-0 text-xs text-gray-500 hover:text-gray-400"
       >
         Privacy Policy
       </a>
