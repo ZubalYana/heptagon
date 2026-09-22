@@ -1,15 +1,15 @@
 export type AppView = "days" | "week" | "goals";
 
-interface ViewToggleProps {
-  view: AppView;
-  onChange: (view: AppView) => void;
-}
-
-const TABS: { id: AppView; label: string }[] = [
+export const APP_VIEW_TABS: { id: AppView; label: string }[] = [
   { id: "days", label: "Days" },
   { id: "week", label: "Week" },
   { id: "goals", label: "Goals" },
 ];
+
+interface ViewToggleProps {
+  view: AppView;
+  onChange: (view: AppView) => void;
+}
 
 const sliderShift: Record<AppView, string> = {
   days: "translate-x-0",
@@ -27,7 +27,7 @@ export default function ViewToggle({ view, onChange }: ViewToggleProps) {
       <span
         className={`absolute top-[3px] left-[3px] bottom-[3px] w-[calc((100%-6px)/3)] rounded-full bg-[#00FF26] transition-transform duration-300 ease-out ${sliderShift[view]}`}
       />
-      {TABS.map((tab) => (
+      {APP_VIEW_TABS.map((tab) => (
         <button
           key={tab.id}
           type="button"

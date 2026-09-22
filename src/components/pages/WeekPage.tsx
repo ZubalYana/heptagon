@@ -3,6 +3,7 @@ import type InterfaceWeek from "../../interfaces/Week";
 import Week from "../features/week/Week";
 import WeeksSwitch from "../features/week/WeeksSwitch";
 import ViewToggle, { type AppView } from "../features/week/ViewToggle";
+import AppNavMenu from "../features/week/AppNavMenu";
 import WeekTasksView from "../features/week/WeekTasksView";
 import GoalsView from "../features/goals/GoalsView";
 import PendingWeekTasksPatch from "../features/week/PendingWeekTasksPatch";
@@ -31,6 +32,7 @@ export default function WeekPage({ user }: WeekPageProps) {
     null
   );
   const [settingsOpened, setSettingsOpened] = useState<boolean>(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const dragStartX = useRef<number | null>(null);
@@ -125,13 +127,13 @@ export default function WeekPage({ user }: WeekPageProps) {
   }
 
   function onDragStart(x: number) {
-    if (settingsOpened || view !== "days") return;
+    if (settingsOpened || menuOpen || view !== "days") return;
     dragStartX.current = x;
     isDragging.current = true;
   }
 
   function onDragEnd(x: number) {
-    if (settingsOpened) return;
+    if (settingsOpened || menuOpen) return;
     if (!isDragging.current || dragStartX.current === null) return;
     const delta = x - dragStartX.current;
 
@@ -141,6 +143,21 @@ export default function WeekPage({ user }: WeekPageProps) {
 
     dragStartX.current = null;
     isDragging.current = false;
+  }
+
+  function changeView(next: AppView) {
+    if (currentYear != null && currentWeekNumber != null) {
+      syncParams(currentYear, currentWeekNumber, next);
+    } else {
+      setSearchParams(
+        (prev) => {
+          const nextParams = new URLSearchParams(prev);
+          nextParams.set("view", next);
+          return nextParams;
+        },
+        { replace: true }
+      );
+    }
   }
 
   return (
@@ -155,44 +172,26 @@ export default function WeekPage({ user }: WeekPageProps) {
       onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
       onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX)}
     >
-      <div className="w-full grid grid-cols-3 items-center mb-6 lg:mb-12 2xl:mb-8">
-        <div className="flex gap-x-2 items-center justify-self-start">
+      <div className="w-full flex items-center gap-3 mb-4 lg:grid lg:grid-cols-3 lg:mb-12 2xl:mb-8">
+        <div className="flex gap-x-2 items-center min-w-0 lg:justify-self-start">
           <img
             src="/heptagonLogo.svg"
             alt="Heptagon Logo"
-            className="w-[35px] h-[35px] 2xl:w-10 2xl:h-10"
+            className="w-[32px] h-[32px] lg:w-[35px] lg:h-[35px] 2xl:w-10 2xl:h-10 shrink-0"
           />
-          <h2 className="text-[20px] 2xl:text-[22px] font-medium">Heptagon</h2>
+          <h2 className="text-[18px] sm:text-[20px] 2xl:text-[22px] font-medium truncate">
+            Heptagon
+          </h2>
         </div>
-        <div className="justify-self-center">
-          <ViewToggle
-            view={view}
-            onChange={(next) => {
-              if (currentYear != null && currentWeekNumber != null) {
-                syncParams(currentYear, currentWeekNumber, next);
-              } else {
-                setSearchParams(
-                  (prev) => {
-                    const nextParams = new URLSearchParams(prev);
-                    nextParams.set("view", next);
-                    return nextParams;
-                  },
-                  { replace: true }
-                );
-              }
-            }}
-          />
+        <div className="hidden lg:flex justify-self-center">
+          <ViewToggle view={view} onChange={changeView} />
         </div>
-        <div className="flex items-center justify-self-end">
+        <div className="flex items-center justify-self-end ml-auto gap-1 sm:gap-2">
           {view === "days" && (
             <button
               type="button"
-              className="mr-6 lg:mr-8 cursor-pointer shrink-0"
-              onClick={() => {
-                if (currentYear != null && currentWeekNumber != null) {
-                  syncParams(currentYear, currentWeekNumber, "week");
-                }
-              }}
+              className="mr-3 lg:mr-5 cursor-pointer shrink-0"
+              onClick={() => changeView("week")}
               onMouseDown={(e) => e.stopPropagation()}
               aria-label="Open week view"
             >
@@ -202,7 +201,7 @@ export default function WeekPage({ user }: WeekPageProps) {
               />
             </button>
           )}
-          <div className="flex gap-x-4 items-center">
+          <div className="hidden lg:flex gap-x-4 items-center">
             <UserCircle
               className="cursor-pointer 2xl:size-7"
               onClick={() => {
@@ -215,6 +214,17 @@ export default function WeekPage({ user }: WeekPageProps) {
               onClick={() => setSettingsOpened(true)}
             />
           </div>
+          <AppNavMenu
+            view={view}
+            open={menuOpen}
+            onOpenChange={setMenuOpen}
+            onChangeView={changeView}
+            onProfile={() => {
+              const qs = searchParams.toString();
+              navigate(qs ? `/profile?${qs}` : "/profile");
+            }}
+            onSettings={() => setSettingsOpened(true)}
+          />
         </div>
       </div>
 
@@ -239,8 +249,18 @@ export default function WeekPage({ user }: WeekPageProps) {
         </div>
       )}
 
-      <div className="w-full flex-1 flex flex-col justify-center items-center min-h-0 2xl:justify-start">
-        <div className="w-full flex-1 flex flex-col justify-center min-h-0">
+      <div
+        className={`w-full flex-1 flex flex-col min-h-0 ${
+          view === "days"
+            ? "justify-center items-center 2xl:justify-start"
+            : "justify-start items-stretch"
+        }`}
+      >
+        <div
+          className={`w-full flex flex-col min-h-0 ${
+            view === "days" ? "flex-1 justify-center" : ""
+          }`}
+        >
           {view === "goals" ? (
             <GoalsView />
           ) : view === "week" &&
@@ -286,7 +306,7 @@ export default function WeekPage({ user }: WeekPageProps) {
       <a
         href="/privacy"
         target="_blank"
-        className="mt-6 xl:mt-4 shrink-0 text-xs text-gray-500 hover:text-gray-400"
+        className="mt-6 lg:mt-4 shrink-0 text-xs text-gray-500 hover:text-gray-400"
       >
         Privacy Policy
       </a>

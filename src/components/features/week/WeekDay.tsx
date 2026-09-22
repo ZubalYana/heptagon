@@ -42,12 +42,9 @@ export default function WeekDay({
     <Link
       to={`/day/${day._id}${location.search}`}
       className="
-        block mb-10 md:mb-0
-        w-[160px]
-        xs:w-[180px]
-        2xs:w-[140px]
-        sm:w-[170px]
-        lg:w-[140px]
+        block w-full min-w-0
+        sm:w-[170px] sm:max-w-[190px]
+        lg:w-[140px] lg:max-w-none
         xl:w-[158px]
         2xl:w-auto 2xl:flex-1 2xl:max-w-[220px]
       "
@@ -56,10 +53,10 @@ export default function WeekDay({
         <CircularProgressbar percentage={percentage} />
         <div
           className={`
-                mt-4 w-full h-auto lg:h-[110px]
+                mt-3 sm:mt-4 w-full h-auto lg:h-[110px]
                 2xl:h-auto 2xl:min-h-[124px]
                 bg-[#1B1B1B] rounded-md
-                p-4 flex flex-col items-center justify-center
+                p-3 sm:p-4 flex flex-col items-center justify-center
                 gap-y-[2px]
                 ${isToday ? "shadow-[0_0_12px_3px_rgba(0,255,38,0.3)]" : ""}
                 `}

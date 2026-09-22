@@ -43,8 +43,8 @@ export default function PendingWeekTasksPatch({
       onMouseDown={(e) => e.stopPropagation()}
       aria-label="Open week view"
       className="
-        fixed bottom-5 right-5 lg:bottom-8 lg:right-8 z-40
-        max-w-[min(90vw,28rem)]
+        fixed bottom-16 right-4 lg:bottom-8 lg:right-8 z-40
+        max-w-[calc(100vw-2rem)] lg:max-w-[min(90vw,28rem)]
         flex items-center gap-2 px-3 py-2.5
         bg-[#1B1B1B] border border-[#2a2a2a] rounded-xl
         shadow-[0_8px_32px_rgba(0,0,0,0.45)]

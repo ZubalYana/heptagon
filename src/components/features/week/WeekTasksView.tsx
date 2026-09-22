@@ -123,7 +123,7 @@ export default function WeekTasksView({
       onMouseDown={(e) => e.stopPropagation()}
     >
       <div className="w-full lg:flex-1 flex flex-col min-h-0">
-        <div className="flex gap-x-4 items-center mb-2">
+        <div className="flex flex-wrap gap-x-3 gap-y-1 items-center mb-2">
           <h2 className="text-[18px]">Your weekly tasks:</h2>
           <SecondaryButton onClick={() => setCreating(true)}>
             <Plus size={16} />
@@ -139,7 +139,7 @@ export default function WeekTasksView({
             <Button onClick={() => setCreating(true)}>Create the first!</Button>
           </div>
         ) : (
-          <div className="w-full flex flex-col md:flex-row md:gap-6 gap-4">
+          <div className="w-full flex flex-col lg:flex-row lg:gap-6 gap-4">
             {GROUPS.map((group) => (
               <div key={group.key} className="flex-1 w-full flex flex-col min-w-0">
                 <h3 className={`lg:text-[16px] font-medium mb-2 ${group.className}`}>

@@ -68,7 +68,7 @@ export default function GoalsView() {
         className="w-full flex flex-col"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="flex gap-x-4 items-center mb-2">
+        <div className="flex flex-wrap gap-x-3 gap-y-1 items-center mb-2">
           <h2 className="text-[18px]">Your goals</h2>
           <SecondaryButton onClick={() => setCreating(true)}>
             <Plus size={16} />
@@ -82,7 +82,7 @@ export default function GoalsView() {
               <Button onClick={() => setCreating(true)}>Create the first!</Button>
             </div>
           ) : (
-            <div className="w-full flex flex-col">
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 md:gap-x-4">
               {goals.map((goal) => (
                 <GoalRow
                   key={goal._id}

@@ -18,7 +18,7 @@ export default function WeeksSwitch({
   onBackToCurrent,
 }: WeeksProps) {
   return (
-    <div className="mt-8 lg:mt-10 2xl:mt-4 flex flex-col items-center select-none shrink-0">
+    <div className="mt-6 lg:mt-10 2xl:mt-4 flex flex-col items-center select-none shrink-0">
       <div className="flex items-center gap-x-2 2xl:gap-x-3">
         <button
           type="button"

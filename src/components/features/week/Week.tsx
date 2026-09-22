@@ -80,7 +80,7 @@ export default function Week({ week, animationDirection }: WeekProps) {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="w-full"
       >
-        <div className="w-full flex flex-wrap gap-x-2 justify-between items-center md:flex-row md:gap-x-0 2xl:flex-nowrap 2xl:justify-center 2xl:gap-x-8 2xl:items-stretch">
+        <div className="w-full grid grid-cols-2 gap-x-4 gap-y-7 sm:flex sm:flex-wrap sm:justify-center sm:gap-x-5 sm:gap-y-8 md:justify-between 2xl:flex-nowrap 2xl:justify-center 2xl:gap-x-8 2xl:items-stretch">
           {week.days.map((day) => {
             const dayTasks = tasksByDay[day._id] ?? [];
 
