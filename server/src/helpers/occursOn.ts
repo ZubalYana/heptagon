@@ -33,28 +33,34 @@ export default function occursOn(task: Task, date: Date | string): boolean {
   } = task.repetition;
   const start = toCalendarDate(startDate);
   const startParts = calendarParts(start);
+  const end =
+    endDate && toCalendarDate(endDate) >= start
+      ? toCalendarDate(endDate)
+      : null;
 
   if (start > day) return false;
-  if (endDate && toCalendarDate(endDate) < day) return false;
+  if (end && end < day) return false;
 
   const span = calendarDaysBetween(start, day);
+  const step = Math.max(1, Math.floor(interval) || 1);
 
   if (frequency === "daily") {
-    return span % interval === 0;
+    return span % step === 0;
   }
 
   if (frequency === "weekly") {
-    const weeksElapsed = Math.floor(span / 7);
+    if (!daysOfWeek.length) return false;
+    const weeksElapsed = Math.floor((span + mondayBasedWeekday(start)) / 7);
     return (
       daysOfWeek.includes(mondayBasedWeekday(day)) &&
-      weeksElapsed % interval === 0
+      weeksElapsed % step === 0
     );
   }
 
   if (frequency === "monthly") {
     const targetDay = dayOfMonth ?? startParts.day;
     return (
-      monthsBetween(start, day) % interval === 0 &&
+      monthsBetween(start, day) % step === 0 &&
       matchesDayOfMonth(day, targetDay)
     );
   }
@@ -65,7 +71,7 @@ export default function occursOn(task: Task, date: Date | string): boolean {
     const targetDay = dayOfMonth ?? startParts.day;
     const yearsElapsed = year - startParts.year;
     return (
-      yearsElapsed % interval === 0 &&
+      yearsElapsed % step === 0 &&
       month === targetMonth &&
       matchesDayOfMonth(day, targetDay)
     );

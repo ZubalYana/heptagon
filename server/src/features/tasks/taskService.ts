@@ -29,6 +29,21 @@ function fillRepetitionAnchors(repetition: Repetition): Repetition {
 }
 
 function assertCalendarRepetition(repetition: Repetition) {
+  if (repetition.interval < 1 || !Number.isFinite(repetition.interval)) {
+    throw new Error("Interval must be at least 1");
+  }
+  if (
+    repetition.endDate &&
+    repetition.startDate > repetition.endDate
+  ) {
+    throw new Error("Start date must precede end date");
+  }
+  if (
+    repetition.frequency === "weekly" &&
+    (!repetition.daysOfWeek || repetition.daysOfWeek.length === 0)
+  ) {
+    throw new Error("Pick at least one weekday for weekly tasks");
+  }
   if (repetition.frequency === "monthly") {
     if (
       repetition.dayOfMonth == null ||
@@ -76,6 +91,10 @@ export const taskService = {
         }
       : null;
 
+    if (repetition) {
+      repetition.interval = Math.max(1, Math.floor(Number(repetition.interval)) || 1);
+    }
+
     const savedRepetition = repetition
       ? fillRepetitionAnchors(repetition)
       : null;
@@ -122,15 +141,11 @@ export const taskService = {
         })
       : data.repetition;
 
-    if (repetition) assertCalendarRepetition(repetition);
-
-    if (
-      repetition &&
-      repetition.endDate &&
-      repetition.startDate > repetition.endDate
-    ) {
-      throw new Error("Start date must precede end date");
+    if (repetition) {
+      repetition.interval = Math.max(1, Math.floor(Number(repetition.interval)) || 1);
+      assertCalendarRepetition(repetition);
     }
+
     return await taskRepository.edit(
       userId,
       taskId,

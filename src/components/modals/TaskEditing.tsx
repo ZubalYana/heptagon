@@ -67,6 +67,15 @@ export default function TaskEditing({
   }
 
   function editTask() {
+    if (regular && repetition.frequency === "weekly" && repetition.daysOfWeek.length === 0) {
+      showAlert("error", "Pick at least one weekday for a weekly task.");
+      return;
+    }
+    if (regular && repetition.endDate && repetition.startDate > repetition.endDate) {
+      showAlert("error", "End date must be on or after the start date.");
+      return;
+    }
+
     apiClient
       .patch(`/tasks/edit/${editingTask._id}`, {
         text: newTaskText,
@@ -74,7 +83,9 @@ export default function TaskEditing({
         repetition: regular ? repetition : null,
       })
       .then(({ data }) => onSuccess?.(data))
-      .catch(() => showAlert("error", "Failed to edit task"));
+      .catch((err) =>
+        showAlert("error", err.response?.data?.error || "Failed to edit task")
+      );
   }
 
   function startEditingSubtask(id: string, currentText: string) {

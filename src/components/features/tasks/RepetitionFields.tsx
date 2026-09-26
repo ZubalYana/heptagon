@@ -4,6 +4,7 @@ import Select from "../../ui/Select";
 import type { Repetition } from "../../../interfaces/Task";
 import {
   calendarParts,
+  mondayBasedWeekday,
   toCalendarDate,
   todayCalendarDate,
 } from "../../../helpers/calendarDate";
@@ -58,7 +59,15 @@ export default function RepetitionFields({ value, onChange }: RepetitionFieldsPr
   const startParts = calendarParts(repetition.startDate || todayCalendarDate());
 
   function update(patch: Partial<Repetition>) {
-    onChange({ ...repetition, ...patch });
+    const next = { ...repetition, ...patch };
+    if (
+      patch.startDate &&
+      next.endDate &&
+      toCalendarDate(patch.startDate) > toCalendarDate(next.endDate)
+    ) {
+      next.endDate = null;
+    }
+    onChange(next);
   }
 
   function setFrequency(frequency: Repetition["frequency"]) {
@@ -66,6 +75,10 @@ export default function RepetitionFields({ value, onChange }: RepetitionFieldsPr
       frequency,
       dayOfMonth: repetition.dayOfMonth ?? startParts.day,
       monthOfYear: repetition.monthOfYear ?? startParts.month,
+      daysOfWeek:
+        frequency === "weekly" && repetition.daysOfWeek.length === 0
+          ? [mondayBasedWeekday(repetition.startDate || todayCalendarDate())]
+          : repetition.daysOfWeek,
     });
   }
 
@@ -213,6 +226,7 @@ export default function RepetitionFields({ value, onChange }: RepetitionFieldsPr
           <Input
             type="date"
             value={repetition.endDate ? toCalendarDate(repetition.endDate) : ""}
+            min={repetition.startDate ? toCalendarDate(repetition.startDate) : undefined}
             onChange={(e) =>
               update({ endDate: e.target.value || null })
             }

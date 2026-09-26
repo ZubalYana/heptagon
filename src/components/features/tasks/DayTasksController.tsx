@@ -273,6 +273,7 @@ export default function DayTasksController({
           <TaskCreation
             day={day.dayOfWeek}
             dayId={dayId}
+            date={toDateString(day.date)}
             onClose={() => setTaskCreationMode(false)}
             onSuccess={(newTask) => {
               setTaskCreationMode(false);

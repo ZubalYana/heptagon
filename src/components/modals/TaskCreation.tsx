@@ -15,6 +15,7 @@ import { todayCalendarDate } from "../../helpers/calendarDate";
 interface TaskCreationProps {
   day: string;
   dayId: string;
+  date: string;
   onClose?: () => void;
   onSuccess?: (task: Task) => void;
 }
@@ -22,6 +23,7 @@ interface TaskCreationProps {
 export default function TaskCreation({
   day,
   dayId,
+  date,
   onClose,
   onSuccess,
 }: TaskCreationProps) {
@@ -34,7 +36,7 @@ export default function TaskCreation({
     daysOfWeek: [],
     dayOfMonth: null,
     monthOfYear: null,
-    startDate: todayCalendarDate(),
+    startDate: date || todayCalendarDate(),
     endDate: null
   });
   const [alert, setAlert] = useState<{
@@ -57,6 +59,28 @@ export default function TaskCreation({
       return;
     }
 
+    if (regular && repetition.frequency === "weekly" && repetition.daysOfWeek.length === 0) {
+      setAlert({
+        shown: true,
+        type: "info",
+        text: "Pick at least one weekday for a weekly task.",
+      });
+      return;
+    }
+
+    if (
+      regular &&
+      repetition.endDate &&
+      repetition.startDate > repetition.endDate
+    ) {
+      setAlert({
+        shown: true,
+        type: "info",
+        text: "End date must be on or after the start date.",
+      });
+      return;
+    }
+
     creationInProgress.current = true;
     setIsCreating(true);
 
@@ -74,7 +98,7 @@ export default function TaskCreation({
         setAlert({
           shown: true,
           type: "error",
-          text: err.response?.data?.message || "Error creating task",
+          text: err.response?.data?.error || err.response?.data?.message || "Error creating task",
         });
       })
       .finally(() => {
