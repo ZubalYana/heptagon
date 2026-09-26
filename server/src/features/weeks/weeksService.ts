@@ -10,29 +10,66 @@ import type Task from "../tasks/taskTypes";
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
+const creatingWeeks = new Map<string, Promise<unknown>>();
+
+function isDuplicateKey(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const e = err as { code?: number; cause?: { code?: number } };
+  return e.code === 11000 || e.cause?.code === 11000;
+}
+
 export const weeksService = {
   async getOrCreate(userId: string, year: number, weekNumber: number) {
     if (!userId) throw new Error("Lacking credentials");
 
-    const existing = await weeksRepository.findByYearAndNumber(userId, year, weekNumber);
-    if (existing) return existing;
+    const key = `${userId}:${year}:${weekNumber}`;
+    const inflight = creatingWeeks.get(key);
+    if (inflight) return inflight;
 
-    const startDate = toCalendarDate(getStartOfWeek(year, weekNumber));
+    const work = (async () => {
+      const existing = await weeksRepository.findByYearAndNumber(
+        userId,
+        year,
+        weekNumber
+      );
+      if (existing) return existing;
 
-    const days = await Promise.all(
-      DAY_NAMES.map((name, i) =>
-        daysRepository.create(userId, name, addCalendarDays(startDate, i))
-      )
-    );
+      const startDate = toCalendarDate(getStartOfWeek(year, weekNumber));
+      const days = await Promise.all(
+        DAY_NAMES.map((name, i) =>
+          daysRepository.create(userId, name, addCalendarDays(startDate, i))
+        )
+      );
+      const dayIds = days.map((d) => d._id.toString());
 
-    return await weeksRepository.create(
-      userId,
-      year,
-      weekNumber,
-      startDate,
-      days[6].date,
-      days.map((d) => d._id.toString())
-    );
+      try {
+        return await weeksRepository.create(
+          userId,
+          year,
+          weekNumber,
+          startDate,
+          days[6].date,
+          dayIds
+        );
+      } catch (err) {
+        await daysRepository.deleteByIds(userId, dayIds).catch(() => {});
+        if (!isDuplicateKey(err)) throw err;
+        const created = await weeksRepository.findByYearAndNumber(
+          userId,
+          year,
+          weekNumber
+        );
+        if (!created) throw err;
+        return created;
+      }
+    })();
+
+    creatingWeeks.set(key, work);
+    try {
+      return await work;
+    } finally {
+      creatingWeeks.delete(key);
+    }
   },
 
   async getWeekProgress(userId: string, year: number, week: number) {
